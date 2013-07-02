@@ -1,0 +1,26 @@
+{
+	"resources" : [{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/splash/teamLogo.png",
+			"name" : "teamLogo",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/splash/engineLogo.png",
+			"name" : "engineLogo",
+			"type" : "TEXTURE"
+		}
+	],
+	"shaders" : [
+	],
+	"fonts" : [
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
+			"name" : "defaultFont",
+			"fntPath" : "font/default.fnt",
+			"imagePath" : "font/default.png"
+		}
+	]
+}
+
