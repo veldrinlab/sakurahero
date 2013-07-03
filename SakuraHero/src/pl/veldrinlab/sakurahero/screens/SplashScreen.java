@@ -82,7 +82,7 @@ public class SplashScreen extends GameScreen {
 
 	@Override
 	public void resize(int width, int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().width,Configuration.getInstance().height, false);
+		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
 	}
 	
 	@Override

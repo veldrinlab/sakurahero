@@ -17,41 +17,49 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
+//TODO wszêdzie spadaj¹ce kwiaty wiœni - nawet je¿eli kosztem wielu wartsw renderingu - docelowo d¹¿ymy do jednej
+//TODO Stage per stan??
 public class MenuScreen extends GameScreen implements GestureListener {
 
 	public PlayScreen playScreen;
-	public CreditsScreen informationScreen;
-	public SettingsScreen settingsScreen;
+	public CreditsScreen creditsnScreen;
+	public OptionsScreen optionsScreen;
 	
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 
 	private SpriteActor background;
 	
-	private Label play;
-	private Label settings;
-	private Label credits;
-	private Label exit;
+
+	
+	
+	
+	private SpriteActor menu;
+	private SpriteActor play;
+	private SpriteActor options;
+	private SpriteActor credits;
+	private SpriteActor exit;
 
 	private Music menuMusic;
 
 	public MenuScreen(final SakuraHero game) {
 		this.game = game;
 
-//		background = new SpriteActor(game.resources.getTexture("menu"));
+		background = new SpriteActor(game.resources.getTexture("menuBackground"));
+		
+		
+		
+		
+		menu = new SpriteActor(game.resources.getTexture("menu"));
+		play = new SpriteActor(game.resources.getTexture("play"),"Play");
+		options = new SpriteActor(game.resources.getTexture("options"),"Options");
+		credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
+		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+
+	
+		inputDetector = new GestureDetector(this);
 //		
-//		LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
-//		
-//		play = new Label("Play",style);
-//		settings = new Label("Options",style);
-//		credits= new Label("Credits",style);
-//		exit = new Label("Exit",style);
-//		
-//		menuMusic = game.resources.getMusic("menuMusic");
-//		
-//		inputDetector = new GestureDetector(this);
-//		
-//		initializeInterface();
+		initializeInterface();
 	}
 
 	@Override
@@ -71,9 +79,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void render(final float deltaTime) {
-		if(deltaTime > 0.5f)
-			return;
-
 		processInput();
 		game.getTimer().updateTimer(deltaTime);
 		while(game.getTimer().checkTimerAccumulator()) {
@@ -85,7 +90,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().width, Configuration.getInstance().height, false);	
+		//TODO to jest chyba i tak zbêdne??/
+		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);	
 	}
 
 	@Override
@@ -113,13 +119,16 @@ public class MenuScreen extends GameScreen implements GestureListener {
 //			menuMusic.setVolume(0.1f);
 //		}
 //
-//		Renderer.defaultStage.addActor(background);
-//		Renderer.defaultStage.addActor(play);
-//		Renderer.defaultStage.addActor(settings);
-//		Renderer.defaultStage.addActor(credits);
-//		Renderer.defaultStage.addActor(exit);
-//
-//		Gdx.input.setInputProcessor(inputDetector);
+		Renderer.defaultStage.addActor(background);
+		
+		
+		Renderer.defaultStage.addActor(menu);
+		Renderer.defaultStage.addActor(play);
+		Renderer.defaultStage.addActor(options);
+		Renderer.defaultStage.addActor(credits);
+		Renderer.defaultStage.addActor(exit);
+
+		Gdx.input.setInputProcessor(inputDetector);
 	}
 
 	@Override
@@ -138,19 +147,30 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {
-//		play.setName("Play");
-//		settings.setName("Options");
-//		credits.setName("Credits");
-//		exit.setName("Exit");
-//		
-//		play.setX((Configuration.getInstance().width-play.getTextBounds().width)*0.5f);	
-//		play.setY(Configuration.getInstance().height*0.60f - play.getTextBounds().height);
-//		settings.setX((Configuration.getInstance().width-settings.getTextBounds().width)*0.5f);	
-//		settings.setY(Configuration.getInstance().height*0.50f - settings.getTextBounds().height);
-//		credits.setX((Configuration.getInstance().width-credits.getTextBounds().width)*0.5f);	
-//		credits.setY(Configuration.getInstance().height*0.40f - credits.getTextBounds().height);
-//		exit.setX((Configuration.getInstance().width-exit.getTextBounds().width)*0.5f);	
-//		exit.setY(Configuration.getInstance().height*0.30f - exit.getTextBounds().height);		
+		
+
+		
+		// boundsy
+		
+		menu.getSprite().setX((Configuration.getInstance().descriptor.width-menu.getSprite().getWidth())*0.5f);	
+		menu.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - menu.getSprite().getHeight());
+		
+		play.getSprite().setX((Configuration.getInstance().descriptor.width-play.getSprite().getWidth())*0.5f);	
+		play.getSprite().setY(Configuration.getInstance().descriptor.height*0.65f - play.getSprite().getHeight());
+		options.getSprite().setX((Configuration.getInstance().descriptor.width-options.getSprite().getWidth())*0.5f);	
+		options.getSprite().setY(Configuration.getInstance().descriptor.height*0.50f - options.getSprite().getHeight());
+		credits.getSprite().setX((Configuration.getInstance().descriptor.width-credits.getSprite().getWidth())*0.5f);	
+		credits.getSprite().setY(Configuration.getInstance().descriptor.height*0.35f - credits.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.20f - exit.getSprite().getHeight());		
+		
+		//TODO refactor this getSprite shit
+		//TODO maybe some update method 
+		
+		play.setBounds(play.getSprite().getX(), play.getSprite().getY(), play.getSprite().getWidth(), play.getSprite().getHeight());
+		options.setBounds(options.getSprite().getX(), options.getSprite().getY(), options.getSprite().getWidth(), options.getSprite().getHeight());
+		credits.setBounds(credits.getSprite().getX(), credits.getSprite().getY(), credits.getSprite().getWidth(), credits.getSprite().getHeight());
+		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
 	}
 
 	@Override
@@ -180,32 +200,34 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		if(actor == null)
 			return false;
 
+		Gdx.app.log("name", actor.getName());
+		
 		if(actor.getName().equals("Credits")) {
-			if(Configuration.getInstance().soundOn)
-				game.resources.getSoundEffect("selection").play();
-			game.setScreen(informationScreen);
+	//		if(Configuration.getInstance().soundOn)
+	//			game.resources.getSoundEffect("selection").play();
+			game.setScreen(creditsnScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Options")) {
-			if(Configuration.getInstance().soundOn)
-				game.resources.getSoundEffect("selection").play();
-			game.setScreen(settingsScreen);
+		//	if(Configuration.getInstance().soundOn)
+		//		game.resources.getSoundEffect("selection").play();
+			game.setScreen(optionsScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Play")) {
-			if(Configuration.getInstance().soundOn)
-				game.resources.getSoundEffect("selection").play();
+		//	if(Configuration.getInstance().soundOn)
+		//		game.resources.getSoundEffect("selection").play();
 			
 			game.setScreen(playScreen);
-			if(Configuration.getInstance().musicOn)
-				menuMusic.stop();
-				
+		//	if(Configuration.getInstance().musicOn)
+		//		menuMusic.stop();
+		//		
 			dispose();
 			return true;			
 		}
 		else if(actor.getName().equals("Exit")) {
-			if(Configuration.getInstance().soundOn)
-				game.resources.getSoundEffect("selection").play();
+		//	if(Configuration.getInstance().soundOn)
+		//		game.resources.getSoundEffect("selection").play();
 			Gdx.app.exit();
 		}
 

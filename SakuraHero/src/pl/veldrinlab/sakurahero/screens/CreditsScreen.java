@@ -26,17 +26,24 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	private GestureDetector inputDetector;
 	
 	private SpriteActor background;
+	private SpriteActor credits;
+	private SpriteActor back;
 	
-	private Label authors;
-	private Label jablonski;
-	private Label zubrzycki;
-	private Label filip;
-	private Label lachowicz;
-	private Label backToMenu;
+//	private Label authors;
+//	private Label jablonski;
+//	private Label zubrzycki;
+//	private Label filip;
+//	private Label lachowicz;
+//	private Label backToMenu;
 
 	public CreditsScreen(final SakuraHero game) {
 		this.game = game;
 	
+		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
+		credits = new SpriteActor(game.resources.getTexture("creditsBig"));
+		back = new SpriteActor(game.resources.getTexture("back"),"Back");
+		
+
 //		background = new SpriteActor(game.resources.getTexture("background"));   
 //		
 //    	LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
@@ -49,8 +56,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 //    	
 //    	backToMenu = new Label("Back to menu",style);
 //
-//    	inputDetector = new GestureDetector(this);    	
-//    	initializeInterface();
+    	inputDetector = new GestureDetector(this);    	
+    	initializeInterface();
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().width, Configuration.getInstance().height, false);
+		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
 	}
 
 	@Override
@@ -93,6 +100,10 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void show() {
 		Renderer.defaultStage.clear();
+    	Renderer.defaultStage.addActor(background);
+    	Renderer.defaultStage.addActor(credits);
+    	Renderer.defaultStage.addActor(back);
+    	
 //    	Renderer.defaultStage.addActor(background);
 //    	Renderer.defaultStage.addActor(authors);
 //    	Renderer.defaultStage.addActor(jablonski);
@@ -100,7 +111,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 //    	Renderer.defaultStage.addActor(lachowicz);
 //    	Renderer.defaultStage.addActor(filip);
 //    	Renderer.defaultStage.addActor(backToMenu);
-//    	Gdx.input.setInputProcessor(inputDetector); 	
+    	Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
 	@Override
@@ -114,8 +125,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void processRendering() {
-//		Renderer.clearScreen();
-//		Renderer.defaultStage.draw();
+		Renderer.clearScreen();
+		Renderer.defaultStage.draw();
 	}
 
 	@Override
@@ -130,6 +141,10 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	}
 	
 	private void initializeInterface() {
+		
+		credits.getSprite().setX((Configuration.getInstance().descriptor.width-credits.getSprite().getWidth())*0.5f);	
+		credits.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - credits.getSprite().getHeight());
+		
 //		backToMenu.setName("Back");
 //		
 //		authors.setTouchable(Touchable.disabled);
@@ -178,12 +193,13 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		
 		if(actor == null)
 			return false;
-		
-//		if(actor.getName().equals("Back")) {
+	
+		if(actor.getName().equals("Back")) {
+			
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
-//			game.setScreen(menuScreen);
-//		}
+			game.setScreen(menuScreen);
+		}
 		
 		return true;
 	}

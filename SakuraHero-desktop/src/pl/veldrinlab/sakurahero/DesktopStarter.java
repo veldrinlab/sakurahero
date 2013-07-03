@@ -7,18 +7,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class DesktopStarter {
 
 	public static void main(String[] args) {
-
-		//TODO config from json file???
-		
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = Configuration.getInstance().width;
-		config.height = Configuration.getInstance().height;
-		config.title = Configuration.getInstance().windowTitle;
-		config.useGL20 = Configuration.getInstance().useGL20;
-		config.fullscreen = Configuration.getInstance().fullScreenEnabled;	
-				
-		//TODO extend Configuration
+	
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();	
 		config.addIcon("icon.png", FileType.Internal);
+		config.useGL20 = true;
 		new LwjglApplication(new SakuraHero(), config);		
 	}
 }

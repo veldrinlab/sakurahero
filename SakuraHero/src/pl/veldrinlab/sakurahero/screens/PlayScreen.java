@@ -310,7 +310,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().width, Configuration.getInstance().height, false);
+		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
 	}
 
 	@Override
