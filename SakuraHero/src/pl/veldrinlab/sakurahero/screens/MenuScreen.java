@@ -91,7 +91,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public void resize(final int width, final int height) {
 		//TODO to jest chyba i tak zbêdne??/
-		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);	
+		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
 	}
 
 	@Override
@@ -148,17 +148,17 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {
-		menu.getSprite().setX((Configuration.getInstance().descriptor.width-menu.getSprite().getWidth())*0.5f);	
-		menu.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - menu.getSprite().getHeight());
+		menu.getSprite().setX((Configuration.getWidth()-menu.getSprite().getWidth())*0.5f);	
+		menu.getSprite().setY(Configuration.getHeight()*0.90f - menu.getSprite().getHeight());
 		
-		play.getSprite().setX((Configuration.getInstance().descriptor.width-play.getSprite().getWidth())*0.5f);	
-		play.getSprite().setY(Configuration.getInstance().descriptor.height*0.65f - play.getSprite().getHeight());
-		options.getSprite().setX((Configuration.getInstance().descriptor.width-options.getSprite().getWidth())*0.5f);	
-		options.getSprite().setY(Configuration.getInstance().descriptor.height*0.50f - options.getSprite().getHeight());
-		credits.getSprite().setX((Configuration.getInstance().descriptor.width-credits.getSprite().getWidth())*0.5f);	
-		credits.getSprite().setY(Configuration.getInstance().descriptor.height*0.35f - credits.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.20f - exit.getSprite().getHeight());		
+		play.getSprite().setX((Configuration.getWidth()-play.getSprite().getWidth())*0.5f);	
+		play.getSprite().setY(Configuration.getHeight()*0.65f - play.getSprite().getHeight());
+		options.getSprite().setX((Configuration.getWidth()-options.getSprite().getWidth())*0.5f);	
+		options.getSprite().setY(Configuration.getHeight()*0.50f - options.getSprite().getHeight());
+		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
+		credits.getSprite().setY(Configuration.getHeight()*0.35f - credits.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getHeight()*0.20f - exit.getSprite().getHeight());		
 		
 		//TODO refactor this getSprite shit
 		//TODO maybe some update method 

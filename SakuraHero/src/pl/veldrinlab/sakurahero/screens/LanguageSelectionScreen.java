@@ -117,7 +117,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public void resize(int width, int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
+		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
 	}
 	
 	@Override
@@ -149,11 +149,11 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 		Renderer.defaultStage.addActor(selection);
 		Renderer.defaultStage.addActor(english);
 		
-		selection.getSprite().setX((Configuration.getInstance().descriptor.width-selection.getSprite().getWidth())*0.5f);	
-		selection.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - selection.getSprite().getHeight());
+		selection.getSprite().setX((Configuration.getWidth()-selection.getSprite().getWidth())*0.5f);	
+		selection.getSprite().setY(Configuration.getHeight()*0.90f - selection.getSprite().getHeight());
 		
-		english.getSprite().setX((Configuration.getInstance().descriptor.width-english.getSprite().getWidth())*0.20f);	
-		english.getSprite().setY(Configuration.getInstance().descriptor.height*0.40f - english.getSprite().getHeight());
+		english.getSprite().setX((Configuration.getWidth()-english.getSprite().getWidth())*0.20f);	
+		english.getSprite().setY(Configuration.getHeight()*0.40f - english.getSprite().getHeight());
 		
 		english.setBounds(english.getSprite().getX(), english.getSprite().getY(), english.getSprite().getWidth(), english.getSprite().getHeight());
 		

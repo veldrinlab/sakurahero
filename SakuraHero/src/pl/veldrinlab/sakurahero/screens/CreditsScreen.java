@@ -43,7 +43,6 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		credits = new SpriteActor(game.resources.getTexture("creditsBig"));
 		back = new SpriteActor(game.resources.getTexture("back"),"Back");
 		
-
 //		background = new SpriteActor(game.resources.getTexture("background"));   
 //		
 //    	LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
@@ -89,7 +88,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
+		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
 	}
 
 	@Override
@@ -142,8 +141,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	
 	private void initializeInterface() {
 		
-		credits.getSprite().setX((Configuration.getInstance().descriptor.width-credits.getSprite().getWidth())*0.5f);	
-		credits.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - credits.getSprite().getHeight());
+		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
+		credits.getSprite().setY(Configuration.getHeight()*0.90f - credits.getSprite().getHeight());
 		
 //		backToMenu.setName("Back");
 //		

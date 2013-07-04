@@ -42,7 +42,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		
 		pauseBatch = new SpriteBatch();
 		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
-		pauseStage = new Stage(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false, pauseBatch);
+		pauseStage = new Stage(Configuration.getWidth(), Configuration.getHeight(), false, pauseBatch);
 		pauseBackground = new SpriteActor(renderTarget.getColorBufferTexture());
 		pauseBackground.getSprite().flip(false,true);
 
@@ -139,15 +139,15 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	
 	private void initializeInterface() {
 		
-		pause.getSprite().setX((Configuration.getInstance().descriptor.width-pause.getSprite().getWidth())*0.5f);	
-		pause.getSprite().setY(Configuration.getInstance().descriptor.height*0.9f - pause.getSprite().getHeight());
+		pause.getSprite().setX((Configuration.getWidth()-pause.getSprite().getWidth())*0.5f);	
+		pause.getSprite().setY(Configuration.getHeight()*0.9f - pause.getSprite().getHeight());
 		
-		resume.getSprite().setX((Configuration.getInstance().descriptor.width-resume.getSprite().getWidth())*0.5f);	
-		resume.getSprite().setY(Configuration.getInstance().descriptor.height*0.65f - resume.getSprite().getHeight());
-		menu.getSprite().setX((Configuration.getInstance().descriptor.width-menu.getSprite().getWidth())*0.5f);	
-		menu.getSprite().setY(Configuration.getInstance().descriptor.height*0.50f - menu.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.35f - exit.getSprite().getHeight());
+		resume.getSprite().setX((Configuration.getWidth()-resume.getSprite().getWidth())*0.5f);	
+		resume.getSprite().setY(Configuration.getHeight()*0.65f - resume.getSprite().getHeight());
+		menu.getSprite().setX((Configuration.getWidth()-menu.getSprite().getWidth())*0.5f);	
+		menu.getSprite().setY(Configuration.getHeight()*0.50f - menu.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getHeight()*0.35f - exit.getSprite().getHeight());
 				
 		resume.setBounds(resume.getSprite().getX(), resume.getSprite().getY(), resume.getSprite().getWidth(), resume.getSprite().getHeight());
 		menu.setBounds(menu.getSprite().getX(), menu.getSprite().getY(), menu.getSprite().getWidth(), menu.getSprite().getHeight());

@@ -154,8 +154,8 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	private void initializeInterface() {
 		
 		
-		options.getSprite().setX((Configuration.getInstance().descriptor.width-options.getSprite().getWidth())*0.5f);	
-		options.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - options.getSprite().getHeight());
+		options.getSprite().setX((Configuration.getWidth()-options.getSprite().getWidth())*0.5f);	
+		options.getSprite().setY(Configuration.getHeight()*0.90f - options.getSprite().getHeight());
 		
 	
 		

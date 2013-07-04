@@ -74,7 +74,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		shine = new SpriteActor(game.resources.getTexture("shine"));
 
 		shine.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		shine.getSprite().setSize(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height);
+		shine.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
 
 		// katana
 		direction = new Vector2(-1.0f,-1.0f);
@@ -190,7 +190,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void resize(final int width, final int height) {
 		//TODO to jest chyba i tak zbêdne??/
-		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);	
+		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
 	}
 
 	@Override
@@ -253,20 +253,20 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	private void initializeInterface() {
 
-		logoAng.getSprite().setX((Configuration.getInstance().descriptor.width-logoAng.getSprite().getWidth())*0.5f);	
-		logoAng.getSprite().setY(Configuration.getInstance().descriptor.height*0.80f - logoAng.getSprite().getHeight());
+		logoAng.getSprite().setX((Configuration.getWidth()-logoAng.getSprite().getWidth())*0.5f);	
+		logoAng.getSprite().setY(Configuration.getHeight()*0.80f - logoAng.getSprite().getHeight());
 
-		katana.getSprite().setX((Configuration.getInstance().descriptor.width-katana.getSprite().getWidth())*0.5f);	
-		katana.getSprite().setY(Configuration.getInstance().descriptor.height*1.00f - katana.getSprite().getHeight());
+		katana.getSprite().setX((Configuration.getWidth()-katana.getSprite().getWidth())*0.5f);	
+		katana.getSprite().setY(Configuration.getHeight()*1.00f - katana.getSprite().getHeight());
 
 		//TODO smarter
 		katana.getSprite().setPosition(325.0f, 480.0f-15.0f-katana.getSprite().getHeight());
 
-		loading.getSprite().setX((Configuration.getInstance().descriptor.width-loading.getSprite().getWidth())*0.5f);
-		loading.getSprite().setY(Configuration.getInstance().descriptor.height*0.25f -loading.getSprite().getHeight());
+		loading.getSprite().setX((Configuration.getWidth()-loading.getSprite().getWidth())*0.5f);
+		loading.getSprite().setY(Configuration.getHeight()*0.25f -loading.getSprite().getHeight());
 
-		tapToContinue.getSprite().setX((Configuration.getInstance().descriptor.width-tapToContinue.getSprite().getWidth())*0.5f);
-		tapToContinue.getSprite().setY(Configuration.getInstance().descriptor.height*0.25f -tapToContinue.getSprite().getHeight());
+		tapToContinue.getSprite().setX((Configuration.getWidth()-tapToContinue.getSprite().getWidth())*0.5f);
+		tapToContinue.getSprite().setY(Configuration.getHeight()*0.25f -tapToContinue.getSprite().getHeight());
 
 		//ruch katany
 

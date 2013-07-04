@@ -113,7 +113,7 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);	
+		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
 	}
 
 	@Override
@@ -146,15 +146,15 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 //		backToMenu.setY(Configuration.getInstance().height*0.50f - backToMenu.getTextBounds().height);
 		
 		
-		gameOver.getSprite().setX((Configuration.getInstance().descriptor.width-gameOver.getSprite().getWidth())*0.5f);	
-		gameOver.getSprite().setY(Configuration.getInstance().descriptor.height*0.9f - gameOver.getSprite().getHeight());
+		gameOver.getSprite().setX((Configuration.getWidth()-gameOver.getSprite().getWidth())*0.5f);	
+		gameOver.getSprite().setY(Configuration.getHeight()*0.9f - gameOver.getSprite().getHeight());
 		
-		tryAgain.getSprite().setX((Configuration.getInstance().descriptor.width-tryAgain.getSprite().getWidth())*0.5f);	
-		tryAgain.getSprite().setY(Configuration.getInstance().descriptor.height*0.45f - tryAgain.getSprite().getHeight());
-		backToMenu.getSprite().setX((Configuration.getInstance().descriptor.width-backToMenu.getSprite().getWidth())*0.5f);	
-		backToMenu.getSprite().setY(Configuration.getInstance().descriptor.height*0.30f - backToMenu.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.15f - exit.getSprite().getHeight());
+		tryAgain.getSprite().setX((Configuration.getWidth()-tryAgain.getSprite().getWidth())*0.5f);	
+		tryAgain.getSprite().setY(Configuration.getHeight()*0.45f - tryAgain.getSprite().getHeight());
+		backToMenu.getSprite().setX((Configuration.getWidth()-backToMenu.getSprite().getWidth())*0.5f);	
+		backToMenu.getSprite().setY(Configuration.getHeight()*0.30f - backToMenu.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getHeight()*0.15f - exit.getSprite().getHeight());
 				
 		tryAgain.setBounds(tryAgain.getSprite().getX(), tryAgain.getSprite().getY(), tryAgain.getSprite().getWidth(), tryAgain.getSprite().getHeight());
 		backToMenu.setBounds(backToMenu.getSprite().getX(), backToMenu.getSprite().getY(), backToMenu.getSprite().getWidth(), backToMenu.getSprite().getHeight());

@@ -25,9 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class Renderer {
 	//TODO make Renderer3D and Renderer2D - pomyœleæ nad tym
 	
-	public static PerspectiveCamera camera = new PerspectiveCamera(60, Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height); 
+	public static PerspectiveCamera camera = new PerspectiveCamera(60, Configuration.getWidth(), Configuration.getHeight()); 
 	public static SpriteBatch defaultBatch = new SpriteBatch();
-	public static Stage defaultStage = new Stage(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height,false,defaultBatch);
+	public static Stage defaultStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,defaultBatch);
 	public static BitmapFont defaultFont = null;
 	public static BitmapFont defaultFontSmall = null;
 	public static ShaderProgram defaultShader = null;

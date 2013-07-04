@@ -31,10 +31,30 @@ public class Configuration {
 		private static final Configuration instance = new Configuration();
 	}
 
-	public static Configuration getInstance() {
+	// EVIL!
+	private static Configuration getInstance() {
 		return ConfigurationHolder.instance;
 	}
 	
-	
 	//TODO API for important data
+	
+	public static int getWidth() {
+		return ConfigurationHolder.instance.descriptor.width;
+	}
+	
+	public static int getHeight() {
+		return ConfigurationHolder.instance.descriptor.height;
+	}
+	
+	public static boolean isFullscreenEnabled() {
+		return ConfigurationHolder.instance.descriptor.fullScreenEnabled;
+	}
+	
+	public static String getWindowTitle() {
+		return ConfigurationHolder.instance.descriptor.windowTitle;
+	}
+	
+	public static String getResourcePath() {
+		return ConfigurationHolder.instance.descriptor.resourcePath;
+	}
 }

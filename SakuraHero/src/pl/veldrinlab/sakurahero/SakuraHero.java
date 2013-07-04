@@ -75,10 +75,9 @@ public class SakuraHero extends Game {
 //			}
 //		}
 //		
-		ConfigurationDescriptor desc = Configuration.getInstance().descriptor;
-		
-		Gdx.graphics.setDisplayMode(desc.width, desc.height, desc.fullScreenEnabled);
-		Gdx.graphics.setTitle(desc.windowTitle);
+
+		Gdx.graphics.setDisplayMode(Configuration.getWidth(), Configuration.getHeight(), Configuration.isFullscreenEnabled());
+		Gdx.graphics.setTitle(Configuration.getWindowTitle());
 		
 		
 		// test
@@ -100,7 +99,7 @@ public class SakuraHero extends Game {
 	}
 
 	private void initializeEngine() {
-		resources.loadResources(Configuration.getInstance().descriptor.resourcePath);
+		resources.loadResources(Configuration.getResourcePath());
 		resources.finishLoading();
 		Renderer.defaultFont = resources.getFont("defaultFont");	
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
