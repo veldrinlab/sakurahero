@@ -69,17 +69,17 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	// smoke test
 
 	SpriteBatch batch;
-	Sprite sprite;
-	int currentFrame = 0;
-	int frameAmount = 45;
-	float TIME = 0.1f;
-	float frameTime = TIME;
+//	Sprite sprite;
+//	int currentFrame = 0;
+//	int frameAmount = 45;
+//	float TIME = 0.1f;
+//	float frameTime = TIME;
 
 	Sprite background;
 
 	// sakura tree
 	
-	Sprite tree;
+	//Sprite tree;
 	
 	// sakura
 	
@@ -88,20 +88,20 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	float sakuraAccumulator;
 	
 	// test enemey
-	Sprite enemy;
-	int enemyCurrentFrame = 0;
-	int enemyFrameAmount = 8;
-	float ENEMY_TIME = 0.05f;
-	float enemyFrameTime = ENEMY_TIME;
-	
-	
-	float elipseA = 250.0f;
-	float elipseB = 150.0f;
-	float movementAccumulator = 0.0f;
-	
-	
-	// ninja
-	float v = 100.0f;
+//	Sprite enemy;
+//	int enemyCurrentFrame = 0;
+//	int enemyFrameAmount = 8;
+//	float ENEMY_TIME = 0.05f;
+//	float enemyFrameTime = ENEMY_TIME;
+//	
+//	
+//	float elipseA = 250.0f;
+//	float elipseB = 150.0f;
+//	float movementAccumulator = 0.0f;
+//	
+//	
+//	// ninja
+//	float v = 100.0f;
 	
 	
 	public PlayScreen(final SakuraHero game) {
@@ -113,9 +113,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		
 		// enemy
-		enemy = new Sprite(new Texture(Gdx.files.internal("enemy.png")),enemyCurrentFrame*0, 0, 256, 256);
-		enemy.setPosition(400-128, 240-128);
-		
+//		enemy = new Sprite(new Texture(Gdx.files.internal("enemy.png")),enemyCurrentFrame*0, 0, 256, 256);
+//		enemy.setPosition(400-128, 240-128);
+//		
 		
 		//
 		renderer = new ImmediateModeRenderer20(false,true,0);
@@ -142,14 +142,14 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	//	batch.setShader(shader);
 	
-		sprite = new Sprite( new Texture(Gdx.files.internal("test2a.png")), currentFrame*0, 0, 256, 256);
-		sprite.setColor(Color.BLACK);
+//		sprite = new Sprite( new Texture(Gdx.files.internal("test2a.png")), currentFrame*0, 0, 256, 256);
+//		sprite.setColor(Color.BLACK);
 		background = new Sprite(new Texture(Gdx.files.internal("test.png")));
 		
-		tree = new Sprite(new Texture(Gdx.files.internal("test3.png")));
-		
-		tree.setPosition(400-tree.getWidth()*0.5f, -100.0f);
-		tree.setScale(0.65f);
+//		tree = new Sprite(new Texture(Gdx.files.internal("test3.png")));
+//		
+//		tree.setPosition(400-tree.getWidth()*0.5f, -100.0f);
+//		tree.setScale(0.65f);
 		
 		
 
@@ -198,68 +198,51 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		}
 
 		// enemy animation
-		enemyFrameTime -= deltaTime;
-		
-		if(enemyFrameTime < 0.0f) {
-			enemyCurrentFrame = (enemyCurrentFrame+1)%enemyFrameAmount;
-			enemy.setRegion(enemyCurrentFrame*256, 0,256, 256);
-			enemyFrameTime = ENEMY_TIME;
-		}
-		
-		movementAccumulator += deltaTime*2.0f;
-		
-		enemy.setX((float) (400-128+elipseA*Math.cos(movementAccumulator)));
-		enemy.setY((float) (240-128+elipseB*Math.sin(movementAccumulator)));
-	
-		Gdx.app.log("frame ", String.valueOf(enemyCurrentFrame));
-		
-		//animation
-		frameTime -= deltaTime;
-
-		if(frameTime < 0.0f) {
-			
-			// dla ca³oœci
-			
-			/*
-			 * 0 1 2 3 4 5 6 
-			 * 7 8 9 10 11 12 13 
-			 * 14 15 16 ...
-			 * 
-			 * 
-			 * 
-			 */
-			
-			int column = currentFrame % 7;
-			int row = (currentFrame / 7);
-			
-			
-			currentFrame  = (currentFrame+1)%45;
-			sprite.setRegion(column*256, row*256, 256,256);
-			frameTime = TIME;
-		}
+//		enemyFrameTime -= deltaTime;
+//		
+//		if(enemyFrameTime < 0.0f) {
+//			enemyCurrentFrame = (enemyCurrentFrame+1)%enemyFrameAmount;
+//			enemy.setRegion(enemyCurrentFrame*256, 0,256, 256);
+//			enemyFrameTime = ENEMY_TIME;
+//		}
+//		
+//		movementAccumulator += deltaTime*2.0f;
+//		
+//		enemy.setX((float) (400-128+elipseA*Math.cos(movementAccumulator)));
+//		enemy.setY((float) (240-128+elipseB*Math.sin(movementAccumulator)));
+//	
+//		Gdx.app.log("frame ", String.valueOf(enemyCurrentFrame));
+//		
+//		//animation
+//		frameTime -= deltaTime;
+//
+//		if(frameTime < 0.0f) {
+//			
+//			// dla ca³oœci
+//			
+//			/*
+//			 * 0 1 2 3 4 5 6 
+//			 * 7 8 9 10 11 12 13 
+//			 * 14 15 16 ...
+//			 * 
+//			 * 
+//			 * 
+//			 */
+//			
+//			int column = currentFrame % 7;
+//			int row = (currentFrame / 7);
+//			
+//			
+//			currentFrame  = (currentFrame+1)%45;
+//			sprite.setRegion(column*256, row*256, 256,256);
+//			frameTime = TIME;
+//		}
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		//	batch.setProjectionMatrix(camera.combined);
-
-		// render
-
-		batch.begin();
-		
-		
-	//	v -= deltaTime*5.0f;
-		
-	//	shader.setUniformf("v", v);
-	
-		
+		batch.begin();		
 		background.draw(batch);
-		
-//		enemy.draw(batch);
-		
-
-//		sprite.draw(batch);
-		//tree.draw(batch);
 		batch.end();
 
 		batch.begin();
@@ -291,6 +274,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		}
 		
 		batch.end();
+		
+		
+		
 		
 		Gdx.gl20.glLineWidth(15);
 		

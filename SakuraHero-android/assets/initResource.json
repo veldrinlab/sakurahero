@@ -88,12 +88,6 @@
 			"path" : "katana.png",
 			"name" : "katana",	
 			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "shine.png",
-			"name" : "shine",	
-			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [
