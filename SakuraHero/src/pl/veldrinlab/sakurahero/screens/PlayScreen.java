@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
@@ -75,11 +76,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //	float TIME = 0.1f;
 //	float frameTime = TIME;
 
-	Sprite background;
+	
 
 	// sakura tree
 	
 	//Sprite tree;
+	
+	//TODO mo¿e sakura tree jako FX zrealizowaæ?
 	
 	// sakura
 	
@@ -104,11 +107,16 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //	float v = 100.0f;
 	
 	
+	
+	// w³aœciwy kod
+	private SpriteActor pauseButton;
+	private SpriteActor background;
+	
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
-		
-
+		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
+		background = new SpriteActor(new Texture(Gdx.files.internal("test.png")));
 		inputDetector = new MultitouchGestureDetector(this);
 
 		
@@ -144,7 +152,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	
 //		sprite = new Sprite( new Texture(Gdx.files.internal("test2a.png")), currentFrame*0, 0, 256, 256);
 //		sprite.setColor(Color.BLACK);
-		background = new Sprite(new Texture(Gdx.files.internal("test.png")));
+//		background = new Sprite(new Texture(Gdx.files.internal("test.png")));
 		
 //		tree = new Sprite(new Texture(Gdx.files.internal("test3.png")));
 //		
@@ -154,7 +162,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		
 
 		//TDODO input same type?
-		Gdx.input.setInputProcessor(this);
+	//	Gdx.input.setInputProcessor(this);
 	}
 
 	
@@ -171,7 +179,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void processInput() {	
-
+		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
+			Gdx.app.exit();
 	}
 	
 	@Override
@@ -182,20 +191,20 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void processRendering() { 
 		Renderer.clearScreen();
-
-		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
-			Gdx.app.exit();
+		Renderer.defaultStage.draw();
 		
-		float deltaTime = 1.0f/60.0f;
-
-		if(swing.size > 0) {
-			accumulator -= deltaTime;
-
-			if(accumulator < 0.0f) {
-				accumulator = 0.5f;
-				swing.clear();
-			}
-		}
+		
+		
+//		float deltaTime = 1.0f/60.0f;
+//
+//		if(swing.size > 0) {
+//			accumulator -= deltaTime;
+//
+//			if(accumulator < 0.0f) {
+//				accumulator = 0.5f;
+//				swing.clear();
+//			}
+//		}
 
 		// enemy animation
 //		enemyFrameTime -= deltaTime;
@@ -238,58 +247,58 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //			frameTime = TIME;
 //		}
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		batch.begin();		
-		background.draw(batch);
-		batch.end();
-
-		batch.begin();
-		
-		sakuraAccumulator += deltaTime;
-		
-		for(int i = 0; i < leaves.size; ++i) {
-			float currentX = leaves.get(i).getX();
-			float currentY = leaves.get(i).getY();
-			
-			
-			currentX += Math.sin(leaveBalance.get(i)+sakuraAccumulator)*0.5f;
-			currentY -= 50.0f * deltaTime;
-			
-			leaves.get(i).setX(currentX);
-			leaves.get(i).setY(currentY);
-			
-//			leaves.get(i).setRotation(leaves.get(i).getRotation()+deltaTime*50.0f);
-			
-			leaves.get(i).setRotation((float) (-Math.abs(Math.sin(leaveBalance.get(i)+sakuraAccumulator))*30.0f));
-			
-			
-			if(currentY < -leaves.get(i).getHeight())
-				leaves.get(i).setPosition(MathUtils.random(0.0f, 800.0f), 480.0f);
-			
-			
-			leaves.get(i).draw(batch);
-			
-		}
-		
-		batch.end();
-		
-		
-		
-		
-		Gdx.gl20.glLineWidth(15);
-		
-
-		if(swing.size > 1) {
-
-			for(int i = 0; i < swing.size-1; ++i) {
-				renderer.begin(projMatrix, GL20.GL_LINES);
-				renderer.vertex(swing.get(i).x, swing.get(i).y, 0);
-				renderer.vertex(swing.get(i+1).x, swing.get(i+1).y, 0);
-				renderer.end();
-			}
-		}
+//		Gdx.gl.glClearColor(1, 1, 1, 1);
+//		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+//
+//		batch.begin();		
+//		background.draw(batch);
+//		batch.end();
+//
+//		batch.begin();
+//		
+//		sakuraAccumulator += deltaTime;
+//		
+//		for(int i = 0; i < leaves.size; ++i) {
+//			float currentX = leaves.get(i).getX();
+//			float currentY = leaves.get(i).getY();
+//			
+//			
+//			currentX += Math.sin(leaveBalance.get(i)+sakuraAccumulator)*0.5f;
+//			currentY -= 50.0f * deltaTime;
+//			
+//			leaves.get(i).setX(currentX);
+//			leaves.get(i).setY(currentY);
+//			
+////			leaves.get(i).setRotation(leaves.get(i).getRotation()+deltaTime*50.0f);
+//			
+//			leaves.get(i).setRotation((float) (-Math.abs(Math.sin(leaveBalance.get(i)+sakuraAccumulator))*30.0f));
+//			
+//			
+//			if(currentY < -leaves.get(i).getHeight())
+//				leaves.get(i).setPosition(MathUtils.random(0.0f, 800.0f), 480.0f);
+//			
+//			
+//			leaves.get(i).draw(batch);
+//			
+//		}
+//		
+//		batch.end();
+//		
+//		
+//		
+//		
+//		Gdx.gl20.glLineWidth(15);
+//		
+//
+//		if(swing.size > 1) {
+//
+//			for(int i = 0; i < swing.size-1; ++i) {
+//				renderer.begin(projMatrix, GL20.GL_LINES);
+//				renderer.vertex(swing.get(i).x, swing.get(i).y, 0);
+//				renderer.vertex(swing.get(i+1).x, swing.get(i+1).y, 0);
+//				renderer.end();
+//			}
+//		}
 	
 		
 	}
@@ -313,7 +322,14 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	//	Gdx.input.setInputProcessor(inputDetector);
 		
-		Gdx.input.setInputProcessor(this);
+		Gdx.app.log("play", "screen show");
+		Renderer.defaultStage.clear();	
+		Renderer.defaultStage.addActor(background);
+		Renderer.defaultStage.addActor(pauseButton);
+		
+//		Gdx.input.setInputProcessor(this);
+		
+		Gdx.input.setInputProcessor(inputDetector);
 	}
 
 	@Override
@@ -333,18 +349,26 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
-//		if(hud.input()) {
-//			pauseScreen.getFrameBuffer().begin();	
-//			processRendering();
-//			pauseScreen.getFrameBuffer().end();
-//
-//			if(Configuration.getInstance().musicOn)
-//				gameMusic.pause();
-//
-//			game.setScreen(pauseScreen);
-//			return true;
-//		}
+		
+		Vector2 stageCoords = Vector2.Zero;
+		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
+		
+		if(actor == null)
+			return false;
 
+		if(actor.getName().equals("Pause")) {
+			pauseScreen.getFrameBuffer().begin();	
+			processRendering();
+			pauseScreen.getFrameBuffer().end();
+
+		//	if(Configuration.getInstance().musicOn)
+			//	gameMusic.pause();
+
+			Gdx.app.log("test", "test");
+			game.setScreen(pauseScreen);
+		}
+			
 		return true;
 	}
 

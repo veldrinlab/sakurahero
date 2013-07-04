@@ -94,6 +94,42 @@
 			"path" : "shine.png",
 			"name" : "shine",	
 			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "selectLanguage.png",
+			"name" : "selectLanguage",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "english.png",
+			"name" : "english",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/pause.png",
+			"name" : "pauseButton",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "pause.png",
+			"name" : "pause",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "resume.png",
+			"name" : "resume",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "menuSmall.png",
+			"name" : "menuSmall",
+			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [

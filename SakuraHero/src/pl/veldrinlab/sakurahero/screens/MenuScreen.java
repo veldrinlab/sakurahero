@@ -119,6 +119,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 //			menuMusic.setVolume(0.1f);
 //		}
 //
+		Renderer.defaultStage.clear();
 		Renderer.defaultStage.addActor(background);
 		
 		
@@ -147,11 +148,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {
-		
-
-		
-		// boundsy
-		
 		menu.getSprite().setX((Configuration.getInstance().descriptor.width-menu.getSprite().getWidth())*0.5f);	
 		menu.getSprite().setY(Configuration.getInstance().descriptor.height*0.90f - menu.getSprite().getHeight());
 		

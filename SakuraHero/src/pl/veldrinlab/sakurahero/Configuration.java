@@ -34,4 +34,7 @@ public class Configuration {
 	public static Configuration getInstance() {
 		return ConfigurationHolder.instance;
 	}
+	
+	
+	//TODO API for important data
 }

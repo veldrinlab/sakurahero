@@ -3,6 +3,7 @@ package pl.veldrinlab.sakurahero;
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.screens.CreditsScreen;
 import pl.veldrinlab.sakurahero.screens.GameOverScreen;
+import pl.veldrinlab.sakurahero.screens.LanguageSelectionScreen;
 import pl.veldrinlab.sakurahero.screens.LoadingScreen;
 import pl.veldrinlab.sakurahero.screens.MenuScreen;
 import pl.veldrinlab.sakurahero.screens.PauseScreen;
@@ -39,6 +40,7 @@ public class SakuraHero extends Game {
 	private GameOverScreen gameOverScreen;
 	
 	//
+	private LanguageSelectionScreen languageSelectionScreen;
 	private LoadingScreen loadingScreen;
 	
 	
@@ -110,17 +112,22 @@ public class SakuraHero extends Game {
 		fadeEffect.fadeInTime = 1.0f;
 		fadeEffect.stayTime = 2.0f;
 		fadeEffect.fadeOutTime = 1.0f;
-		fadeEffect.skippable = true;
-		fadeEffect.skippableWhileFadingIn = true;
-		fadeEffect.textureName = "engineLogo";
 	
 		//
 		loadingScreen = new LoadingScreen(this);
 		
 		//
-		//playScreen = new PlayScreen(this);
 		menuScreen = new MenuScreen(this);
-		engineSplashScreen = new SplashScreen(this,fadeEffect,loadingScreen);
+	
+		
+		fadeEffect.textureName = "menuBackground";
+		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = false;
+		
+		languageSelectionScreen = new LanguageSelectionScreen(this,fadeEffect,loadingScreen);
+		
+		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = true;
+		fadeEffect.textureName = "engineLogo";
+		engineSplashScreen = new SplashScreen(this,fadeEffect,languageSelectionScreen);
 		
 		fadeEffect.textureName = "teamLogo";		
 		teamSplashScreen = new SplashScreen(this,fadeEffect,engineSplashScreen);
@@ -131,13 +138,11 @@ public class SakuraHero extends Game {
 		playScreen = new PlayScreen(this);
 		gameOverScreen = new GameOverScreen(this);
 
-	
-		
 		buildGameStateGraph();
 		
 		setScreen(teamSplashScreen);
 		
-		setScreen(loadingScreen);
+		setScreen(playScreen);
 	}
 	
 	public void buildGameStateGraph() {

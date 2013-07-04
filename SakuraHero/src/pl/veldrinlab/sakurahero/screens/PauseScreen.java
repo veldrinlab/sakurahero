@@ -8,7 +8,6 @@ import pl.veldrinlab.sakuraEngine.core.SpriteActor;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -17,9 +16,6 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class PauseScreen extends GameScreen implements GestureListener  {
 	
@@ -34,32 +30,31 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	private SpriteBatch pauseBatch;
 	private SpriteActor pauseBackground;
 	
-	private Label pause;
-	private Label resume;
-	private Label menu;
-	private Label exit;
+	private SpriteActor pause;
+	private SpriteActor resume;
+	private SpriteActor menu;
+	private SpriteActor exit;
+	
 	private float alpha;
 	
 	public PauseScreen(final SakuraHero game) {
 		this.game = game;
 		
-//		LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
-//		
-//		pauseBatch = new SpriteBatch();
-//		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
-//		pauseStage = new Stage(Configuration.getInstance().width, Configuration.getInstance().height, false, pauseBatch);
-//		pauseBackground = new SpriteActor(renderTarget.getColorBufferTexture());
-//		pauseBackground.getSprite().flip(false,true);
-//		
-//		pause = new Label("Pause",style);
-//		resume = new Label("Resume",style);
-//		menu = new Label("Back to menu",style);
-//		exit = new Label("Exit",style);
-//		
-//		inputDetector = new GestureDetector(this);
-//		
-//		alpha = 0.4f;
-//		initializeInterface();
+		pauseBatch = new SpriteBatch();
+		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+		pauseStage = new Stage(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false, pauseBatch);
+		pauseBackground = new SpriteActor(renderTarget.getColorBufferTexture());
+		pauseBackground.getSprite().flip(false,true);
+
+		pause = new SpriteActor(game.resources.getTexture("pause"));
+		resume = new SpriteActor(game.resources.getTexture("resume"),"Resume");
+		menu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
+		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		
+		inputDetector = new GestureDetector(this);
+		
+		alpha = 0.4f;
+		initializeInterface();
 	}
 	
 	public FrameBuffer getFrameBuffer() {
@@ -106,13 +101,13 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void show() {	
-//		pauseStage.addActor(pauseBackground);
-//		pauseStage.addActor(pause);
-//		pauseStage.addActor(resume);
-//		pauseStage.addActor(menu);
-//		pauseStage.addActor(exit);
-//		
-//		Gdx.input.setInputProcessor(inputDetector);
+		pauseStage.addActor(pauseBackground);
+		pauseStage.addActor(pause);
+		pauseStage.addActor(resume);
+		pauseStage.addActor(menu);
+		pauseStage.addActor(exit);
+		
+		Gdx.input.setInputProcessor(inputDetector);
 	}
 
 	@Override
@@ -126,12 +121,10 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void processRendering() {
-//		Renderer.clearScreen();
-//		Renderer.enterOrthoMode();
-//		pauseBackground.getSprite().setTexture(renderTarget.getColorBufferTexture());
-//		pauseBackground.getSprite().setColor(1.0f,1.0f,1.0f,alpha);
-//		pauseStage.draw();
-//		Renderer.leaveOrthoMode();	
+		Renderer.clearScreen();
+		pauseBackground.getSprite().setTexture(renderTarget.getColorBufferTexture());
+		pauseBackground.getSprite().setColor(1.0f,1.0f,1.0f,alpha);
+		pauseStage.draw();
 	}
 
 	@Override
@@ -145,21 +138,21 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	}
 	
 	private void initializeInterface() {
-//		pause.setTouchable(Touchable.disabled);
-//		
-//		resume.setName("Resume");
-//		menu.setName("Menu");
-//		exit.setName("Exit");
-//		
-//		pause.setX((Configuration.getInstance().width-pause.getTextBounds().width)*0.5f);	
-//		pause.setY(Configuration.getInstance().height*0.75f - pause.getTextBounds().height);
-//		
-//		resume.setX((Configuration.getInstance().width-resume.getTextBounds().width)*0.5f);	
-//		resume.setY(Configuration.getInstance().height*0.50f - resume.getTextBounds().height);
-//		menu.setX((Configuration.getInstance().width-menu.getTextBounds().width)*0.5f);	
-//		menu.setY(Configuration.getInstance().height*0.40f - menu.getTextBounds().height);
-//		exit.setX((Configuration.getInstance().width-exit.getTextBounds().width)*0.5f);	
-//		exit.setY(Configuration.getInstance().height*0.30f - exit.getTextBounds().height);
+		
+		pause.getSprite().setX((Configuration.getInstance().descriptor.width-pause.getSprite().getWidth())*0.5f);	
+		pause.getSprite().setY(Configuration.getInstance().descriptor.height*0.9f - pause.getSprite().getHeight());
+		
+		resume.getSprite().setX((Configuration.getInstance().descriptor.width-resume.getSprite().getWidth())*0.5f);	
+		resume.getSprite().setY(Configuration.getInstance().descriptor.height*0.65f - resume.getSprite().getHeight());
+		menu.getSprite().setX((Configuration.getInstance().descriptor.width-menu.getSprite().getWidth())*0.5f);	
+		menu.getSprite().setY(Configuration.getInstance().descriptor.height*0.50f - menu.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.35f - exit.getSprite().getHeight());
+				
+		resume.setBounds(resume.getSprite().getX(), resume.getSprite().getY(), resume.getSprite().getWidth(), resume.getSprite().getHeight());
+		menu.setBounds(menu.getSprite().getX(), menu.getSprite().getY(), menu.getSprite().getWidth(), menu.getSprite().getHeight());
+		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
+		
 	}
 
 	@Override
@@ -186,29 +179,33 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		pauseStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = pauseStage.hit(stageCoords.x, stageCoords.y, true);
 
+		Gdx.app.log("pause","input");
+		
 		if(actor == null)
 			return false;
 
-//		if(actor.getName().equals("Resume")) {
+		if(actor.getName().equals("Resume")) {
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
-//		
-//			game.setScreen(playScreen);
-//		}
-//		else if(actor.getName().equals("Menu")) {
+		
+			
+			Gdx.app.log("play", "screen request");
+			game.setScreen(playScreen);
+		}
+		else if(actor.getName().equals("Menu")) {
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
 //			
 //			if(Configuration.getInstance().musicOn)
 //				game.resources.getMusic("gameOverMusic").stop();
-//			game.setScreen(menuScreen);
-//		}
-//		else if(actor.getName().equals("Exit")) {
+			game.setScreen(menuScreen);
+		}
+		else if(actor.getName().equals("Exit")) {
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
 //		
-//			Gdx.app.exit();
-//		}
+			Gdx.app.exit();
+		}
 		return true;
 	}
 
