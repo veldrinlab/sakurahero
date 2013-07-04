@@ -142,7 +142,7 @@ public class SakuraHero extends Game {
 		
 		setScreen(teamSplashScreen);
 		
-		setScreen(playScreen);
+		//setScreen(playScreen);
 	}
 	
 	public void buildGameStateGraph() {

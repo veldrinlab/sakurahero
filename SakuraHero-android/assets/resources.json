@@ -130,6 +130,18 @@
 			"path" : "menuSmall.png",
 			"name" : "menuSmall",
 			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "gameOver.png",
+			"name" : "gameOver",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "tryAgain.png",
+			"name" : "tryAgain",
+			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [

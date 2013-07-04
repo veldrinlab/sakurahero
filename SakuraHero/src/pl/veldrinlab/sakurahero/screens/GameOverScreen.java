@@ -26,24 +26,27 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	private GestureDetector inputDetector;
 	
 	private SpriteActor background;
+	private SpriteActor gameOver;
+	private SpriteActor tryAgain;
+	private SpriteActor backToMenu;
+	private SpriteActor exit;
 
-	private Label score;
-	private Label tryAgain;
-	private Label backToMenu;
-	
+	private Label score; // to bedzie ciekawie zrobic przy pomocy tekstur - chyba, ¿e do tego u¿yjê jednak fontów
+	// w sumie fonty s¹ dobre wszêdzie - ale nie do wersji japoñskiej, wiêc opieram to na spritach - generyczna wersja
+
+
 	public GameOverScreen(final SakuraHero game) {
 		this.game = game;
 		
-//		background = new SpriteActor(game.resources.getTexture("background"));
-//	
-//		LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
-//		
-//		score = new Label("Score ",style);
-//		tryAgain= new Label("Try again!",style);
-//		backToMenu= new Label("Back to menu",style);
-//		
-//		inputDetector = new GestureDetector(this);
-//		initializeInterface();
+		background = new SpriteActor(game.resources.getTexture("menuBackground"));
+
+		gameOver= new SpriteActor(game.resources.getTexture("gameOver"));
+		tryAgain = new SpriteActor(game.resources.getTexture("tryAgain"),"Try Again");
+		backToMenu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
+		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		
+		inputDetector = new GestureDetector(this);
+		initializeInterface();
 	}
 
 	@Override
@@ -58,19 +61,16 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 //			game.resources.getMusic("gameOverMusic").setLooping(true);
 //		}
 //		
-//		Renderer.enterOrthoMode();
-//		
-//		Renderer.defaultStage.clear();
-//		Renderer.defaultStage.addActor(background);
-//		Renderer.defaultStage.addActor(score);
-//		Renderer.defaultStage.addActor(tryAgain);
-//		Renderer.defaultStage.addActor(backToMenu);
-//		
-//		
-//
-//		score.setX((Configuration.getInstance().width-score.getTextBounds().width)*0.5f);	
-//		
-//		Gdx.input.setInputProcessor(inputDetector);
+		Renderer.defaultStage.clear();
+		Renderer.defaultStage.addActor(background);
+		
+		//Renderer.defaultStage.addActor(score);
+		Renderer.defaultStage.addActor(tryAgain);
+		Renderer.defaultStage.addActor(backToMenu);
+		Renderer.defaultStage.addActor(gameOver);
+		Renderer.defaultStage.addActor(exit);
+		
+		Gdx.input.setInputProcessor(inputDetector);
 	}
 		
 	@Override
@@ -96,14 +96,8 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-		
-//		Renderer.enterOrthoMode();
-//		Renderer.defaultStage.clear();
-//		Renderer.defaultStage.addActor(background);
-//		Renderer.defaultStage.addActor(score);
-//		Renderer.defaultStage.addActor(tryAgain);
-//		Renderer.defaultStage.addActor(backToMenu);
-//		Renderer.defaultStage.draw();
+	
+		Renderer.defaultStage.draw();
 	}
 	
 	@Override
@@ -150,6 +144,21 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 //
 //		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
 //		backToMenu.setY(Configuration.getInstance().height*0.50f - backToMenu.getTextBounds().height);
+		
+		
+		gameOver.getSprite().setX((Configuration.getInstance().descriptor.width-gameOver.getSprite().getWidth())*0.5f);	
+		gameOver.getSprite().setY(Configuration.getInstance().descriptor.height*0.9f - gameOver.getSprite().getHeight());
+		
+		tryAgain.getSprite().setX((Configuration.getInstance().descriptor.width-tryAgain.getSprite().getWidth())*0.5f);	
+		tryAgain.getSprite().setY(Configuration.getInstance().descriptor.height*0.45f - tryAgain.getSprite().getHeight());
+		backToMenu.getSprite().setX((Configuration.getInstance().descriptor.width-backToMenu.getSprite().getWidth())*0.5f);	
+		backToMenu.getSprite().setY(Configuration.getInstance().descriptor.height*0.30f - backToMenu.getSprite().getHeight());
+		exit.getSprite().setX((Configuration.getInstance().descriptor.width-exit.getSprite().getWidth())*0.5f);	
+		exit.getSprite().setY(Configuration.getInstance().descriptor.height*0.15f - exit.getSprite().getHeight());
+				
+		tryAgain.setBounds(tryAgain.getSprite().getX(), tryAgain.getSprite().getY(), tryAgain.getSprite().getWidth(), tryAgain.getSprite().getHeight());
+		backToMenu.setBounds(backToMenu.getSprite().getX(), backToMenu.getSprite().getY(), backToMenu.getSprite().getWidth(), backToMenu.getSprite().getHeight());
+		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
 	}
 	
 	@Override
@@ -179,26 +188,31 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		if(actor == null)
 			return false;
 
-//		if(actor.getName().equals("Again")) {
+		if(actor.getName().equals("Try Again")) {
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
 //			
 //			if(Configuration.getInstance().musicOn)
 //				game.resources.getMusic("gameOverMusic").stop();
-//	
-//			game.setScreen(playScreen);
-//		}
-//		else if(actor.getName().equals("Menu")) {
+	
+			game.setScreen(playScreen);
+		}
+		else if(actor.getName().equals("Menu")) {
 //			if(Configuration.getInstance().soundOn)
 //				game.resources.getSoundEffect("selection").play();
 //			
 //			if(Configuration.getInstance().musicOn)
 //				game.resources.getMusic("gameOverMusic").stop();
-//			game.setScreen(menuScreen);
-//		}
-//		
-		
-
+			game.setScreen(menuScreen);
+		}
+		else if(actor.getName().equals("Exit")) {
+//			if(Configuration.getInstance().soundOn)
+//				game.resources.getSoundEffect("selection").play();
+//			
+//			if(Configuration.getInstance().musicOn)
+//				game.resources.getMusic("gameOverMusic").stop();
+			Gdx.app.exit();
+		}
 		return true;
 	}
 

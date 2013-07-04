@@ -181,6 +181,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public void processInput() {	
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
+		
+		if(Gdx.input.isKeyPressed(Keys.SPACE))
+			game.setScreen(gameOverScreen);
 	}
 	
 	@Override
