@@ -13,8 +13,32 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/scene/background.png",
+			"name" : "background",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "img/scene/menuBackground.png",
 			"name" : "menuBackground",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "selectLanguage.png",
+			"name" : "selectLanguage",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "english.png",
+			"name" : "english",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "nihongo.png",
+			"name" : "japanese",	
 			"type" : "TEXTURE"
 		},
 		{
@@ -31,54 +55,6 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "play.png",
-			"name" : "play",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "options.png",
-			"name" : "options",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "credits.png",
-			"name" : "credits",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "optionsBig.png",
-			"name" : "optionsBig",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "creditsBig.png",
-			"name" : "creditsBig",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "exit.png",
-			"name" : "exit",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "back.png",
-			"name" : "back",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menu.png",
-			"name" : "menu",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "logoAng.png",
 			"name" : "logoAng",	
 			"type" : "TEXTURE"
@@ -88,17 +64,21 @@
 			"path" : "katana.png",
 			"name" : "katana",	
 			"type" : "TEXTURE"
-		}
-	],
-	"shaders" : [
-	],
-	"fonts" : [
+		},
 		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
-			"name" : "defaultFont",
-			"fntPath" : "font/default.fnt",
-			"imagePath" : "font/default.png"
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "shine.png",
+			"name" : "shine",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sakuraLeaf.png",
+			"name" : "sakuraLeaf",
+			"type" : "TEXTURE"
 		}
-	]
+	],
+	"shaders" : [],
+	"fonts" : []
 }
 

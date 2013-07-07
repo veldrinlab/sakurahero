@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
+import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -70,43 +71,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	// smoke test
 
 	SpriteBatch batch;
-//	Sprite sprite;
-//	int currentFrame = 0;
-//	int frameAmount = 45;
-//	float TIME = 0.1f;
-//	float frameTime = TIME;
 
-	
-
-	// sakura tree
-	
-	//Sprite tree;
-	
-	//TODO mo¿e sakura tree jako FX zrealizowaæ?
-	
-	// sakura
-	
-	Array<Sprite> leaves;
-	Array<Float> leaveBalance;
-	float sakuraAccumulator;
-	
-	// test enemey
-//	Sprite enemy;
-//	int enemyCurrentFrame = 0;
-//	int enemyFrameAmount = 8;
-//	float ENEMY_TIME = 0.05f;
-//	float enemyFrameTime = ENEMY_TIME;
-//	
-//	
-//	float elipseA = 250.0f;
-//	float elipseB = 150.0f;
-//	float movementAccumulator = 0.0f;
-//	
-//	
-//	// ninja
-//	float v = 100.0f;
-	
-	
+	FallingLeavesEffect fallingSakura;
 	
 	// w³aœciwy kod
 	private SpriteActor pauseButton;
@@ -119,34 +85,17 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		background = new SpriteActor(new Texture(Gdx.files.internal("test.png")));
 		inputDetector = new MultitouchGestureDetector(this);
 
-		
-		// enemy
-//		enemy = new Sprite(new Texture(Gdx.files.internal("enemy.png")),enemyCurrentFrame*0, 0, 256, 256);
-//		enemy.setPosition(400-128, 240-128);
-//		
-		
-		//
+
 		renderer = new ImmediateModeRenderer20(false,true,0);
 		swing = new Array<Vector2>();
 
 		shader = new ShaderProgram(Gdx.files.internal("default2.vert"),Gdx.files.internal("default.frag"));
 
-		// leaves
-		leaves = new Array<Sprite>();
-		leaveBalance = new Array<Float>();
-		
-		for(int i = 0; i < 20; i++) {
-			Sprite leaf = new Sprite(new Texture(Gdx.files.internal("sakuraLeaf.png")));
-			leaf.setPosition(MathUtils.random(0.0f, 800.0f), MathUtils.random(0.0f, 480.0f));
-			leaves.add(leaf);
-			leaveBalance.add(MathUtils.random(0.0f, 1.0f));
-		}
-		
 
-		renderer.setShader(shader);
-		//
-		stage = new Stage(800.0f,480.0f,false);
-		batch = new SpriteBatch();
+//		renderer.setShader(shader);
+//		//
+//		stage = new Stage(800.0f,480.0f,false);
+//		batch = new SpriteBatch();
 
 	//	batch.setShader(shader);
 	
@@ -189,6 +138,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void processLogic(final float deltaTime) {
 		
+		fallingSakura.updateEffect(deltaTime);
 	}
 
 	@Override
@@ -196,7 +146,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.clearScreen();
 		Renderer.defaultStage.draw();
 		
-		
+		fallingSakura.renderEffect();
+	
 		
 //		float deltaTime = 1.0f/60.0f;
 //
@@ -207,56 +158,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //				accumulator = 0.5f;
 //				swing.clear();
 //			}
-//		}
-
-		// enemy animation
-//		enemyFrameTime -= deltaTime;
 //		
-//		if(enemyFrameTime < 0.0f) {
-//			enemyCurrentFrame = (enemyCurrentFrame+1)%enemyFrameAmount;
-//			enemy.setRegion(enemyCurrentFrame*256, 0,256, 256);
-//			enemyFrameTime = ENEMY_TIME;
-//		}
-//		
-//		movementAccumulator += deltaTime*2.0f;
-//		
-//		enemy.setX((float) (400-128+elipseA*Math.cos(movementAccumulator)));
-//		enemy.setY((float) (240-128+elipseB*Math.sin(movementAccumulator)));
-//	
-//		Gdx.app.log("frame ", String.valueOf(enemyCurrentFrame));
-//		
-//		//animation
-//		frameTime -= deltaTime;
-//
-//		if(frameTime < 0.0f) {
-//			
-//			// dla ca³oœci
-//			
-//			/*
-//			 * 0 1 2 3 4 5 6 
-//			 * 7 8 9 10 11 12 13 
-//			 * 14 15 16 ...
-//			 * 
-//			 * 
-//			 * 
-//			 */
-//			
-//			int column = currentFrame % 7;
-//			int row = (currentFrame / 7);
-//			
-//			
-//			currentFrame  = (currentFrame+1)%45;
-//			sprite.setRegion(column*256, row*256, 256,256);
-//			frameTime = TIME;
-//		}
-
-//		Gdx.gl.glClearColor(1, 1, 1, 1);
-//		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-//
-//		batch.begin();		
-//		background.draw(batch);
-//		batch.end();
-//
+		
 //		batch.begin();
 //		
 //		sakuraAccumulator += deltaTime;
@@ -324,6 +227,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //		}
 
 	//	Gdx.input.setInputProcessor(inputDetector);
+		
+		fallingSakura = game.fallingSakura;
 		
 		Gdx.app.log("play", "screen show");
 		Renderer.defaultStage.clear();	

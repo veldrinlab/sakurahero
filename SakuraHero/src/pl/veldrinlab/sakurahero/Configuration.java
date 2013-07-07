@@ -9,8 +9,10 @@ public class Configuration {
 	
 	// Game Options
 	
-	public boolean soundOn;
-	public boolean musicOn;
+	private Language language;
+	// state
+	private boolean soundOn;
+	private boolean musicOn;
 
 	private Configuration() {
 		descriptor = new ConfigurationDescriptor();
@@ -25,6 +27,7 @@ public class Configuration {
 		
 		//
 		musicOn = soundOn = true;
+		language = Language.ENGLISH;
 	}
 
 	private static class ConfigurationHolder { 
@@ -32,7 +35,7 @@ public class Configuration {
 	}
 
 	// EVIL!
-	private static Configuration getInstance() {
+	public static Configuration getInstance() {
 		return ConfigurationHolder.instance;
 	}
 	
@@ -57,4 +60,16 @@ public class Configuration {
 	public static String getResourcePath() {
 		return ConfigurationHolder.instance.descriptor.resourcePath;
 	}
+	
+	public static String getInitResourcePath() {
+		return ConfigurationHolder.instance.descriptor.initResourcePath;
+	}
+	
+	public Language getSelectedLanguage() {
+		return language;
+	}
+
+	public void setLanguage(final Language language) {
+		this.language = language;
+	}	
 }

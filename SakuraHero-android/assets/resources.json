@@ -1,32 +1,9 @@
 {
-	"resources" : [{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/splash/teamLogo.png",
-			"name" : "teamLogo",
-			"type" : "TEXTURE"
-		},
+	"resources" : [
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/splash/engineLogo.png",
-			"name" : "engineLogo",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/scene/menuBackground.png",
-			"name" : "menuBackground",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "loading.png",
-			"name" : "loadingAng",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "tapToContinue.png",
-			"name" : "tapToAng",
+			"path" : "menu.png",
+			"name" : "menu",	
 			"type" : "TEXTURE"
 		},
 		{
@@ -73,42 +50,6 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menu.png",
-			"name" : "menu",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "logoAng.png",
-			"name" : "logoAng",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "katana.png",
-			"name" : "katana",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "shine.png",
-			"name" : "shine",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "selectLanguage.png",
-			"name" : "selectLanguage",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "english.png",
-			"name" : "english",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "img/hud/pause.png",
 			"name" : "pauseButton",
 			"type" : "TEXTURE"
@@ -144,15 +85,7 @@
 			"type" : "TEXTURE"
 		}
 	],
-	"shaders" : [
-	],
-	"fonts" : [
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
-			"name" : "defaultFont",
-			"fntPath" : "font/default.fnt",
-			"imagePath" : "font/default.png"
-		}
-	]
+	"shaders" : [],
+	"fonts" : []
 }
 

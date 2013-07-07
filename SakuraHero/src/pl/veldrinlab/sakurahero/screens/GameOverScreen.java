@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
+import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -9,10 +10,12 @@ import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -24,6 +27,10 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	
 	private SakuraHero game;
 	private GestureDetector inputDetector;
+	
+	private FallingLeavesEffect fallingSakura;
+	private SpriteBatch stateBatch;
+	private Stage stateStage;
 	
 	private SpriteActor background;
 	private SpriteActor gameOver;
@@ -37,6 +44,10 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	public GameOverScreen(final SakuraHero game) {
 		this.game = game;
+		fallingSakura = game.fallingSakura;
+		
+		stateBatch = new SpriteBatch();
+		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));
 
@@ -44,6 +55,7 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		tryAgain = new SpriteActor(game.resources.getTexture("tryAgain"),"Try Again");
 		backToMenu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
 		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		
 		
 		inputDetector = new GestureDetector(this);
 		initializeInterface();
@@ -62,13 +74,14 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 //		}
 //		
 		Renderer.defaultStage.clear();
+		stateStage.clear();
 		Renderer.defaultStage.addActor(background);
 		
 		//Renderer.defaultStage.addActor(score);
-		Renderer.defaultStage.addActor(tryAgain);
-		Renderer.defaultStage.addActor(backToMenu);
-		Renderer.defaultStage.addActor(gameOver);
-		Renderer.defaultStage.addActor(exit);
+		stateStage.addActor(tryAgain);
+		stateStage.addActor(backToMenu);
+		stateStage.addActor(gameOver);
+		stateStage.addActor(exit);
 		
 		Gdx.input.setInputProcessor(inputDetector);
 	}
@@ -90,7 +103,7 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
+		fallingSakura.updateEffect(deltaTime);
 	}
 
 	@Override
@@ -98,6 +111,8 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		Renderer.clearScreen();
 	
 		Renderer.defaultStage.draw();
+		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 	
 	@Override
@@ -182,8 +197,8 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	@Override
 	public boolean tap(float x, float y, int arg2, int arg3) {
 		Vector2 stageCoords = Vector2.Zero;
-		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
+		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
 			
 		if(actor == null)
 			return false;

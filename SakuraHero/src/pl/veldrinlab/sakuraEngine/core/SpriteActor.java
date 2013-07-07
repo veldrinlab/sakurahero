@@ -15,8 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
  */
 public class SpriteActor extends Actor {
 	
+	//TODO torchê du¿o tych danych siê robi - pozycja sprite, actora, jeszcze w³asny vector tutaj jest
+	
+	
 	protected Sprite sprite;
-	public Vector3 position;
+//	public Vector3 position;
 	public Vector3 velocity;
 	public float rotation;
 	public float rotationVelocity;
@@ -28,7 +31,7 @@ public class SpriteActor extends Actor {
 	 */
 	public SpriteActor(final Texture splashTexture) {	
 		sprite = new Sprite(splashTexture);	
-		position = new Vector3();
+	//	position = new Vector3();
 		velocity = new Vector3();
 		collisionCircle = new Circle();
 	}

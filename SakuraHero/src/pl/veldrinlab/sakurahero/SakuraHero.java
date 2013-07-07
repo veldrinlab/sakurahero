@@ -28,10 +28,14 @@ import com.badlogic.gdx.utils.Json;
 public class SakuraHero extends Game {
 
 	public AsyncResourceManager resources;
-	
+	public FallingLeavesEffect fallingSakura;
 	private Timer timer;
+
 	private SplashScreen teamSplashScreen;
 	private SplashScreen engineSplashScreen;
+	private LanguageSelectionScreen languageSelectionScreen;
+	private LoadingScreen loadingScreen;
+	
 	private MenuScreen menuScreen;
 	private OptionsScreen optionsScreen;
 	private CreditsScreen creditsScreen;
@@ -39,9 +43,8 @@ public class SakuraHero extends Game {
 	private PauseScreen pauseScreen;
 	private GameOverScreen gameOverScreen;
 	
-	//
-	private LanguageSelectionScreen languageSelectionScreen;
-	private LoadingScreen loadingScreen;
+	
+	
 	
 	
 	/**
@@ -93,64 +96,68 @@ public class SakuraHero extends Game {
 		timer = new Timer();
 		resources = new AsyncResourceManager();
 		
+	
+		
 		initializeEngine();
 	//	loadHighScore();
-		initializeGame();
+	//	initializeGame();
+		initalizeIntro();
 	}
 
 	private void initializeEngine() {
+		resources.loadResources(Configuration.getInitResourcePath());
+		resources.finishLoading();
+		
+		// test hack!
 		resources.loadResources(Configuration.getResourcePath());
 		resources.finishLoading();
-		Renderer.defaultFont = resources.getFont("defaultFont");	
+		
+		fallingSakura = new FallingLeavesEffect(20,resources.getTexture("sakuraLeaf"));
+		
+		initalizeIntro();
+		initializeGame();
+		
+		setScreen(menuScreen);
+		
+	//	Renderer.defaultFont = resources.getFont("defaultFont");	
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
-		
-	public void initializeGame() {
+	
+	private void initalizeIntro() {
 		FadeEffectParameters fadeEffect = new FadeEffectParameters();
 		
 		fadeEffect.fadeInTime = 1.0f;
 		fadeEffect.stayTime = 2.0f;
 		fadeEffect.fadeOutTime = 1.0f;
-	
-		//
-		loadingScreen = new LoadingScreen(this);
+		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = true;
 		
-		//
-		menuScreen = new MenuScreen(this);
-	
-		
-		fadeEffect.textureName = "menuBackground";
-		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = false;
-		
+		loadingScreen = new LoadingScreen(this);	
 		languageSelectionScreen = new LanguageSelectionScreen(this,fadeEffect,loadingScreen);
 		
-		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = true;
 		fadeEffect.textureName = "engineLogo";
 		engineSplashScreen = new SplashScreen(this,fadeEffect,languageSelectionScreen);
 		
 		fadeEffect.textureName = "teamLogo";		
-		teamSplashScreen = new SplashScreen(this,fadeEffect,engineSplashScreen);
+		teamSplashScreen = new SplashScreen(this,fadeEffect,engineSplashScreen);		
 		
-		creditsScreen = new CreditsScreen(this);
-		optionsScreen = new OptionsScreen(this);
-		pauseScreen = new PauseScreen(this);
+		//setScreen(teamSplashScreen);
+	}
+		
+	public void initializeGame() {
+		
+		menuScreen = new MenuScreen(this);
 		playScreen = new PlayScreen(this);
+		optionsScreen = new OptionsScreen(this);	
+		creditsScreen = new CreditsScreen(this);
+		pauseScreen = new PauseScreen(this);
 		gameOverScreen = new GameOverScreen(this);
 
 		buildGameStateGraph();
 		
-		setScreen(teamSplashScreen);
-		
-		//setScreen(playScreen);
+		//setScreen(menuScreen);
 	}
 	
 	public void buildGameStateGraph() {
-		
-		//
-		loadingScreen.menuScreen = menuScreen;
-		//
-		
-		
 		menuScreen.playScreen = playScreen;
 		menuScreen.creditsnScreen= creditsScreen;
 		menuScreen.optionsScreen = optionsScreen;
@@ -219,5 +226,7 @@ public class SakuraHero extends Game {
 	public Timer getTimer() {
 		return timer;
 	}
+	
+	//TODO API for resources and sakura?
 }
 

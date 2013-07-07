@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
+import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,10 +11,12 @@ import pl.veldrinlab.sakuraEngine.core.Timer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
@@ -30,7 +33,9 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	private SpriteActor background;
 	
-
+	private FallingLeavesEffect fallingSakura;
+	private SpriteBatch stateBatch;
+	private Stage stateStage;
 	
 	
 	
@@ -44,9 +49,12 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	public MenuScreen(final SakuraHero game) {
 		this.game = game;
-
+		fallingSakura = game.fallingSakura;
+		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));
 		
+		stateBatch = new SpriteBatch();
+		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 		
 		
 		
@@ -56,7 +64,9 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
 		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 
-	
+
+		
+		
 		inputDetector = new GestureDetector(this);
 //		
 		initializeInterface();
@@ -68,13 +78,15 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
+		fallingSakura.updateEffect(deltaTime);
 	}
 
 	@Override
 	public void processRendering() {	
 		Renderer.clearScreen();
 		Renderer.defaultStage.draw();
+		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -119,15 +131,17 @@ public class MenuScreen extends GameScreen implements GestureListener {
 //			menuMusic.setVolume(0.1f);
 //		}
 //
+		
 		Renderer.defaultStage.clear();
+		stateStage.clear();
 		Renderer.defaultStage.addActor(background);
 		
 		
-		Renderer.defaultStage.addActor(menu);
-		Renderer.defaultStage.addActor(play);
-		Renderer.defaultStage.addActor(options);
-		Renderer.defaultStage.addActor(credits);
-		Renderer.defaultStage.addActor(exit);
+		stateStage.addActor(menu);
+		stateStage.addActor(play);
+		stateStage.addActor(options);
+		stateStage.addActor(credits);
+		stateStage.addActor(exit);
 
 		Gdx.input.setInputProcessor(inputDetector);
 	}
@@ -190,8 +204,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public boolean tap(float arg0, float arg1, int arg2, int arg3) {	
 		Vector2 stageCoords = Vector2.Zero;
-		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
+		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;

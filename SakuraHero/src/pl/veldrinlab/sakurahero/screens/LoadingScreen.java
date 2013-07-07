@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
+import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,20 +11,20 @@ import pl.veldrinlab.sakuraEngine.core.Timer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class LoadingScreen extends GameScreen implements GestureListener {
 
-	public MenuScreen menuScreen;
-
 	private SakuraHero game;
-	private GestureDetector inputDetector; // po chuj to?
+	private GestureDetector inputDetector;
 
 	private SpriteActor background;
 
@@ -46,8 +47,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	private float fadeInAlpha;
 	private float blinking;
 
-
-
 	// katana animation
 
 	private Vector2 direction;
@@ -58,9 +57,15 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	private float shineTime;
 
 
-
-	// blinking - tap message animation
-
+	// inne podejœcie do Stage - per stan tam gdzie jest to potrzebne
+	// trzeba zrobiæ nowy Renderer2D, wrzuciæ tam trochê ciekawych mo¿liwych renderingu do tekstury itp, bazowych danych
+	// 
+	//
+	private FallingLeavesEffect fallingSakura;
+	private SpriteBatch stateBatch;
+	private Stage stateStage;
+	
+	
 	public LoadingScreen(final SakuraHero game) {
 		this.game = game;
 
@@ -87,6 +92,11 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		inputDetector = new GestureDetector(this);
 		//		
 		initializeInterface();
+		
+		
+		//
+		stateBatch = new SpriteBatch();
+		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 	}
 
 	@Override
@@ -97,6 +107,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processLogic(final float deltaTime) {
 
+		fallingSakura.updateEffect(deltaTime);
 		/*
 		 * STATE data flow
 		 * 
@@ -120,15 +131,19 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 			if(fadeInAlpha > 0.99f) {
 				fadeState = false;
 				loadingState = true;
+				
+				game.resources.loadResources(Configuration.getResourcePath());
 			}
 		}
 		else if(loadingState) {
 			//load
+			if(game.resources.updateLoading()) {
 
-			//if loading completed
-			loading.getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
-			loadingState = false;
-			katanaState = true;
+				//if loading completed
+				loading.getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
+				loadingState = false;
+				katanaState = true;
+			}
 		}
 		else if(katanaState) {
 			timeDistance -= deltaTime;
@@ -149,13 +164,14 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		}
 		else if(shineState) {
 			//TODO sword slash sound
-
 			shine.getSprite().setColor(1.0f, 1.0f, 1.0f, shineTime);
 			
 			shineTime -= deltaTime;
-//			shineTime = MathUtils.clamp(shineTime, 0.0f, 1.0f);
-
+			
+			fallingSakura.setLeavesAlpha(1.0f-shineTime);
+			
 			if(shineTime < 0.0f) {
+				fallingSakura.setLeavesAlpha(1.0f);
 				shineState = false;
 				readyToGo = true;				
 			}
@@ -174,6 +190,8 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	public void processRendering() {	
 		Renderer.clearScreen();
 		Renderer.defaultStage.draw();
+		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -212,6 +230,9 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void show() {	
 
+		//TU NIE LOGIKA, to ogarniaæ kwestie zawartoœci sceny tylko i wy³¹cznie, ew. init jak coœ siê powtarza
+		// jednorazowa logika show() w konstruktorze
+		
 		//		Renderer.enterOrthoMode();
 		//		if(Configuration.getInstance().musicOn) {
 		//			menuMusic.play();
@@ -219,16 +240,21 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		//		}
 		//
 		
+		fallingSakura = game.fallingSakura;
+		
 		Renderer.defaultStage.clear();		
 		Renderer.defaultStage.addActor(background);
-		Renderer.defaultStage.addActor(katana);
-		Renderer.defaultStage.addActor(logoAng);
-		Renderer.defaultStage.addActor(loading);
-		Renderer.defaultStage.addActor(tapToContinue);
-		Renderer.defaultStage.addActor(shine);
+		
+		stateStage.addActor(katana);
+		stateStage.addActor(logoAng);
+		stateStage.addActor(loading);
+		stateStage.addActor(tapToContinue);
+		stateStage.addActor(shine);
 
 		fadeState = true;
 
+		fallingSakura.setLeavesAlpha(0.0f);
+		
 		background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
 		logoAng.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
 		loading.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
@@ -239,6 +265,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
+		stateStage.dispose();
 	}
 
 	@Override
@@ -300,7 +327,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public boolean tap(float arg0, float arg1, int arg2, int arg3) {	
 		if(readyToGo)
-			game.setScreen(menuScreen);
+			game.initializeGame();
 
 		return false;
 	}

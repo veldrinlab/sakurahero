@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
+import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,10 +11,12 @@ import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -25,23 +28,26 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 	
+	private FallingLeavesEffect fallingSakura;
+	private SpriteBatch stateBatch;
+	private Stage stateStage;
+	
 	private SpriteActor background;
 	private SpriteActor credits;
 	private SpriteActor back;
 	
-//	private Label authors;
-//	private Label jablonski;
-//	private Label zubrzycki;
-//	private Label filip;
-//	private Label lachowicz;
-//	private Label backToMenu;
-
 	public CreditsScreen(final SakuraHero game) {
 		this.game = game;
-	
+		fallingSakura = game.fallingSakura;
+		
+		stateBatch = new SpriteBatch();
+		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
+		
+		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
 		credits = new SpriteActor(game.resources.getTexture("creditsBig"));
 		back = new SpriteActor(game.resources.getTexture("back"),"Back");
+		
 		
 //		background = new SpriteActor(game.resources.getTexture("background"));   
 //		
@@ -99,9 +105,10 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void show() {
 		Renderer.defaultStage.clear();
+		stateStage.clear();
     	Renderer.defaultStage.addActor(background);
-    	Renderer.defaultStage.addActor(credits);
-    	Renderer.defaultStage.addActor(back);
+    	stateStage.addActor(credits);
+    	stateStage.addActor(back);
     	
 //    	Renderer.defaultStage.addActor(background);
 //    	Renderer.defaultStage.addActor(authors);
@@ -119,13 +126,15 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void processLogic(final float deltaTime) {
-	
+		fallingSakura.updateEffect(deltaTime);
 	}
 
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
 		Renderer.defaultStage.draw();
+		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -187,8 +196,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public boolean tap(float x, float y, int arg2, int arg3) {
 		Vector2 stageCoords = Vector2.Zero;
-		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
+		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
 		
 		if(actor == null)
 			return false;
