@@ -2,6 +2,7 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -27,18 +28,18 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	public PlayScreen playScreen;
 	public CreditsScreen creditsnScreen;
 	public OptionsScreen optionsScreen;
-	
+
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 
 	private SpriteActor background;
-	
+
 	private FallingLeavesEffect fallingSakura;
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
-	
-	
-	
+
+
+
 	private SpriteActor menu;
 	private SpriteActor play;
 	private SpriteActor options;
@@ -50,26 +51,19 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	public MenuScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
-		
+
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));
-		
+
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-		
-		
-		
-		menu = new SpriteActor(game.resources.getTexture("menu"));
-		play = new SpriteActor(game.resources.getTexture("play"),"Play");
-		options = new SpriteActor(game.resources.getTexture("options"),"Options");
-		credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
-		exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 
 
-		
-		
+
+
+
 		inputDetector = new GestureDetector(this);
-//		
-		initializeInterface();
+		//		
+
 	}
 
 	@Override
@@ -124,19 +118,36 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void show() {	
-		
-//		Renderer.enterOrthoMode();
-//		if(Configuration.getInstance().musicOn) {
-//			menuMusic.play();
-//			menuMusic.setVolume(0.1f);
-//		}
-//
-		
+
+		//		Renderer.enterOrthoMode();
+		//		if(Configuration.getInstance().musicOn) {
+		//			menuMusic.play();
+		//			menuMusic.setVolume(0.1f);
+		//		}
+		//		
+
+		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
+			menu = new SpriteActor(game.resources.getTexture("menu"));
+			play = new SpriteActor(game.resources.getTexture("play"),"Play");
+			options = new SpriteActor(game.resources.getTexture("options"),"Options");
+			credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
+			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		}
+		else {
+			menu = new SpriteActor(game.resources.getTexture("menuJap"));
+			play = new SpriteActor(game.resources.getTexture("playJap"),"Play");
+			options = new SpriteActor(game.resources.getTexture("optionsJap"),"Options");
+			credits = new SpriteActor(game.resources.getTexture("creditsJap"),"Credits");
+			exit = new SpriteActor(game.resources.getTexture("exitJap"),"Exit");
+		}
+
+		initializeInterface();
+
 		Renderer.defaultStage.clear();
 		stateStage.clear();
 		Renderer.defaultStage.addActor(background);
-		
-		
+
+
 		stateStage.addActor(menu);
 		stateStage.addActor(play);
 		stateStage.addActor(options);
@@ -164,7 +175,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	private void initializeInterface() {
 		menu.getSprite().setX((Configuration.getWidth()-menu.getSprite().getWidth())*0.5f);	
 		menu.getSprite().setY(Configuration.getHeight()*0.90f - menu.getSprite().getHeight());
-		
+
 		play.getSprite().setX((Configuration.getWidth()-play.getSprite().getWidth())*0.5f);	
 		play.getSprite().setY(Configuration.getHeight()*0.65f - play.getSprite().getHeight());
 		options.getSprite().setX((Configuration.getWidth()-options.getSprite().getWidth())*0.5f);	
@@ -173,10 +184,10 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		credits.getSprite().setY(Configuration.getHeight()*0.35f - credits.getSprite().getHeight());
 		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
 		exit.getSprite().setY(Configuration.getHeight()*0.20f - exit.getSprite().getHeight());		
-		
+
 		//TODO refactor this getSprite shit
 		//TODO maybe some update method 
-		
+
 		play.setBounds(play.getSprite().getX(), play.getSprite().getY(), play.getSprite().getWidth(), play.getSprite().getHeight());
 		options.setBounds(options.getSprite().getX(), options.getSprite().getY(), options.getSprite().getWidth(), options.getSprite().getHeight());
 		credits.setBounds(credits.getSprite().getX(), credits.getSprite().getY(), credits.getSprite().getWidth(), credits.getSprite().getHeight());
@@ -211,33 +222,33 @@ public class MenuScreen extends GameScreen implements GestureListener {
 			return false;
 
 		Gdx.app.log("name", actor.getName());
-		
+
 		if(actor.getName().equals("Credits")) {
-	//		if(Configuration.getInstance().soundOn)
-	//			game.resources.getSoundEffect("selection").play();
+			//		if(Configuration.getInstance().soundOn)
+			//			game.resources.getSoundEffect("selection").play();
 			game.setScreen(creditsnScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Options")) {
-		//	if(Configuration.getInstance().soundOn)
-		//		game.resources.getSoundEffect("selection").play();
+			//	if(Configuration.getInstance().soundOn)
+			//		game.resources.getSoundEffect("selection").play();
 			game.setScreen(optionsScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Play")) {
-		//	if(Configuration.getInstance().soundOn)
-		//		game.resources.getSoundEffect("selection").play();
-			
+			//	if(Configuration.getInstance().soundOn)
+			//		game.resources.getSoundEffect("selection").play();
+
 			game.setScreen(playScreen);
-		//	if(Configuration.getInstance().musicOn)
-		//		menuMusic.stop();
-		//		
+			//	if(Configuration.getInstance().musicOn)
+			//		menuMusic.stop();
+			//		
 			dispose();
 			return true;			
 		}
 		else if(actor.getName().equals("Exit")) {
-		//	if(Configuration.getInstance().soundOn)
-		//		game.resources.getSoundEffect("selection").play();
+			//	if(Configuration.getInstance().soundOn)
+			//		game.resources.getSoundEffect("selection").play();
 			Gdx.app.exit();
 		}
 

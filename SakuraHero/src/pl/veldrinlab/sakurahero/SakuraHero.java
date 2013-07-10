@@ -43,10 +43,6 @@ public class SakuraHero extends Game {
 	private PauseScreen pauseScreen;
 	private GameOverScreen gameOverScreen;
 	
-	
-	
-	
-	
 	/**
 	 * Class construtor, nothing to do (it is great!).
 	 */
@@ -113,13 +109,21 @@ public class SakuraHero extends Game {
 		resources.finishLoading();
 		
 		fallingSakura = new FallingLeavesEffect(20,resources.getTexture("sakuraLeaf"));
+		fallingSakura.initializeEffect();
+		
+		Renderer.defaultFont = resources.getFont("defaultFont");	
+		
+		// testable hack
+		
 		
 		initalizeIntro();
 		initializeGame();
 		
-		setScreen(menuScreen);
 		
-	//	Renderer.defaultFont = resources.getFont("defaultFont");	
+		
+		setScreen(teamSplashScreen);
+	//	setScreen(playScreen);
+		
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	
@@ -140,7 +144,7 @@ public class SakuraHero extends Game {
 		fadeEffect.textureName = "teamLogo";		
 		teamSplashScreen = new SplashScreen(this,fadeEffect,engineSplashScreen);		
 		
-		//setScreen(teamSplashScreen);
+	//	setScreen(teamSplashScreen);
 	}
 		
 	public void initializeGame() {
@@ -154,7 +158,7 @@ public class SakuraHero extends Game {
 
 		buildGameStateGraph();
 		
-		//setScreen(menuScreen);
+		setScreen(menuScreen);
 	}
 	
 	public void buildGameStateGraph() {

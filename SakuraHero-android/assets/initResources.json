@@ -76,6 +76,24 @@
 			"path" : "sakuraLeaf.png",
 			"name" : "sakuraLeaf",
 			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "logoJap.png",
+			"name" : "logoJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "loadingJap.png",
+			"name" : "loadingJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "tapToJap.png",
+			"name" : "tapToJap",
+			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [],

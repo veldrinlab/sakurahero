@@ -9,7 +9,7 @@ public class DesktopStarter {
 	public static void main(String[] args) {
 	
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();	
-		config.addIcon("icon.png", FileType.Internal);
+		config.addIcon("sakuraFlower.png", FileType.Internal);
 		config.useGL20 = true;
 		new LwjglApplication(new SakuraHero(), config);		
 	}

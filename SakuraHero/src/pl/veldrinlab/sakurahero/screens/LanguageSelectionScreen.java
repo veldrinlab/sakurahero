@@ -47,7 +47,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 		this.fade = fadeParams;
 		this.nextScreen = nextScreen;
 
-		background = new SpriteActor(game.resources.getTexture("background"));
+		background = new SpriteActor(game.resources.getTexture("menuBackground"));
 		selection = new SpriteActor(game.resources.getTexture("selectLanguage"));
 		english = new SpriteActor(game.resources.getTexture("english"),"English");
 		japanese = new SpriteActor(game.resources.getTexture("japanese"),"Japanese");
@@ -110,7 +110,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public void processRendering() {
-		Renderer.clearScreen(Color.BLACK);
+		Renderer.clearScreen();
 		Renderer.defaultStage.draw();	
 	}
 
@@ -150,7 +150,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	public void show() {
 
 		fadeInState = true;
-		
+		background.getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
 		selection.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		english.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);

@@ -2,6 +2,7 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -70,11 +71,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		this.game = game;
 
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));
-		loading = new SpriteActor(game.resources.getTexture("loadingAng"));
-		tapToContinue = new SpriteActor(game.resources.getTexture("tapToAng"));
-
-		//
-		logoAng = new SpriteActor(game.resources.getTexture("logoAng"));
+				
 		katana = new SpriteActor(game.resources.getTexture("katana"));
 		shine = new SpriteActor(game.resources.getTexture("shine"));
 
@@ -90,8 +87,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		shineTime = 1.0f;
 
 		inputDetector = new GestureDetector(this);
-		//		
-		initializeInterface();
+		
 		
 		
 		//
@@ -180,7 +176,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 		}
 		else if(readyToGo) {
-			Gdx.app.log("test", "test");
 			blinking += deltaTime*5.0f;
 			tapToContinue.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
 		}			
@@ -240,6 +235,19 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		//		}
 		//
 		
+		//TODO mo¿e jakoœ inaczej? choæ show jest raz wiêc jeden chuj
+		
+		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
+			loading = new SpriteActor(game.resources.getTexture("loadingAng"));
+			tapToContinue = new SpriteActor(game.resources.getTexture("tapToAng"));
+			logoAng = new SpriteActor(game.resources.getTexture("logoAng"));
+		}
+		else {
+			loading = new SpriteActor(game.resources.getTexture("loadingJap"));
+			tapToContinue = new SpriteActor(game.resources.getTexture("tapToJap"));
+			logoAng = new SpriteActor(game.resources.getTexture("logoJap"));
+		}
+		
 		fallingSakura = game.fallingSakura;
 		
 		Renderer.defaultStage.clear();		
@@ -260,6 +268,10 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		loading.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
 		tapToContinue.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
 		Gdx.input.setInputProcessor(inputDetector);
+		
+//		
+		initializeInterface();
+		
 	}
 
 	@Override

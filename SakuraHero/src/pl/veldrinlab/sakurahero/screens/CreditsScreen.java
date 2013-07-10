@@ -2,6 +2,7 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -45,8 +46,6 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		
 		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
-		credits = new SpriteActor(game.resources.getTexture("creditsBig"));
-		back = new SpriteActor(game.resources.getTexture("back"),"Back");
 		
 		
 //		background = new SpriteActor(game.resources.getTexture("background"));   
@@ -62,7 +61,6 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 //    	backToMenu = new Label("Back to menu",style);
 //
     	inputDetector = new GestureDetector(this);    	
-    	initializeInterface();
 	}
 
 	@Override
@@ -104,6 +102,18 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void show() {
+		
+		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
+			credits = new SpriteActor(game.resources.getTexture("creditsBig"));
+			back = new SpriteActor(game.resources.getTexture("back"),"Back");	
+		}
+		else {
+			credits = new SpriteActor(game.resources.getTexture("creditsBigJap"));
+			back = new SpriteActor(game.resources.getTexture("backJap"),"Back");	
+		}
+		
+    	initializeInterface();
+    	
 		Renderer.defaultStage.clear();
 		stateStage.clear();
     	Renderer.defaultStage.addActor(background);
