@@ -134,11 +134,11 @@ public class MenuScreen extends GameScreen implements GestureListener {
 			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			menu = new SpriteActor(game.resources.getTexture("menuJap"));
-			play = new SpriteActor(game.resources.getTexture("playJap"),"Play");
-			options = new SpriteActor(game.resources.getTexture("optionsJap"),"Options");
-			credits = new SpriteActor(game.resources.getTexture("creditsJap"),"Credits");
-			exit = new SpriteActor(game.resources.getTexture("exitJap"),"Exit");
+			menu = new SpriteActor(game.resources.getTexture("menu"));
+			play = new SpriteActor(game.resources.getTexture("play"),"Play");
+			options = new SpriteActor(game.resources.getTexture("options"),"Options");
+			credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
+			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 		}
 
 		initializeInterface();

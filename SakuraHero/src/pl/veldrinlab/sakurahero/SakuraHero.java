@@ -121,8 +121,8 @@ public class SakuraHero extends Game {
 		
 		
 		
-		setScreen(teamSplashScreen);
-	//	setScreen(playScreen);
+	//	setScreen(teamSplashScreen);
+		setScreen(playScreen);
 		
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}

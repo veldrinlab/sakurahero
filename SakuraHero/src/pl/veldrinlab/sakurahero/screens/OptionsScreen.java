@@ -127,7 +127,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		}
 		else {
 			options = new SpriteActor(game.resources.getTexture("optionsBigJap"));
-			back = new SpriteActor(game.resources.getTexture("backJap"),"Back");
+			back = new SpriteActor(game.resources.getTexture("back"),"Back");
 		}
 
     	initializeInterface();

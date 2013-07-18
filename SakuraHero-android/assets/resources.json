@@ -134,6 +134,12 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "gameOverJap.png",
+			"name" : "gameOverJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "tryAgain.png",
 			"name" : "tryAgain",
 			"type" : "TEXTURE"
@@ -154,6 +160,18 @@
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "onigiriOni.png",
 			"name" : "onigiriOni",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "onigiriSamurai.png",
+			"name" : "onigiriSamurai",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "onigiriNinja.png",
+			"name" : "onigiriNinja",
 			"type" : "TEXTURE"
 		},
 		{

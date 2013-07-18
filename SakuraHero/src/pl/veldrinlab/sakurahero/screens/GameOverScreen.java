@@ -74,10 +74,10 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			gameOver= new SpriteActor(game.resources.getTexture("gameOver"));
+			gameOver= new SpriteActor(game.resources.getTexture("gameOverJap"));
 			tryAgain = new SpriteActor(game.resources.getTexture("tryAgain"),"Try Again");
-			backToMenu = new SpriteActor(game.resources.getTexture("menuSmallJap"),"Menu");
-			exit = new SpriteActor(game.resources.getTexture("exitJap"),"Exit");
+			backToMenu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
+			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
 
 		}
 
