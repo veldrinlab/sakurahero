@@ -5,6 +5,9 @@ import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.FixedList;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
+import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
+import pl.veldrinlab.sakurahero.SakuraTree;
+import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SpriteActor;
@@ -15,6 +18,7 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -22,6 +26,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 
 //
 import com.badlogic.gdx.ApplicationListener;
@@ -61,13 +66,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private SpriteActor background;
 
 	// level Editor
-	private SpriteActor tree;
 
-	// ca³e drzewo do jakiejœ klasy wrzuciæ
-	private SpriteBatch sakuraTreeBatch;
-	private Stage sakuraTreeStage;
+
+	//
+	public SakuraTree tree;
 
 	//TODO To nie do koñca to bêdzie - chyba ¿e jakiœ nowy effekt/wersja, chodzi o spadanie 4 p³atków/kwiat
+	//tez element klasy drzewa
 	private FallingLeavesEffect fallingSakura;
 
 
@@ -83,41 +88,34 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private int currentFrame = 0;
 	private float FRAME_TIME = 0.020f;
 
-
 	boolean collisionOccured;
 
 	// katana swing
 	KatanaSwing t;
 	FixedList<Vector2> input;
 
+	float katanaTime;
 	Vector2 lastPoint = new Vector2();
 
 
-
-	boolean swingActivated;
 
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
 		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SpriteActor(new Texture(Gdx.files.internal("test.png")));
+		background = new SpriteActor(new Texture(Gdx.files.internal("test2.png")));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
 
 		// level Editor
 
-		tree = new SpriteActor(game.resources.getTexture("tree"));
-		tree.getSprite().setY(-10.0f);
-
-		sakuraTreeBatch = new SpriteBatch();
-		sakuraTreeStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sakuraTreeBatch);
-
+		tree = new SakuraTree(game.resources.getTexture("tree"),game.resources.getTexture("sakuraFlower"));
 
 
 		//enemey
 		enemy = new SpriteActor(game.resources.getTexture("onigiriSamurai"));
-		
+
 		enemy.getSprite().setPosition(350.0f,200.0f);
 		enemy.collisionCircle.set(350.0f, 200.0f, 64.0f);
 
@@ -125,7 +123,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		explosion.getSprite().setPosition(350.0f,200.0f);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
-		
+
 
 		//		//
 		t = new KatanaSwing();
@@ -158,6 +156,33 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		if(Gdx.input.isKeyPressed(Keys.ENTER))
 			game.setScreen(pauseScreen);
+
+		// level editor
+
+		if(Gdx.input.isKeyPressed(Keys.S)) {
+			Json json = new Json();		
+			FileHandle file = Gdx.files.local("level.json");		
+			String jsonData = json.toJson(tree.leaves);
+			file.writeString(jsonData, false);
+		}
+
+		if(Gdx.input.isKeyPressed(Keys.L)) {
+
+			Json json = new Json();		
+			FileHandle file = Gdx.files.local("level.json");
+
+			String jsonData = file.readString();
+
+			try {
+				tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
+			} catch(Exception e ) {
+
+				Gdx.app.log("SakuraHero ","Level file loading exception");
+				e.printStackTrace();
+			}
+			
+			tree.init();
+		}
 	}
 
 	@Override
@@ -170,7 +195,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		if(!collisionOccured && input.size > 0) {
 
 			explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
-			
+
 			for(int i = 0; i < input.size; ++i) {
 
 				if(enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
@@ -190,23 +215,31 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 				currentFrame = (currentFrame+1) % frameAmount;
 				explosion.getSprite().setRegion(currentFrame*128, 0, 128, 128);
 				animationAccumulator = 0.0f;
-				
+
 				if(currentFrame == frameAmount-1)
 					collisionOccured = !collisionOccured;
 			}
 		}
-		
-		
+
+
 		if(enemy.getSprite().getColor().a == 0.0f) {
 			enemy.getSprite().setColor(1.0f,1.0f,1.0f,1.0f);
 			enemy.getSprite().setX(MathUtils.random(128.0f,600.0f));
 			enemy.getSprite().setY(MathUtils.random(128.0f,350.0f));
-			
+
 			enemy.collisionCircle.set(enemy.getSprite().getX()+enemy.getSprite().getWidth()*0.5f, enemy.getSprite().getY()+enemy.getSprite().getHeight()*0.5f, 64.0f);
-			
+
 		}
 
 		t.update(input);
+
+		katanaTime += deltaTime;
+
+		//mo¿e sterowanie czasem nie jest wcale takie g³upie
+		if(input.size > 0 && katanaTime > 0.02f) {
+			input.pop();
+			katanaTime = 0.0f;
+		}
 	}
 
 	@Override
@@ -215,9 +248,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.defaultStage.draw();
 
 		//fallingSakura.renderEffect();
-		sakuraTreeStage.draw();
+		tree.sakuraTreeStage.draw();
 
-		t.draw(sakuraTreeStage.getCamera());
+
+		t.draw(tree.sakuraTreeStage.getCamera());
 	}
 
 	@Override
@@ -250,7 +284,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.defaultStage.addActor(enemy);
 		Renderer.defaultStage.addActor(explosion);
 
-		sakuraTreeStage.addActor(tree);
+
 
 
 		inputMultiplexer = new InputMultiplexer();
@@ -306,21 +340,24 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer) {
-		//Gdx.app.log("touch","down");
-
 		// Level Editor screen
-		//		Vector2 stageCoords = Vector2.Zero;
-		//		sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		//
-		//		SpriteActor flower = new SpriteActor(game.resources.getTexture("sakuraFlower"));
-		//
-		//
-		//		flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
-		//
-		//		// moze rotate losowy?
-		//		flower.getSprite().setRotation(MathUtils.random(0.0f, 360.0f));
-		//		sakuraTreeStage.addActor(flower);
 
+//		Gdx.app.log("Level","editor");
+//
+//		Vector2 stageCoords = Vector2.Zero;
+//		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+//		float rotation = MathUtils.random(0.0f, 360.0f);
+//
+//		//		// to nie tutaj jebnac
+//				SpriteActor flower = new SpriteActor(game.resources.getTexture("sakuraFlower"));
+//				flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
+//				flower.getSprite().setRotation(rotation);
+//				
+//				tree.sakuraTreeStage.addActor(flower);
+//
+//		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, rotation));
+		
+		
 		//jakas kolekcja ich
 
 
@@ -331,6 +368,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchUp(float x, float y, int pointer) {
+
+		Gdx.app.log("test","up");
 		return true;
 	}
 
@@ -379,8 +418,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
+		Gdx.app.log("test","down");
 		Vector2 stageCoords = new Vector2();
-		sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		//cos innego
+		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 		input.insert(stageCoords);
 		lastPoint.set(stageCoords.x, stageCoords.y);
@@ -394,7 +435,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		// TODO Auto-generated method stub
 
 		input.clear();
-		swingActivated = false;
+
 		return false;
 	}
 
@@ -405,11 +446,27 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(input.size < 20) {
+
+		// jakis maksymalny rozmiar swinga
+
+		final float maxLength = 10.0f;
+
+		float swingLength = 0.0f;
+
+		for(int i = 0; i < input.size-1; ++i)
+			swingLength += input.get(i).dst(input.get(i+1));
+
+		Gdx.app.log("distance", String.valueOf(swingLength));
+
+		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
+
+		if(swingLength < 500 && input.size < 50) {
 
 			Vector2 stageCoords = new Vector2();
-			sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			//cos innego
+			tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
+			// this is dst2 in Vector class
 			float lenSq = distSq(stageCoords,lastPoint);
 
 			float minDistanceSq = 25.0f;
@@ -422,13 +479,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		return false;
 	}
 
-
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean scrolled(int amount) {
