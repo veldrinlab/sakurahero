@@ -52,21 +52,29 @@ import com.badlogic.gdx.utils.Array;
 
 public class PlayScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
 
-	//
-	InputMultiplexer inputMultiplexer;
-
-
 	public PauseScreen pauseScreen;
 	public GameOverScreen gameOverScreen;
 	private SakuraHero game;
 	private MultitouchGestureDetector inputDetector;
+	private InputMultiplexer inputMultiplexer;
 
+	// na razie chuj tam z optymalizacj¹ tego - jakas scena z tego 
+	
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
+	
+	private SpriteBatch sceneBatch;
+	private Stage sceneStage;
+	
+	//TODO hud class
+	private SpriteBatch hudBatch;
+	private Stage hudStage;
+	
 	// w³aœciwy kod
 	private SpriteActor pauseButton;
 	private SpriteActor background;
 
 	// level Editor
-
 
 	//
 	public SakuraTree tree;
@@ -74,14 +82,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	//TODO To nie do koñca to bêdzie - chyba ¿e jakiœ nowy effekt/wersja, chodzi o spadanie 4 p³atków/kwiat
 	//tez element klasy drzewa
 	private FallingLeavesEffect fallingSakura;
-
-
-
+	
 	// enemy
 	private SpriteActor enemy;
 
-
-	//TODO try to use Libgdx Animation class
+	//TODO try to use Libgdx Animation class or write something own
 	private SpriteActor explosion;
 	private float animationAccumulator;
 	private int frameAmount = 15;
@@ -91,7 +96,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	boolean collisionOccured;
 
 	// katana swing
-	KatanaSwing t;
+	KatanaSwing katana;
 	FixedList<Vector2> input;
 
 	float katanaTime;
@@ -103,7 +108,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		this.game = game;
 
 		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SpriteActor(new Texture(Gdx.files.internal("test2.png")));
+		background = new SpriteActor(new Texture(Gdx.files.internal("test.png")));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
@@ -124,16 +129,21 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
 
-
-		//		//
-		t = new KatanaSwing();
-		//		
-		//		input = new Array<Vector2>();
+		//TODO katana
+		katana = new KatanaSwing();
+		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
 
-		t.texture = new Texture(Gdx.files.internal("swingTexture.png"));
+		
+		
+		//
+		backgroundBatch = new SpriteBatch();
+		sceneBatch = new SpriteBatch();
+		hudBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		sceneStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sceneBatch);
+		hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
 	}
-
 
 	@Override
 	public void render(float deltaTime) {
@@ -231,7 +241,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		}
 
-		t.update(input);
+		katana.update(input);
 
 		katanaTime += deltaTime;
 
@@ -245,13 +255,12 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void processRendering() { 
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();
+		backgroundStage.draw();
+		tree.render();
+		sceneStage.draw();
+		katana.draw(tree.sakuraTreeStage.getCamera());
+		hudStage.draw();
 
-		//fallingSakura.renderEffect();
-		tree.sakuraTreeStage.draw();
-
-
-		t.draw(tree.sakuraTreeStage.getCamera());
 	}
 
 	@Override
@@ -277,15 +286,17 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		fallingSakura.setFallingBoundary(250.0f, 150.0f, 550.0f, 200.0f);
 		fallingSakura.initializeEffect();
 
-		Gdx.app.log("play", "screen show");
-		Renderer.defaultStage.clear();	
-		Renderer.defaultStage.addActor(background);
-		Renderer.defaultStage.addActor(pauseButton);
-		Renderer.defaultStage.addActor(enemy);
-		Renderer.defaultStage.addActor(explosion);
+	
+		backgroundStage.addActor(background);
+		
+		//todo to jakoœ po³¹czyæ ze sob¹
+		sceneStage.addActor(enemy);
+		sceneStage.addActor(explosion);
+		
+		
 
-
-
+		//TODO hud stage
+		hudStage.addActor(pauseButton);
 
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(inputDetector);
@@ -314,11 +325,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
-
 		Vector2 stageCoords = Vector2.Zero;
-		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
-
+		hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;
@@ -342,8 +351,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public boolean touchDown(float x, float y, int pointer) {
 		// Level Editor screen
 
-//		Gdx.app.log("Level","editor");
-//
+		//Gdx.app.log("Level","editor");
+
 //		Vector2 stageCoords = Vector2.Zero;
 //		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 //		float rotation = MathUtils.random(0.0f, 360.0f);

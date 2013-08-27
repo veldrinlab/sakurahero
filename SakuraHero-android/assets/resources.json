@@ -188,6 +188,12 @@
 			"name" : "defaultFont",
 			"fntPath" : "font/default.fnt",
 			"imagePath" : "font/default.png"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
+			"name" : "smallFont",
+			"fntPath" : "font/small.fnt",
+			"imagePath" : "font/small.png"
 		}
 	]
 }

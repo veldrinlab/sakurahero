@@ -6,7 +6,7 @@ public class SakuraLeafDescriptor {
 	public float rotation;
 	
 	public SakuraLeafDescriptor() {
-		
+
 	}
 	
 	public SakuraLeafDescriptor(final float x, final float y, final float rotation) {

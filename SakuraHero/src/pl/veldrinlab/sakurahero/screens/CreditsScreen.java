@@ -37,29 +37,33 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	private SpriteActor credits;
 	private SpriteActor back;
 	
+	private Label codeDesignAnimation;
+	private Label jablonski;
+	private Label graphics;
+	private Label harasimiuk;
+	private Label music;
+	private Label macleod;
+	
 	public CreditsScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 		
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-		
-		
+			
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
 		
-		
-//		background = new SpriteActor(game.resources.getTexture("background"));   
-//		
-//    	LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
-//    	
-//    	authors = new Label("Authors",style);
-//    	jablonski = new Label("Szymon Jablonski - code",style);
-//    	zubrzycki = new Label("Mariusz Zubrzycki - 3D graphics",style);
-//    	lachowicz = new Label("Ewa Lachowicz - 2D graphics",style);
-//    	filip = new Label("Piotr Maletka - audio",style);
-//    	
-//    	backToMenu = new Label("Back to menu",style);
-//
+		//TODO wyjabac dane z renderera? 
+    	LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
+    	LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
+    	
+    	codeDesignAnimation = new Label("Code, design, animation",styleSmall);
+    	jablonski = new Label("Szymon Jablonski",style);
+    	graphics = new Label("Graphics",styleSmall);
+    	harasimiuk = new Label("Malgorzata Harasimiuk", style);
+    	music = new Label("Music",styleSmall);
+    	macleod = new Label("Kevin Macleod", style);
+    	
     	inputDetector = new GestureDetector(this);    	
 	}
 
@@ -71,7 +75,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
-		Renderer.defaultStage.clear();
+		stateStage.clear();
 	}
 
 	@Override
@@ -92,7 +96,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
+		stateStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
 	}
 
 	@Override
@@ -114,19 +118,17 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		
     	initializeInterface();
     	
-		Renderer.defaultStage.clear();
-		stateStage.clear();
-    	Renderer.defaultStage.addActor(background);
+		stateStage.addActor(background);
     	stateStage.addActor(credits);
     	stateStage.addActor(back);
     	
-//    	Renderer.defaultStage.addActor(background);
-//    	Renderer.defaultStage.addActor(authors);
-//    	Renderer.defaultStage.addActor(jablonski);
-//    	Renderer.defaultStage.addActor(zubrzycki);
-//    	Renderer.defaultStage.addActor(lachowicz);
-//    	Renderer.defaultStage.addActor(filip);
-//    	Renderer.defaultStage.addActor(backToMenu);
+    	stateStage.addActor(codeDesignAnimation);
+    	stateStage.addActor(jablonski);
+    	stateStage.addActor(graphics);
+    	stateStage.addActor(harasimiuk);
+    	stateStage.addActor(music);
+    	stateStage.addActor(macleod);
+    	
     	Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
@@ -142,9 +144,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();
-		fallingSakura.renderEffect();
 		stateStage.draw();
+		fallingSakura.renderEffect();
 	}
 
 	@Override
@@ -152,37 +153,40 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		return false;
 	}
 
-
 	@Override
 	public boolean zoom(float arg0, float arg1) {
 		return false;
 	}
 	
 	private void initializeInterface() {
-		
+		codeDesignAnimation.setTouchable(Touchable.disabled);
+		jablonski.setTouchable(Touchable.disabled);
+		graphics.setTouchable(Touchable.disabled);
+		harasimiuk.setTouchable(Touchable.disabled);
+		music.setTouchable(Touchable.disabled);
+		macleod.setTouchable(Touchable.disabled);
+	
 		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
 		credits.getSprite().setY(Configuration.getHeight()*0.90f - credits.getSprite().getHeight());
 		
-//		backToMenu.setName("Back");
-//		
-//		authors.setTouchable(Touchable.disabled);
-//		jablonski.setTouchable(Touchable.disabled);
-//		zubrzycki.setTouchable(Touchable.disabled);
-//		lachowicz.setTouchable(Touchable.disabled);
-//		filip.setTouchable(Touchable.disabled);
-//		
-//		authors.setX((Configuration.getInstance().width-authors.getTextBounds().width)*0.5f);	
-//		authors.setY(Configuration.getInstance().height*0.90f - authors.getTextBounds().height);
-//		jablonski.setX((Configuration.getInstance().width-jablonski.getTextBounds().width)*0.5f);	
-//		jablonski.setY(Configuration.getInstance().height*0.75f - jablonski.getTextBounds().height);
-//		zubrzycki.setX((Configuration.getInstance().width-zubrzycki.getTextBounds().width)*0.5f);	
-//		zubrzycki.setY(Configuration.getInstance().height*0.65f - zubrzycki.getTextBounds().height);
-//		lachowicz.setX((Configuration.getInstance().width-lachowicz.getTextBounds().width)*0.5f);	
-//		lachowicz.setY(Configuration.getInstance().height*0.55f - lachowicz.getTextBounds().height);
-//		filip.setX((Configuration.getInstance().width-filip.getTextBounds().width)*0.5f);	
-//		filip.setY(Configuration.getInstance().height*0.45f - filip.getTextBounds().height);
-//		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
-//		backToMenu.setY(Configuration.getInstance().height*0.30f - backToMenu.getTextBounds().height);
+		jablonski.setX((Configuration.getWidth()-jablonski.getTextBounds().width)*0.5f);	
+		jablonski.setY(Configuration.getHeight()*0.70f - jablonski.getTextBounds().height);
+		
+		codeDesignAnimation.setX((Configuration.getWidth()-codeDesignAnimation.getTextBounds().width)*0.5f);	
+		codeDesignAnimation.setY(Configuration.getHeight()*0.60f - codeDesignAnimation.getTextBounds().height);
+		
+		harasimiuk.setX((Configuration.getWidth()-harasimiuk.getTextBounds().width)*0.5f);	
+		harasimiuk.setY(Configuration.getHeight()*0.50f - harasimiuk.getTextBounds().height);
+		
+		graphics.setX((Configuration.getWidth()-graphics.getTextBounds().width)*0.5f);	
+		graphics.setY(Configuration.getHeight()*0.40f - graphics.getTextBounds().height);
+		
+		macleod.setX((Configuration.getWidth()-macleod.getTextBounds().width)*0.5f);	
+		macleod.setY(Configuration.getHeight()*0.30f - macleod.getTextBounds().height);
+		
+		music.setX((Configuration.getWidth()-music.getTextBounds().width)*0.5f);	
+		music.setY(Configuration.getHeight()*0.20f - music.getTextBounds().height);
+
 	}
 
 	@Override

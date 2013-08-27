@@ -111,6 +111,10 @@ public class SakuraHero extends Game {
 		fallingSakura = new FallingLeavesEffect(20,resources.getTexture("sakuraLeaf"));
 		fallingSakura.initializeEffect();
 		
+		// fonty pewnie kilka rodzajów
+		// na pewno zwyk³y na points, fps i credits
+		
+		
 		Renderer.defaultFont = resources.getFont("defaultFont");	
 		
 		// testable hack
@@ -123,7 +127,7 @@ public class SakuraHero extends Game {
 		
 	//	setScreen(teamSplashScreen);
 		setScreen(playScreen);
-		
+		setScreen(creditsScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	

@@ -11,8 +11,10 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 
+//TODO tutaj dodaæ animacjê efektu spadania odpowiedni¹
 public class SakuraTree {
 
+	
 	public SakuraTreeDescriptor leaves;
 
 	public SpriteActor tree;
@@ -53,10 +55,10 @@ public class SakuraTree {
 	}
 	
 	public void update(final float deltaTime) {
-		
+		//TODO logika drzewa, gry, trybu oraz animacja spadania/umierania liœci itp.
 	}
 	
 	public void render() {
-		
+		sakuraTreeStage.draw();
 	}
 }
