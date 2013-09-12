@@ -54,7 +54,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
 		
 		//TODO wyjabac dane z renderera? 
-    	LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
+    	LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
     	LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
     	
     	codeDesignAnimation = new Label("Code, design, animation",styleSmall);
@@ -176,16 +176,16 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		codeDesignAnimation.setY(Configuration.getHeight()*0.60f - codeDesignAnimation.getTextBounds().height);
 		
 		harasimiuk.setX((Configuration.getWidth()-harasimiuk.getTextBounds().width)*0.5f);	
-		harasimiuk.setY(Configuration.getHeight()*0.50f - harasimiuk.getTextBounds().height);
+		harasimiuk.setY(Configuration.getHeight()*0.45f - harasimiuk.getTextBounds().height);
 		
 		graphics.setX((Configuration.getWidth()-graphics.getTextBounds().width)*0.5f);	
-		graphics.setY(Configuration.getHeight()*0.40f - graphics.getTextBounds().height);
+		graphics.setY(Configuration.getHeight()*0.35f - graphics.getTextBounds().height);
 		
 		macleod.setX((Configuration.getWidth()-macleod.getTextBounds().width)*0.5f);	
-		macleod.setY(Configuration.getHeight()*0.30f - macleod.getTextBounds().height);
+		macleod.setY(Configuration.getHeight()*0.25f - macleod.getTextBounds().height);
 		
 		music.setX((Configuration.getWidth()-music.getTextBounds().width)*0.5f);	
-		music.setY(Configuration.getHeight()*0.20f - music.getTextBounds().height);
+		music.setY(Configuration.getHeight()*0.15f - music.getTextBounds().height);
 
 	}
 

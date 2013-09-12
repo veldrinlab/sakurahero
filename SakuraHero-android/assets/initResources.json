@@ -13,12 +13,6 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/scene/background.png",
-			"name" : "background",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "img/scene/menuBackground.png",
 			"name" : "menuBackground",
 			"type" : "TEXTURE"

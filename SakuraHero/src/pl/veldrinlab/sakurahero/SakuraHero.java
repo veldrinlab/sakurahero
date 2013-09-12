@@ -10,6 +10,7 @@ import pl.veldrinlab.sakurahero.screens.PauseScreen;
 import pl.veldrinlab.sakurahero.screens.PlayScreen;
 import pl.veldrinlab.sakurahero.screens.OptionsScreen;
 import pl.veldrinlab.sakurahero.screens.SplashScreen;
+import pl.veldrinlab.sakurahero.screens.TrainingScreen;
 import pl.veldrinlab.sakuraEngine.core.AsyncResourceManager;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.Timer;
@@ -42,6 +43,10 @@ public class SakuraHero extends Game {
 	private PlayScreen playScreen;
 	private PauseScreen pauseScreen;
 	private GameOverScreen gameOverScreen;
+	
+	// nowe, wybor trybu, jakos ograniczyc pamiec
+	private TrainingScreen trainingScreen;
+	
 	
 	/**
 	 * Class construtor, nothing to do (it is great!).
@@ -127,7 +132,9 @@ public class SakuraHero extends Game {
 		
 	//	setScreen(teamSplashScreen);
 		setScreen(playScreen);
-		setScreen(creditsScreen);
+	//	setScreen(creditsScreen);
+		setScreen(optionsScreen);
+		setScreen(trainingScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	
@@ -160,6 +167,9 @@ public class SakuraHero extends Game {
 		pauseScreen = new PauseScreen(this);
 		gameOverScreen = new GameOverScreen(this);
 
+		trainingScreen = new TrainingScreen(this);
+		
+		
 		buildGameStateGraph();
 		
 		setScreen(menuScreen);
@@ -181,6 +191,9 @@ public class SakuraHero extends Game {
 		
 		gameOverScreen.playScreen = playScreen;
 		gameOverScreen.menuScreen = menuScreen;
+		
+		//
+		trainingScreen.pauseScreen = pauseScreen;
 	}
 	
 //	public void loadHighScore() {

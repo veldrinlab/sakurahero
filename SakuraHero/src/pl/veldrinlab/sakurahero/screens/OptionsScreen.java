@@ -38,14 +38,15 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	private SpriteActor back;
 
 
-	//	private Label settings;
 	private Label currentHighScore;
-	//	private Label resetHighScore;
-	//	private Label music;
-	//	private Label musicState;
-	//	private Label sound;
-	//	private Label soundState;
-	//	private Label backToMenu;
+	private Label currentSurvivalTime;
+	private Label resetHighScore;
+	private Label music;
+	private Label musicState;
+	private Label sound;
+	private Label soundState;
+
+	private float blinking;
 
 	public OptionsScreen(final SakuraHero game) {
 		this.game = game;
@@ -61,21 +62,17 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-		//options.getSprite().scale(1.0f);
-		//		
-		LabelStyle style = new LabelStyle(Renderer.defaultFont,Color.WHITE);
-		//    	
-		//    	settings = new Label("Settings",style);
 
-		currentHighScore = new Label("High Score "+ 1000,style);
+		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 
-		// 	   	resetHighScore = new Label("Tap to reset High Score!",style);	
-		//    	music = new Label("Music",style);
-		//    	musicState = new Label("On",style);
-		//    	sound = new Label("Sound",style);
-		//    	soundState = new Label("On",style);
-		//    	backToMenu = new Label("Back to menu",style);
-		//
+		currentHighScore = new Label("High Score "+ 0,style);
+		currentSurvivalTime = new Label("Survival Time "+ 0 + " sec",style);
+		resetHighScore = new Label("Tap to reset High Score!",style);	
+		music = new Label("Music",style);
+		musicState = new Label("On",style);
+		sound = new Label("Sound",style);
+		soundState = new Label("On",style);
+
 		inputDetector = new GestureDetector(this);    	
 
 	}
@@ -88,7 +85,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
-		Renderer.defaultStage.clear();
+		stateStage.clear();
 	}
 
 	@Override
@@ -130,27 +127,24 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 			back = new SpriteActor(game.resources.getTexture("back"),"Back");
 		}
 
-    	initializeInterface();
-    	
-		Renderer.defaultStage.clear();
-		Renderer.defaultStage.addActor(background);
+		initializeInterface();
 
+		stateStage.addActor(background);
 		stateStage.addActor(options);
 		stateStage.addActor(back);
 
-		//    	Renderer.defaultStage.addActor(settings);
-		Renderer.defaultStage.addActor(currentHighScore);
-		//    	Renderer.defaultStage.addActor(resetHighScore);
-		//    	Renderer.defaultStage.addActor(music);
-		//    	Renderer.defaultStage.addActor(musicState);
-		//    	Renderer.defaultStage.addActor(sound);
-		//    	Renderer.defaultStage.addActor(soundState);
-		//    	
-		//    	Renderer.defaultStage.addActor(backToMenu);
-		//    	
-		currentHighScore.setText("High Score "+ 1000);
+		stateStage.addActor(currentHighScore);
+		stateStage.addActor(currentSurvivalTime);
+		stateStage.addActor(resetHighScore);
+		stateStage.addActor(music);
+		stateStage.addActor(musicState);
+		stateStage.addActor(sound);
+		stateStage.addActor(soundState);
+		
+	    	
+		currentHighScore.setText("High Score "+ 0);
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
-		//
+		
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
@@ -161,21 +155,30 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
+		
+		blinking += deltaTime*5.0f;
+		
+		float alpha = (float) ((Math.sin(blinking)+1.0f)/2.0f);
+		
+		musicState.setColor(1.0f, 1.0f, 1.0f, alpha);
+		soundState.setColor(1.0f, 1.0f, 1.0f, alpha);
+		resetHighScore.setColor(1.0f, 1.0f, 1.0f, alpha);
+		//backToMenu.setColor(1.0f, 1.0f, 1.0f, alpha);
 	}
 
 	@Override
 	public void processRendering() {
+		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
+		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();
-		fallingSakura.renderEffect();
 		stateStage.draw();
+		fallingSakura.renderEffect();
 	}
 
 	@Override
 	public boolean pinch(Vector2 arg0, Vector2 arg1, Vector2 arg2, Vector2 arg3) {
 		return false;
 	}
-
 
 	@Override
 	public boolean zoom(float arg0, float arg1) {
@@ -189,39 +192,42 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		options.getSprite().setY(Configuration.getHeight()*0.90f - options.getSprite().getHeight());
 
 
-
-
 		//		backToMenu.setName("Back");
-		//		resetHighScore.setName("Reset");
-		//		musicState.setName("Music");
-		//		soundState.setName("Sound");
+				resetHighScore.setName("Reset");
+				musicState.setName("Music");
+				soundState.setName("Sound");
 		//		
 		//		settings.setTouchable(Touchable.disabled);
-		currentHighScore.setTouchable(Touchable.disabled);
-		//		music.setTouchable(Touchable.disabled);
-		//		sound.setTouchable(Touchable.disabled);
+				currentHighScore.setTouchable(Touchable.disabled);
+				currentSurvivalTime.setTouchable(Touchable.disabled);
+				music.setTouchable(Touchable.disabled);
+				sound.setTouchable(Touchable.disabled);
 		//		
 		//		settings.setX((Configuration.getInstance().width-settings.getTextBounds().width)*0.5f);	
 		//		settings.setY(Configuration.getInstance().height*0.90f - settings.getTextBounds().height);
 		//		
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
-		currentHighScore.setY(Configuration.getHeight()*0.75f - currentHighScore.getTextBounds().height);
+		currentHighScore.setY(Configuration.getHeight()*0.70f - currentHighScore.getTextBounds().height);
+		
+		currentSurvivalTime.setX((Configuration.getWidth()-currentSurvivalTime.getTextBounds().width)*0.5f);	
+		currentSurvivalTime.setY(Configuration.getHeight()*0.55f - currentSurvivalTime.getTextBounds().height);
 		//		
-		//		resetHighScore.setX((Configuration.getInstance().width-resetHighScore.getTextBounds().width)*0.5f);	
-		//		resetHighScore.setY(Configuration.getInstance().height*0.65f - resetHighScore.getTextBounds().height);
+				resetHighScore.setX((Configuration.getWidth()-resetHighScore.getTextBounds().width)*0.5f);	
+		
+				resetHighScore.setY(Configuration.getHeight()*0.40f - resetHighScore.getTextBounds().height);
 		//		
-		//		music.setX((Configuration.getInstance().width-music.getTextBounds().width*2.0f)*0.5f);	
-		//		music.setY(Configuration.getInstance().height*0.50f - music.getTextBounds().height);
-		//		
-		//		musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		musicState.setY(music.getY());
-		//		
-		//		sound.setX((Configuration.getInstance().width-sound.getTextBounds().width*2.0f)*0.5f);	
-		//		sound.setY(Configuration.getInstance().height*0.40f - sound.getTextBounds().height);
-		//
-		//		soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		soundState.setY(sound.getY());
-		//		
+				music.setX((Configuration.getWidth()-music.getTextBounds().width*2.0f)*0.5f);	
+				music.setY(Configuration.getHeight()*0.30f - music.getTextBounds().height);
+				
+				musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
+				musicState.setY(music.getY());
+				
+				sound.setX((Configuration.getWidth()-sound.getTextBounds().width*2.0f)*0.5f);	
+				sound.setY(Configuration.getHeight()*0.20f - sound.getTextBounds().height);
+		
+				soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
+				soundState.setY(sound.getY());
+				
 		//		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
 		//		backToMenu.setY(Configuration.getInstance().height*0.30f - backToMenu.getTextBounds().height);
 	}
