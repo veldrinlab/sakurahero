@@ -6,11 +6,13 @@ import pl.veldrinlab.sakurahero.screens.GameOverScreen;
 import pl.veldrinlab.sakurahero.screens.LanguageSelectionScreen;
 import pl.veldrinlab.sakurahero.screens.LoadingScreen;
 import pl.veldrinlab.sakurahero.screens.MenuScreen;
+import pl.veldrinlab.sakurahero.screens.ModeSelectionScreen;
 import pl.veldrinlab.sakurahero.screens.PauseScreen;
 import pl.veldrinlab.sakurahero.screens.PlayScreen;
 import pl.veldrinlab.sakurahero.screens.OptionsScreen;
 import pl.veldrinlab.sakurahero.screens.SplashScreen;
 import pl.veldrinlab.sakurahero.screens.TrainingScreen;
+import pl.veldrinlab.sakurahero.screens.WorldSelectionScreen;
 import pl.veldrinlab.sakuraEngine.core.AsyncResourceManager;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.Timer;
@@ -46,6 +48,9 @@ public class SakuraHero extends Game {
 	
 	// nowe, wybor trybu, jakos ograniczyc pamiec
 	private TrainingScreen trainingScreen;
+	
+	private ModeSelectionScreen modelSelectionScreen;
+	private WorldSelectionScreen worldSelectionScreen;
 	
 	
 	/**
@@ -130,10 +135,12 @@ public class SakuraHero extends Game {
 		
 		
 		
-	//	setScreen(teamSplashScreen);
-		setScreen(playScreen);
+		//setScreen(teamSplashScreen);
+		//setScreen(modelSelectionScreen);
+		setScreen(worldSelectionScreen);
+	//	setScreen(playScreen);
 	//	setScreen(creditsScreen);
-		setScreen(optionsScreen);
+	//	setScreen(optionsScreen);
 		setScreen(trainingScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
@@ -169,6 +176,9 @@ public class SakuraHero extends Game {
 
 		trainingScreen = new TrainingScreen(this);
 		
+		//
+		modelSelectionScreen = new ModeSelectionScreen(this);
+		worldSelectionScreen = new WorldSelectionScreen(this);
 		
 		buildGameStateGraph();
 		
