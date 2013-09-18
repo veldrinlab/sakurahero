@@ -12,6 +12,9 @@ public class OniOnigiri extends SpriteActor {
 	public boolean collisionOccurred;
 	public float deathAccum;
 
+	private Vector2 moveDirection;
+	
+	
 	//TODO try to use Libgdx Animation class or write something own
 	public SpriteActor explosion;
 	private float animationAccumulator;
@@ -19,26 +22,35 @@ public class OniOnigiri extends SpriteActor {
 	private int currentFrame = 0;
 	private float FRAME_TIME = 0.020f;
 
+	//TODO movement animation
+	private float animationAccumulator2;
+	private int frameAmount2 = 13;
+	private int currentFrame2 = 0;
+	private float FRAME_TIME2 = 0.020f;
+	
+	
 	private float t;
 	public Vector2 collisionPos = new Vector2();
 	public float angle;
 	private float[] angleOptions = new float[4];
 	private float alpha;
 	
-	private Vector2 center = new Vector2();
-	private float elipseA;
-	private float elipseB;
-	private float timeAccumulator;
-
+	
 	public OniOnigiri(Texture enemyTexture, final Texture explosionTexture) {
 		super(enemyTexture);
 
+		moveDirection = new Vector2();
+		
 		explosion = new SpriteActor(explosionTexture);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
+		
+		//
+		getSprite().setSize(128.0f, 128.0f);
+		getSprite().setOrigin(64,64);
 	}
 
 	public void init() {
@@ -51,16 +63,18 @@ public class OniOnigiri extends SpriteActor {
 			y = MathUtils.random(-Configuration.getHeight()*0.5f,0.0f);
 		else
 			y = MathUtils.random(Configuration.getHeight(),Configuration.getHeight()*1.5f);
-		
-		elipseA = elipseB = 250.0f;
-		center.set(x,y);
-		
+
+		// set target - samrua leaf
+		moveDirection.set(300.0f, 380.0f);
+		moveDirection.sub(x, y);
+		moveDirection = moveDirection.nor();
+
+		// pozycja trzymana w aktorze TODO zobaczy co oferuje jeszcze sam aktor, dane tam trzymac!!!
 		setPosition(x, y);
+
 		getSprite().setColor(1.0f,1.0f,1.0f,1.0f);
 		getSprite().setPosition(x,y);
 		collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
-		
-		timeAccumulator = 0.0f;
 		
 		// 
 		deathAccum = 0.0f;
@@ -71,6 +85,11 @@ public class OniOnigiri extends SpriteActor {
 		explosion.getSprite().setRegion(128.0f*(frameAmount-1), 0, 128, 128);
 		currentFrame = 0;
 		
+		
+		// animation
+		getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		currentFrame2 = 0;
+		
 	}
 
 	public	void update(final float deltaTime) {
@@ -78,26 +97,32 @@ public class OniOnigiri extends SpriteActor {
 		// stan pocz¹tkowy
 		if(!collisionOccurred) {
 
-			float velocity = 1.0f;
-			timeAccumulator += deltaTime*velocity;
+			// animation
+			animationAccumulator2 += deltaTime;
+			
+			if(animationAccumulator2 > FRAME_TIME2) {
+				currentFrame2 = (currentFrame2+1) % (frameAmount2-1);
+				getSprite().setRegion(currentFrame2*128, 0, 128, 128);
+				animationAccumulator2 = 0.0f;
+			}
 			
 			float x = getX();
 			float y = getY();
-			
-			x =  center.x - 64.0f + MathUtils.cos(timeAccumulator) * elipseA;
-			y =  center.y - 64.0f + MathUtils.sin(timeAccumulator) * elipseB;
-			
+			float velocity = 5.0f;
+
+
+			x += moveDirection.x * velocity;
+			y += moveDirection.y * velocity;
 
 			setPosition(x,y);
 			getSprite().setPosition(x,y);
+
+			// update circle
 			collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
-			
-			// ile czasu trwa pe³ny obrót
-			// 2*pi czasu?
-			if(timeAccumulator > 2* Math.PI)
+
+			position.set(x, y);
+			if(position.dst(400.0f, 280.0f) > 1000)
 				init();
-				//	if(timeAccumulator > 4.5f)
-			//	init();
 		}
 		else if(collisionOccurred && deathAccum < 0.5f) {
 			deathAccum += deltaTime;
@@ -112,7 +137,15 @@ public class OniOnigiri extends SpriteActor {
 
 			float rotation = getSprite().getRotation();
 			float rotationVelocity = 5.0f;
+
+//			rotation -= deltaTime* 90.0f*rotationVelocity;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
+
+			
+			//TODO rotation inne, origin inny
+			getSprite().setRegion((frameAmount2-1)*128, 0, 128, 128);
+			
+			
 
 			getSprite().setRotation(rotation);
 			setPosition(x,y);

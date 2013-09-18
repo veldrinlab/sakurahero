@@ -49,6 +49,8 @@ public class SamuraiOnigiri extends SpriteActor {
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
+		
+		getSprite().setOrigin(64,64);
 	}
 
 	public void init() {

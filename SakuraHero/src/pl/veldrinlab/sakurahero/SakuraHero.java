@@ -49,7 +49,7 @@ public class SakuraHero extends Game {
 	// nowe, wybor trybu, jakos ograniczyc pamiec
 	private TrainingScreen trainingScreen;
 	
-	private ModeSelectionScreen modelSelectionScreen;
+	private ModeSelectionScreen modeSelectionScreen;
 	private WorldSelectionScreen worldSelectionScreen;
 	
 	
@@ -135,13 +135,15 @@ public class SakuraHero extends Game {
 		
 		
 		
-		//setScreen(teamSplashScreen);
-		//setScreen(modelSelectionScreen);
-		setScreen(worldSelectionScreen);
+		setScreen(teamSplashScreen);
+	//	setScreen(modeSelectionScreen);
+		//setScreen(worldSelectionScreen);
 	//	setScreen(playScreen);
 	//	setScreen(creditsScreen);
 	//	setScreen(optionsScreen);
-		setScreen(trainingScreen);
+//		setScreen(trainingScreen);
+		
+//		setScreen(playScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	
@@ -177,7 +179,7 @@ public class SakuraHero extends Game {
 		trainingScreen = new TrainingScreen(this);
 		
 		//
-		modelSelectionScreen = new ModeSelectionScreen(this);
+		modeSelectionScreen = new ModeSelectionScreen(this);
 		worldSelectionScreen = new WorldSelectionScreen(this);
 		
 		buildGameStateGraph();

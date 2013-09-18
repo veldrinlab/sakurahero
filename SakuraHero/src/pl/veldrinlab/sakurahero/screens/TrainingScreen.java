@@ -86,6 +86,18 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private NinjaOnigiri enemy2;
 	private OniOnigiri enemy3;
 	
+	// test
+	
+	private float slashTimer;
+	
+	// gui 
+	private int pointAmount;
+	private Label points;
+	private Label hit;
+	private Label combo;
+	
+	
+	
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
 
@@ -186,7 +198,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		katanaTime += deltaTime;
 
 		//mo¿e sterowanie czasem nie jest wcale takie g³upie
-		if(input.size > 2 && katanaTime > Timer.TIME_STEP*2) {
+		if(input.size > 2 && katanaTime > Timer.TIME_STEP*20) {
 			input.pop();
 			input.pop();
 			katanaTime = 0.0f;
@@ -356,7 +368,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		// TODO Auto-generated method stub
 
 		input.clear();
-
+		slashTimer = 0.0f;
 		return false;
 	}
 
@@ -370,6 +382,11 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		Gdx.app.log("touch", " dragged");
 		// jakis maksymalny rozmiar swinga
 
+		slashTimer += Timer.TIME_STEP;
+		
+		if(slashTimer > 0.2f)
+			return true;
+		
 		final float maxLength = 10.0f;
 
 		float swingLength = 0.0f;

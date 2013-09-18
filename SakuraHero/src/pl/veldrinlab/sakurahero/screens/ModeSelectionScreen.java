@@ -38,7 +38,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	private SpriteActor modeSelection;
 	private SpriteActor back;
 
-
 	private Label normal;
 	private Label survival;
 	private Label training;
@@ -141,10 +140,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
 
-		//TODO wybrany jest podswietlony
-		normal.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		survival.setColor(1.0f, 1.0f, 1.0f, 0.5f);
-		training.setColor(1.0f, 1.0f, 1.0f, 0.5f);		
+
 	}
 
 	@Override
@@ -168,17 +164,21 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	private void initializeInterface() {
 
-
 		modeSelection.getSprite().setX((Configuration.getWidth()-modeSelection.getSprite().getWidth())*0.5f);	
 		modeSelection.getSprite().setY(Configuration.getHeight()*0.90f - modeSelection.getSprite().getHeight());
-
 
 		normal.setName("Normal");
 		survival.setName("Survival");
 		training.setName("Training");
-
-
-
+	
+		normal.setX((Configuration.getWidth()-normal.getTextBounds().width)*0.5f);
+		normal.setY(Configuration.getHeight()*0.60f - normal.getTextBounds().height);
+		
+		survival.setX(Configuration.getWidth()*0.1f);
+		survival.setY(Configuration.getHeight()*0.30f - survival.getTextBounds().height);
+		
+		training.setX(Configuration.getWidth()*0.9f - training.getTextBounds().width);
+		training.setY(Configuration.getHeight()*0.30f - training.getTextBounds().height);
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.FixedList;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
-import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
@@ -102,6 +101,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	float katanaTime;
 	Vector2 lastPoint = new Vector2();
 
+	float leafAccum = 1.0f;
 
 
 	public PlayScreen(final SakuraHero game) {
@@ -198,9 +198,12 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void processLogic(final float deltaTime) {
 
+		leafAccum -= deltaTime*0.25f;
+		leafAccum = MathUtils.clamp(leafAccum, 0.0f, 1.0f);
+
 		fallingSakura.updateEffect(deltaTime);
-
-
+		fallingSakura.setLeavesAlpha(leafAccum);
+		
 		// collisiom detection
 		if(!collisionOccured && input.size > 0) {
 
@@ -260,6 +263,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		sceneStage.draw();
 		katana.draw(tree.sakuraTreeStage.getCamera());
 		hudStage.draw();
+		
+		fallingSakura.renderEffect();
 
 	}
 
@@ -282,8 +287,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		//	Gdx.input.setInputProcessor(inputDetector);
 
-		fallingSakura = new FallingLeavesEffect(6,game.resources.getTexture("sakuraLeaf"));
-		fallingSakura.setFallingBoundary(250.0f, 150.0f, 550.0f, 200.0f);
+		fallingSakura = new FallingLeavesEffect(3,game.resources.getTexture("sakuraLeaf"));
+		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
 		fallingSakura.initializeEffect();
 
 	
@@ -329,6 +334,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = hudStage.hit(stageCoords.x, stageCoords.y, true);
 
+		//test
+		fallingSakura.setFallingBoundary(stageCoords.x-32.0f, stageCoords.y, stageCoords.x+32.0f, stageCoords.y);
+		fallingSakura.initializeEffect();
+		leafAccum = 1.0f;
+		
 		if(actor == null)
 			return false;
 
