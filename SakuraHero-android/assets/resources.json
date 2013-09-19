@@ -179,6 +179,24 @@
 			"path" : "explosion.png",
 			"name" : "explosion",
 			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/scene/natsuBackground.png",
+			"name" : "natsu",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/scene/akiBackground.png",
+			"name" : "aki",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/scene/dojoBackground.png",
+			"name" : "dojo",
+			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [],

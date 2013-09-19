@@ -134,7 +134,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		
 		
 		//
-		background = new SpriteActor(new Texture(Gdx.files.internal("img/scene/dojoBackground.png")));
+		background = new SpriteActor(game.resources.getTexture("dojo"));
 	}
 
 	@Override

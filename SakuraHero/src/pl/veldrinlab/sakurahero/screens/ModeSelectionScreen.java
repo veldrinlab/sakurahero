@@ -22,11 +22,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.sun.xml.internal.fastinfoset.algorithm.BuiltInEncodingAlgorithm.WordListener;
 
 public class ModeSelectionScreen extends GameScreen implements GestureListener  {
 
 	public MenuScreen menuScreen;
-
+	public WorldSelectionScreen worldSelectionScreen;
+	public TrainingScreen trainingScreen;
+	public SurvivalScreen survivalScreen;
+	
 	private SakuraHero game;	
 	private GestureDetector inputDetector;
 
@@ -34,6 +38,9 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
 
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
+	
 	private SpriteActor background;
 	private SpriteActor modeSelection;
 	private SpriteActor back;
@@ -57,6 +64,9 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 
+		backgroundBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 
 		normal = new Label("Normal",style);	
@@ -121,7 +131,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 		initializeInterface();
 
-		stateStage.addActor(background);
+		backgroundStage.addActor(background);
 		stateStage.addActor(modeSelection);
 		stateStage.addActor(back);
 
@@ -148,8 +158,9 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
 		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		stateStage.draw();
+		backgroundStage.draw();
 		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -207,45 +218,24 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 		if(actor == null)
 			return false;
-		//		
-		//		if(actor.getName().equals("Music")) {
-		//			Configuration.getInstance().musicOn = !Configuration.getInstance().musicOn;
-		//			
-		//			if(Configuration.getInstance().musicOn) {
-		//				musicState.setText("On");
-		//				game.resources.getMusic("menuMusic").play();
-		//			}
-		//			else {
-		//				musicState.setText("Off");
-		//				game.resources.getMusic("menuMusic").stop();
-		//			}
-		//			
-		//			musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		}
-		//		else if(actor.getName().equals("Sound")) {
-		//			Configuration.getInstance().soundOn = !Configuration.getInstance().soundOn;
-		//			
-		//			if(Configuration.getInstance().soundOn)
-		//				soundState.setText("On");
-		//			else
-		//				soundState.setText("Off");
-		//			
-		//			soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		}
-		//		else if(actor.getName().equals("Reset")) {
-		////			if(Configuration.getInstance().soundOn)
-		////				game.resources.getSoundEffect("selection").play();
-		////			Configuration.getInstance().highscoreDescriptor.highScore = 0;
-		////			currentHighScore.setText("High Score "+ Configuration.getInstance().highscoreDescriptor.highScore);
-		////			currentHighScore.setX((Configuration.getInstance().width-currentHighScore.getTextBounds().width)*0.5f);	
-		//		}
-		//		
-		if(actor.getName().equals("Back")) {
-
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
+		
+		if(actor.getName().equals("Normal")) {
+			game.setScreen(worldSelectionScreen);
+		}
+		else if(actor.getName().equals("Survival")) {
+			game.setScreen(survivalScreen);
+		}
+		else if(actor.getName().equals("Training")) {
+			game.setScreen(trainingScreen);
+		}
+		else if(actor.getName().equals("Back")) {
 			game.setScreen(menuScreen);
 		}
+		
+		//TODO 
+		//			if(Configuration.getInstance().soundOn)
+		//				game.resources.getSoundEffect("selection").play();
+	
 		return true;
 	}
 

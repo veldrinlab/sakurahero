@@ -22,6 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
+
+//TODO potrzebny jakiœ GUIItem - tekst lub grafika któr¹ mo¿na nacisn¹æ -> czyli musi to byæ Actor
+
 public class CreditsScreen extends GameScreen implements GestureListener  {
 	
 	public MenuScreen menuScreen;
@@ -32,6 +35,9 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	private FallingLeavesEffect fallingSakura;
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
+	
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
 	
 	private SpriteActor background;
 	private SpriteActor credits;
@@ -51,6 +57,9 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 			
+		backgroundBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
 		
 		//TODO wyjabac dane z renderera? 
@@ -64,7 +73,10 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
     	music = new Label("Music",styleSmall);
     	macleod = new Label("Kevin Macleod", style);
     	
-    	inputDetector = new GestureDetector(this);    	
+    	inputDetector = new GestureDetector(this);   
+    	
+    	
+    	
 	}
 
 	@Override
@@ -116,9 +128,9 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 			back = new SpriteActor(game.resources.getTexture("backJap"),"Back");	
 		}
 		
-    	initializeInterface();
-    	
-		stateStage.addActor(background);
+		initializeInterface();
+		
+		backgroundStage.addActor(background);
     	stateStage.addActor(credits);
     	stateStage.addActor(back);
     	
@@ -144,8 +156,9 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-		stateStage.draw();
+		backgroundStage.draw();
 		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -169,24 +182,23 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
 		credits.getSprite().setY(Configuration.getHeight()*0.90f - credits.getSprite().getHeight());
 		
-		jablonski.setX((Configuration.getWidth()-jablonski.getTextBounds().width)*0.5f);	
-		jablonski.setY(Configuration.getHeight()*0.70f - jablonski.getTextBounds().height);
-		
 		codeDesignAnimation.setX((Configuration.getWidth()-codeDesignAnimation.getTextBounds().width)*0.5f);	
-		codeDesignAnimation.setY(Configuration.getHeight()*0.60f - codeDesignAnimation.getTextBounds().height);
+		codeDesignAnimation.setY(Configuration.getHeight()*0.70f - codeDesignAnimation.getTextBounds().height);
 		
-		harasimiuk.setX((Configuration.getWidth()-harasimiuk.getTextBounds().width)*0.5f);	
-		harasimiuk.setY(Configuration.getHeight()*0.45f - harasimiuk.getTextBounds().height);
+		jablonski.setX((Configuration.getWidth()-jablonski.getTextBounds().width)*0.5f);	
+		jablonski.setY(Configuration.getHeight()*0.60f - jablonski.getTextBounds().height);
 		
 		graphics.setX((Configuration.getWidth()-graphics.getTextBounds().width)*0.5f);	
-		graphics.setY(Configuration.getHeight()*0.35f - graphics.getTextBounds().height);
+		graphics.setY(Configuration.getHeight()*0.50f - graphics.getTextBounds().height);
 		
-		macleod.setX((Configuration.getWidth()-macleod.getTextBounds().width)*0.5f);	
-		macleod.setY(Configuration.getHeight()*0.25f - macleod.getTextBounds().height);
+		harasimiuk.setX((Configuration.getWidth()-harasimiuk.getTextBounds().width)*0.5f);	
+		harasimiuk.setY(Configuration.getHeight()*0.40f - harasimiuk.getTextBounds().height);
 		
 		music.setX((Configuration.getWidth()-music.getTextBounds().width)*0.5f);	
-		music.setY(Configuration.getHeight()*0.15f - music.getTextBounds().height);
-
+		music.setY(Configuration.getHeight()*0.30f - music.getTextBounds().height);
+		
+		macleod.setX((Configuration.getWidth()-macleod.getTextBounds().width)*0.5f);	
+		macleod.setY(Configuration.getHeight()*0.20f - macleod.getTextBounds().height);
 	}
 
 	@Override

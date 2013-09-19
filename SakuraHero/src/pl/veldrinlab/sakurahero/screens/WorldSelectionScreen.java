@@ -26,8 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 //TODO world to w sumie z³a nazwa?
 public class WorldSelectionScreen extends GameScreen implements GestureListener  {
 
-	public MenuScreen menuScreen;
-
+	public ModeSelectionScreen modeSelectionScreen;
+	public PlayScreen playScreen;
+	
 	private SakuraHero game;	
 	private GestureDetector inputDetector;
 
@@ -35,6 +36,9 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
 
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
+	
 	private SpriteActor background;
 	private SpriteActor worldSelection;
 	private SpriteActor back;
@@ -59,12 +63,16 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		worldSelection = new SpriteActor(new Texture(Gdx.files.internal("worldSelection.png")));
 		back = new SpriteActor(game.resources.getTexture("back"),"Back");
 
-		natsuBackground = new SpriteActor(new Texture(Gdx.files.internal("natsuBackground.png")),"Natsu");
-		akiBackground = new SpriteActor(new Texture(Gdx.files.internal("akiBackground.png")),"Aki");
+		natsuBackground = new SpriteActor(game.resources.getTexture("natsu"),"natsu");
+		akiBackground = new SpriteActor(game.resources.getTexture("aki"),"aki");
 		
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 
+		
+		backgroundBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		
 		//TODO to tylko dla angielskiego - chyba ¿e dorzuæ to do atlasó gui poszczególnych jêzyków
 		
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
@@ -73,8 +81,8 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		natsu = new Label("Natsu",style);
 
 		inputDetector = new GestureDetector(this);    
-
-		//TODO next button - mo¿e bez?
+		
+		initializeInterface();
 
 	}
 
@@ -128,9 +136,10 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		//			back = new SpriteActor(game.resources.getTexture("back"),"Back");
 		//		}
 
-		initializeInterface();
-
-		stateStage.addActor(background);
+		
+		backgroundStage.addActor(background);
+		
+		
 		stateStage.addActor(worldSelection);
 		stateStage.addActor(back);
 
@@ -152,7 +161,7 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
 
-		//TODO wybrany jest podswietlony
+	
 	
 	}
 
@@ -161,8 +170,9 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
 		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		stateStage.draw();
+		backgroundStage.draw();
 		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
@@ -182,22 +192,23 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 		natsuBackground.getSprite().setSize(natsuBackground.getSprite().getWidth()*0.4f, natsuBackground.getSprite().getHeight()*0.4f);
 		akiBackground.getSprite().setSize(akiBackground.getSprite().getWidth()*0.4f, akiBackground.getSprite().getHeight()*0.4f);
-
+		
 		natsuBackground.getSprite().setX(Configuration.getWidth()*0.05f);	
 		natsuBackground.getSprite().setY(Configuration.getHeight()*0.70f - natsuBackground.getSprite().getHeight());
 
 		akiBackground.getSprite().setX(Configuration.getWidth()*0.95f - natsuBackground.getSprite().getWidth());	
 		akiBackground.getSprite().setY(Configuration.getHeight()*0.70f - akiBackground.getSprite().getHeight());
 	
+		natsuBackground.setBounds(natsuBackground.getSprite().getX(), natsuBackground.getSprite().getY(), natsuBackground.getSprite().getWidth(), natsuBackground.getSprite().getHeight());
+		akiBackground.setBounds(akiBackground.getSprite().getX(), akiBackground.getSprite().getY(), akiBackground.getSprite().getWidth(), akiBackground.getSprite().getHeight());
 		
 		natsu.setTouchable(Touchable.disabled);
 		aki.setTouchable(Touchable.disabled);
-		
+
 		natsu.setX(natsuBackground.getSprite().getX()+natsuBackground.getSprite().getWidth()*0.5f-natsu.getTextBounds().width*0.5f);
 		natsu.setY(natsuBackground.getSprite().getY()-natsuBackground.getSprite().getHeight()*0.5f);
 		aki.setX(akiBackground.getSprite().getX()+akiBackground.getSprite().getWidth()*0.5f-aki.getTextBounds().width*0.5f);
-		aki.setY(akiBackground.getSprite().getY()-akiBackground.getSprite().getHeight()*0.5f);
-		
+		aki.setY(akiBackground.getSprite().getY()-akiBackground.getSprite().getHeight()*0.5f);	
 	}
 
 	@Override
@@ -226,45 +237,17 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 		if(actor == null)
 			return false;
-		//		
-		//		if(actor.getName().equals("Music")) {
-		//			Configuration.getInstance().musicOn = !Configuration.getInstance().musicOn;
-		//			
-		//			if(Configuration.getInstance().musicOn) {
-		//				musicState.setText("On");
-		//				game.resources.getMusic("menuMusic").play();
-		//			}
-		//			else {
-		//				musicState.setText("Off");
-		//				game.resources.getMusic("menuMusic").stop();
-		//			}
-		//			
-		//			musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		}
-		//		else if(actor.getName().equals("Sound")) {
-		//			Configuration.getInstance().soundOn = !Configuration.getInstance().soundOn;
-		//			
-		//			if(Configuration.getInstance().soundOn)
-		//				soundState.setText("On");
-		//			else
-		//				soundState.setText("Off");
-		//			
-		//			soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
-		//		}
-		//		else if(actor.getName().equals("Reset")) {
-		////			if(Configuration.getInstance().soundOn)
-		////				game.resources.getSoundEffect("selection").play();
-		////			Configuration.getInstance().highscoreDescriptor.highScore = 0;
-		////			currentHighScore.setText("High Score "+ Configuration.getInstance().highscoreDescriptor.highScore);
-		////			currentHighScore.setX((Configuration.getInstance().width-currentHighScore.getTextBounds().width)*0.5f);	
-		//		}
-		//		
-		if(actor.getName().equals("Back")) {
-
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			game.setScreen(menuScreen);
+	
+		if(actor.getName().equals("Back"))
+			game.setScreen(modeSelectionScreen);
+		else  {
+			Configuration.setWorldName(actor.getName());
+			game.setScreen(playScreen);
 		}
+		
+		//			if(Configuration.getInstance().soundOn)
+		//				game.resources.getSoundEffect("selection").play();
+
 		return true;
 	}
 

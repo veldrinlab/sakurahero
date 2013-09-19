@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 //TODO Stage per stan??
 public class MenuScreen extends GameScreen implements GestureListener {
 
-	public PlayScreen playScreen;
+	public ModeSelectionScreen modeSelectionScreen;
 	public CreditsScreen creditsnScreen;
 	public OptionsScreen optionsScreen;
 
@@ -38,7 +38,12 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
 
-
+	//TODO pomyœleæ nad rendererm globalnym. Tylko po co? Mo¿e nie w Engine, a jakiœ custom na potrzeby Danego stanu - jeden na backgroud
+	//jeden na hud i jeden na scene. Reszte realizowaæ poprzez dodatki
+	//Jakis Renderer2D czy cos,
+	
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
 
 	private SpriteActor menu;
 	private SpriteActor play;
@@ -57,7 +62,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 
-
+		backgroundBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
 
 
 
@@ -78,7 +84,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processRendering() {	
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();
+		backgroundStage.draw();
 		fallingSakura.renderEffect();
 		stateStage.draw();
 	}
@@ -96,13 +102,12 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		//TODO to jest chyba i tak zbêdne??/
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
+		//TODO to jest chyba i tak zbêdne??/	
 	}
 
 	@Override
 	public void hide() {
-		Renderer.defaultStage.clear();
+
 		Gdx.input.setInputProcessor(null);
 	}
 
@@ -143,9 +148,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 		initializeInterface();
 
-		Renderer.defaultStage.clear();
 		stateStage.clear();
-		Renderer.defaultStage.addActor(background);
+		backgroundStage.addActor(background);
 
 
 		stateStage.addActor(menu);
@@ -239,7 +243,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 			//	if(Configuration.getInstance().soundOn)
 			//		game.resources.getSoundEffect("selection").play();
 
-			game.setScreen(playScreen);
+			game.setScreen(modeSelectionScreen);
 			//	if(Configuration.getInstance().musicOn)
 			//		menuMusic.stop();
 			//		

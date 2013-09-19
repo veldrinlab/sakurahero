@@ -11,6 +11,7 @@ import pl.veldrinlab.sakurahero.screens.PauseScreen;
 import pl.veldrinlab.sakurahero.screens.PlayScreen;
 import pl.veldrinlab.sakurahero.screens.OptionsScreen;
 import pl.veldrinlab.sakurahero.screens.SplashScreen;
+import pl.veldrinlab.sakurahero.screens.SurvivalScreen;
 import pl.veldrinlab.sakurahero.screens.TrainingScreen;
 import pl.veldrinlab.sakurahero.screens.WorldSelectionScreen;
 import pl.veldrinlab.sakuraEngine.core.AsyncResourceManager;
@@ -42,15 +43,18 @@ public class SakuraHero extends Game {
 	private MenuScreen menuScreen;
 	private OptionsScreen optionsScreen;
 	private CreditsScreen creditsScreen;
-	private PlayScreen playScreen;
-	private PauseScreen pauseScreen;
-	private GameOverScreen gameOverScreen;
 	
 	// nowe, wybor trybu, jakos ograniczyc pamiec
+	private PlayScreen playScreen;
+	
 	private TrainingScreen trainingScreen;
+	private SurvivalScreen survivalScreen;
 	
 	private ModeSelectionScreen modeSelectionScreen;
 	private WorldSelectionScreen worldSelectionScreen;
+	
+	private PauseScreen pauseScreen;
+	private GameOverScreen gameOverScreen;
 	
 	
 	/**
@@ -136,10 +140,10 @@ public class SakuraHero extends Game {
 		
 		
 		setScreen(teamSplashScreen);
-	//	setScreen(modeSelectionScreen);
+		//setScreen(menuScreen);
 		//setScreen(worldSelectionScreen);
 	//	setScreen(playScreen);
-	//	setScreen(creditsScreen);
+		setScreen(creditsScreen);
 	//	setScreen(optionsScreen);
 //		setScreen(trainingScreen);
 		
@@ -170,17 +174,20 @@ public class SakuraHero extends Game {
 	public void initializeGame() {
 		
 		menuScreen = new MenuScreen(this);
-		playScreen = new PlayScreen(this);
 		optionsScreen = new OptionsScreen(this);	
 		creditsScreen = new CreditsScreen(this);
 		pauseScreen = new PauseScreen(this);
 		gameOverScreen = new GameOverScreen(this);
 
-		trainingScreen = new TrainingScreen(this);
-		
 		//
 		modeSelectionScreen = new ModeSelectionScreen(this);
 		worldSelectionScreen = new WorldSelectionScreen(this);
+		
+		
+		playScreen = new PlayScreen(this);
+		trainingScreen = new TrainingScreen(this);
+		survivalScreen = new SurvivalScreen(this);
+		
 		
 		buildGameStateGraph();
 		
@@ -188,12 +195,25 @@ public class SakuraHero extends Game {
 	}
 	
 	public void buildGameStateGraph() {
-		menuScreen.playScreen = playScreen;
+		menuScreen.modeSelectionScreen = modeSelectionScreen;
 		menuScreen.creditsnScreen= creditsScreen;
 		menuScreen.optionsScreen = optionsScreen;
 		
 		creditsScreen.menuScreen = menuScreen;
 		optionsScreen.menuScreen = menuScreen;
+		
+		
+		modeSelectionScreen.menuScreen = menuScreen;
+		modeSelectionScreen.worldSelectionScreen = worldSelectionScreen;
+		modeSelectionScreen.survivalScreen = survivalScreen;
+		modeSelectionScreen.trainingScreen = trainingScreen;
+		
+		//
+		trainingScreen.pauseScreen = pauseScreen;
+		survivalScreen.pauseScreen = pauseScreen;
+		
+		worldSelectionScreen.modeSelectionScreen = modeSelectionScreen;
+		worldSelectionScreen.playScreen = playScreen;
 		
 		playScreen.pauseScreen = pauseScreen;
 		playScreen.gameOverScreen = gameOverScreen;
@@ -204,8 +224,7 @@ public class SakuraHero extends Game {
 		gameOverScreen.playScreen = playScreen;
 		gameOverScreen.menuScreen = menuScreen;
 		
-		//
-		trainingScreen.pauseScreen = pauseScreen;
+		
 	}
 	
 //	public void loadHighScore() {

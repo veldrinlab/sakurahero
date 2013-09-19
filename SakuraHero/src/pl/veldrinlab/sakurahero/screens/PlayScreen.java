@@ -108,7 +108,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		this.game = game;
 
 		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SpriteActor(new Texture(Gdx.files.internal("test.png")));
+		background = new SpriteActor(game.resources.getTexture("natsu"));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
@@ -291,7 +291,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
 		fallingSakura.initializeEffect();
 
-	
+
+		//
+		background.getSprite().setTexture(game.resources.getTexture(Configuration.getWorldName()));
 		backgroundStage.addActor(background);
 		
 		//todo to jakoœ po³¹czyæ ze sob¹

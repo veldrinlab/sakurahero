@@ -33,6 +33,9 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	private SpriteBatch stateBatch;
 	private Stage stateStage;
 
+	private SpriteBatch backgroundBatch;
+	private Stage backgroundStage;
+	
 	private SpriteActor background;
 	private SpriteActor options;
 	private SpriteActor back;
@@ -55,7 +58,9 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		stateBatch = new SpriteBatch();
 		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 
-
+		backgroundBatch = new SpriteBatch();
+		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		
 		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
 		options = new SpriteActor(game.resources.getTexture("optionsBig"));
 		back = new SpriteActor(game.resources.getTexture("back"),"Back");
@@ -129,7 +134,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 		initializeInterface();
 
-		stateStage.addActor(background);
+		backgroundStage.addActor(background);
 		stateStage.addActor(options);
 		stateStage.addActor(back);
 
@@ -171,8 +176,9 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
 		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		stateStage.draw();
+		backgroundStage.draw();
 		fallingSakura.renderEffect();
+		stateStage.draw();
 	}
 
 	@Override
