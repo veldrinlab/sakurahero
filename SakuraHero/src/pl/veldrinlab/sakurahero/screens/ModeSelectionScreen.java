@@ -45,6 +45,10 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	private SpriteActor modeSelection;
 	private SpriteActor back;
 
+	private SpriteActor normalEmblem;
+	private SpriteActor survivalEmblem;
+	private SpriteActor trainingEmblem;
+	
 	private Label normal;
 	private Label survival;
 	private Label training;
@@ -75,8 +79,18 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 		inputDetector = new GestureDetector(this);    
 
-		//TODO next button
-
+		
+		normalEmblem = new SpriteActor(game.resources.getTexture("onigiriSamurai"));
+		survivalEmblem = new SpriteActor(game.resources.getTexture("onigiriOni"));
+		trainingEmblem = new SpriteActor(game.resources.getTexture("onigiriNinja"));
+		
+		normalEmblem.getSprite().setRegion(0, 0, 128, 128);
+		survivalEmblem.getSprite().setRegion(0, 0, 128, 128);
+		trainingEmblem.getSprite().setRegion(0, 0, 128, 128);
+		
+		normalEmblem.getSprite().setSize(128, 128);
+		survivalEmblem.getSprite().setSize(128, 128);
+		trainingEmblem.getSprite().setSize(128, 128);
 	}
 
 	@Override
@@ -138,7 +152,11 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		stateStage.addActor(normal);
 		stateStage.addActor(survival);
 		stateStage.addActor(training);
-
+		
+		stateStage.addActor(normalEmblem);
+		stateStage.addActor(survivalEmblem);
+		stateStage.addActor(trainingEmblem);
+		
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
@@ -183,13 +201,22 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		training.setName("Training");
 	
 		normal.setX((Configuration.getWidth()-normal.getTextBounds().width)*0.5f);
-		normal.setY(Configuration.getHeight()*0.60f - normal.getTextBounds().height);
+		normal.setY(Configuration.getHeight()*0.55f - normal.getTextBounds().height);
 		
 		survival.setX(Configuration.getWidth()*0.1f);
-		survival.setY(Configuration.getHeight()*0.30f - survival.getTextBounds().height);
+		survival.setY(Configuration.getHeight()*0.25f - survival.getTextBounds().height);
 		
 		training.setX(Configuration.getWidth()*0.9f - training.getTextBounds().width);
-		training.setY(Configuration.getHeight()*0.30f - training.getTextBounds().height);
+		training.setY(Configuration.getHeight()*0.25f - training.getTextBounds().height);
+		
+		normalEmblem.getSprite().setX(normal.getX()+normal.getTextBounds().width*0.5f-normalEmblem.getSprite().getWidth()*0.5f);
+		normalEmblem.getSprite().setY(normal.getY()+normal.getTextBounds().height);
+		
+		survivalEmblem.getSprite().setX(survival.getX()+survival.getTextBounds().width*0.5f-survivalEmblem.getSprite().getWidth()*0.5f);
+		survivalEmblem.getSprite().setY(survival.getY()+survival.getTextBounds().height);
+		
+		trainingEmblem.getSprite().setX(training.getX()+training.getTextBounds().width*0.5f-trainingEmblem.getSprite().getWidth()*0.5f);
+		trainingEmblem.getSprite().setY(training.getY()+training.getTextBounds().height);
 	}
 
 	@Override
@@ -223,7 +250,8 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 			game.setScreen(worldSelectionScreen);
 		}
 		else if(actor.getName().equals("Survival")) {
-			game.setScreen(survivalScreen);
+			//TODO gdzieœ info o odpowiednim pliku levelu
+			game.setScreen(worldSelectionScreen);
 		}
 		else if(actor.getName().equals("Training")) {
 			game.setScreen(trainingScreen);

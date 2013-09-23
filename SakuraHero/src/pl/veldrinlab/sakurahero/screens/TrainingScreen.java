@@ -69,7 +69,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private SpriteBatch hudBatch;
 	private Stage hudStage;
 	private SpriteActor pauseButton;
-	private Label training;
+	
 
 	// katana swing
 	private KatanaSwing katana;
@@ -95,6 +95,19 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private Label points;
 	private Label hit;
 	private Label combo;
+	
+	private int comboAmount;
+	
+	private SpriteActor katanaLevelBar;
+	private SpriteActor katanaLevelBackground;
+	private Label katanaLevelInfo;
+	private int katanaLevel;
+	
+	
+	// state logic flow
+	
+	private float flowAccumulator;
+	private Label stateMessage;
 	
 	
 	
@@ -129,12 +142,28 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
 		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
 		
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
-		training = new Label("Training time!", style);
-		
 		
 		//
+		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
+		LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
+		stateMessage = new Label("", style);
+		
+		combo = new Label(String.valueOf(comboAmount) + " Onigiri Combo",style);
+		combo.setTouchable(Touchable.disabled);
+		combo.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		//
 		background = new SpriteActor(game.resources.getTexture("dojo"));
+		
+		
+		pointAmount = 0;
+		points = new Label("Points: " + String.valueOf(pointAmount), style);
+		points.setTouchable(Touchable.disabled);
+		
+		
+		katanaLevelBackground = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
+		katanaLevelBar = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
+		katanaLevel = 0;
+		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),styleSmall);
 	}
 
 	@Override
@@ -159,49 +188,96 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
-		//
-		enemy.update(deltaTime);
-		enemy2.update(deltaTime);
-		enemy3.update(deltaTime);
+		//TODO jakiœ fajniejszy pomys³ na konkretne stany??
 		
-		// collisiom detection
+		//for tests
+		flowAccumulator += deltaTime*10.75f;
 		
-		if(input.size > 3) {
-
-			//TODO update explosion inside
-			enemy.explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
-			enemy2.explosion.getSprite().setPosition(enemy2.getSprite().getX(), enemy2.getSprite().getY());
+		if(flowAccumulator < 1.0f) {
+			stateMessage.setColor(1.0f,1.0f,1.0f,flowAccumulator);
+		}
+		else if(flowAccumulator > 1.0f && flowAccumulator < 2.0f) {
+			stateMessage.setColor(1.0f,1.0f,1.0f,2.0f-flowAccumulator);
+		}
+		else if(flowAccumulator > 2.0f && flowAccumulator < 3.0f) {
+			stateMessage.setText("It is training time");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator-2.0f);
+		}
+		else if(flowAccumulator > 3.0f && flowAccumulator < 4.0f) {
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, 4.0f-flowAccumulator);
+		}
+		else if(flowAccumulator > 4.0f && flowAccumulator < 4.5f) {
+			stateMessage.setText("Ready...");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator - 2.5f);
+		}
+		else if(flowAccumulator > 4.5f && flowAccumulator < 5.0f) {
+			stateMessage.setText("Fight!!!");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		else { // typical training state
+			//
+			stateMessage.setText("");
 			
-			for(int i = 0; i < input.size; ++i) {
+			enemy.update(deltaTime);
+			enemy2.update(deltaTime);
+			enemy3.update(deltaTime);
+			
+			// collisiom detection
+			
+			// 
+			comboAmount = 0;
+			
+			if(input.size > 3) {
 
-				if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-					enemy.hit();
-					Gdx.app.log("collision"," occurred");
-					break;
-				}
-				else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-					enemy2.hit();
-					Gdx.app.log("collision"," occurred");
-					break;
-				}
-				else if(!enemy3.collisionOccurred && enemy3.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-					enemy3.hit();
-					Gdx.app.log("collision"," occurred");
-					break;
+				//TODO update explosion inside
+				enemy.explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
+				enemy2.explosion.getSprite().setPosition(enemy2.getSprite().getX(), enemy2.getSprite().getY());
+				
+				for(int i = 0; i < input.size; ++i) {
+
+					if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						enemy.hit();
+						comboAmount++;
+						Gdx.app.log("collision"," occurred");
+						break;
+					}
+					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						enemy2.hit();
+						comboAmount++;
+						Gdx.app.log("collision"," occurred");
+						break;
+					}
+					else if(!enemy3.collisionOccurred && enemy3.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						enemy3.hit();
+						comboAmount++;
+						Gdx.app.log("collision"," occurred");
+						break;
+					}
 				}
 			}
-		}
+			
+			//TODO potrzebny akumulator na utrzymanie stanu - klasa HUD wchodzi w grê teraz bo burdel siê robi
+			if(comboAmount > 0) {
+				combo.setText(String.valueOf(comboAmount) + " Onigiri Combo");
+				combo.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			else
+				combo.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 
-		katana.update(input);
+			katana.update(input);
 
-		katanaTime += deltaTime;
+			katanaTime += deltaTime;
 
-		//mo¿e sterowanie czasem nie jest wcale takie g³upie
-		if(input.size > 2 && katanaTime > Timer.TIME_STEP*20) {
-			input.pop();
-			input.pop();
-			katanaTime = 0.0f;
+			//mo¿e sterowanie czasem nie jest wcale takie g³upie
+			if(input.size > 2 && katanaTime > Timer.TIME_STEP*20) {
+				input.pop();
+				input.pop();
+				katanaTime = 0.0f;
+			}
+			
 		}
 	}
 
@@ -233,9 +309,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 		//	Gdx.input.setInputProcessor(inputDetector);
 		
-		training.setTouchable(Touchable.disabled);
-		training.setX((Configuration.getWidth()-training.getTextBounds().width)*0.5f);	
-		training.setY(Configuration.getHeight()*0.90f - training.getTextBounds().height);
+		
 
 		backgroundStage.addActor(background);
 		
@@ -249,7 +323,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		
 		//TODO hud stage
 		hudStage.addActor(pauseButton);
-		hudStage.addActor(training);
+		hudStage.addActor(stateMessage);
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(inputDetector);
 		inputMultiplexer.addProcessor(this);
@@ -258,6 +332,43 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		//		Gdx.input.setInputProcessor(inputDetector);
 		//		Gdx.input.setInputProcessor(this);
 
+		
+		// logic
+		flowAccumulator = 0.0f;
+		stateMessage.setTouchable(Touchable.disabled);
+		stateMessage.setText("Wellcome to Dojo!");
+		stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
+		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
+		
+		hudStage.addActor(combo);
+		hudStage.addActor(points);
+		
+		hudStage.addActor(katanaLevelBackground);
+		hudStage.addActor(katanaLevelInfo);
+		hudStage.addActor(katanaLevelBar);
+		
+		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.05f);	
+		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
+		
+		katanaLevelBackground.getSprite().setY(Configuration.getHeight() - katanaLevelBackground.getSprite().getHeight());
+		katanaLevelBackground.getSprite().setX(Configuration.getWidth()-katanaLevelBackground.getSprite().getWidth());
+		
+		katanaLevelBar.getSprite().setY(Configuration.getHeight() - katanaLevelBar.getSprite().getHeight());
+		katanaLevelBar.getSprite().setX(Configuration.getWidth()-katanaLevelBar.getSprite().getWidth());
+		
+		katanaLevelInfo.setX(katanaLevelBackground.getSprite().getX()+katanaLevelBackground.getSprite().getWidth()*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
+		katanaLevelInfo.setY(katanaLevelBackground.getSprite().getY()-katanaLevelBackground.getSprite().getHeight()*0.5f);
+		
+		//katanaLevelBackground.getSprite().setRotation(180.0f);
+		
+		//292 czyli 100 % miecza daje 228 pikseli
+		
+		katanaLevelBar.getSprite().setSize(164,62);
+		katanaLevelBar.getSprite().setRegion(0,0, 164, 62);
+		
+		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.45f);
+		katanaLevelBar.getSprite().setColor(1.0f, 105.0f/255.0f, 188.0f/255.0f, 1.0f);
 	}
 
 	@Override

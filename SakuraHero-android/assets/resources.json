@@ -197,6 +197,12 @@
 			"path" : "img/scene/dojoBackground.png",
 			"name" : "dojo",
 			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "katanaLevelBar.png",
+			"name" : "katanaLevelBar",
+			"type" : "TEXTURE"
 		}
 	],
 	"shaders" : [],

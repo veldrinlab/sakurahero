@@ -25,14 +25,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 
-
 //TODO mo¿e pozostawiæ opcjê z High Score na przysz³oœæ?
 //TODO change SettingsScreen to OptionsScreen
 
 public class SakuraHero extends Game {
 
 	public AsyncResourceManager resources;
-	public FallingLeavesEffect fallingSakura;
+	public FallingLeavesEffect fallingSakura; //TODO jakoœ inaczej?
 	private Timer timer;
 
 	private SplashScreen teamSplashScreen;
@@ -138,16 +137,15 @@ public class SakuraHero extends Game {
 		initializeGame();
 		
 		
-		
 		setScreen(teamSplashScreen);
 		//setScreen(menuScreen);
 		//setScreen(worldSelectionScreen);
 	//	setScreen(playScreen);
-		setScreen(creditsScreen);
+	//	setScreen(creditsScreen);
 	//	setScreen(optionsScreen);
-//		setScreen(trainingScreen);
-		
-//		setScreen(playScreen);
+		setScreen(trainingScreen);
+//		setScreen(modeSelectionScreen);
+///		setScreen(playScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	
