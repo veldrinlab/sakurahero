@@ -36,6 +36,9 @@ public class NinjaOnigiri extends SpriteActor {
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
+		
+		getSprite().setSize(128,128);
+		getSprite().setOrigin(64.0f, 64.0f);
 	}
 	
 	public void init() {
@@ -61,6 +64,8 @@ public class NinjaOnigiri extends SpriteActor {
 		
 		//
 		fadeIn = true;
+		getSprite().setRegion(0, 0, 128, 128);
+		
 	}
 	
 	public	void update(final float deltaTime) {
@@ -122,12 +127,14 @@ public class NinjaOnigiri extends SpriteActor {
 			init();
 	}
 	
-	public void hit() {
+	public boolean hit() {
 		if(alphaAccumulator > 1.0f) {
 			collisionOccurred = true;
 			collisionPos.set(getX(), getY());
 			angle = angleOptions[MathUtils.random(0, 3)];
+			getSprite().setRegion(128, 0, 128, 128);
+			return true;
 		}
+		return false;
 	}
-
 }

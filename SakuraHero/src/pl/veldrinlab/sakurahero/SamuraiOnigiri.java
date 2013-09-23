@@ -12,6 +12,11 @@ public class SamuraiOnigiri extends SpriteActor {
 
 	//TODO animacja itp. - moze basowa klasa samego Enemy i jakies roznice w funkcji aktualizaujacej - cos w stylu wzorca Strategii
 
+	//fake motion blur
+	public SpriteActor shadow;
+	public SpriteActor shadow2;
+	public SpriteActor shadow3;
+	
 	// tor ruchu opracowac
 
 	// explozja po³¹czona z bytem
@@ -29,13 +34,18 @@ public class SamuraiOnigiri extends SpriteActor {
 	private int currentFrame = 0;
 	private float FRAME_TIME = 0.020f;
 
-	
+	//TODO movement animation
+	private float animationAccumulator2;
+	private int frameAmount2 = 9;
+	private int currentFrame2 = 0;
+	private float FRAME_TIME2 = 0.05f;
+
 	private float t;
 	public Vector2 collisionPos = new Vector2();
 	public float angle;
 	private float[] angleOptions = new float[4];
 	private float alpha;
-	
+
 	public SamuraiOnigiri(final Texture enemyTexture, final Texture explosionTexture) {
 		super(enemyTexture);
 
@@ -49,8 +59,19 @@ public class SamuraiOnigiri extends SpriteActor {
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
-		
+
+		//
+		getSprite().setSize(128.0f, 128.0f);
 		getSprite().setOrigin(64,64);
+		
+		shadow = new SpriteActor(enemyTexture);	
+		shadow.getSprite().setSize(128.0f, 128.0f);
+		
+		shadow2 = new SpriteActor(enemyTexture);
+		shadow2.getSprite().setSize(128.0f, 128.0f);
+		
+		shadow3 = new SpriteActor(enemyTexture);
+		shadow3.getSprite().setSize(128.0f, 128.0f);
 	}
 
 	public void init() {
@@ -76,6 +97,15 @@ public class SamuraiOnigiri extends SpriteActor {
 		getSprite().setPosition(x,y);
 		collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
 
+		// shadow
+		shadow.getSprite().setPosition(x,y);
+		shadow2.getSprite().setPosition(x,y);
+		shadow3.getSprite().setPosition(x,y);
+		
+		shadow.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.75f);
+		shadow2.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);	
+		shadow3.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.25f);
+	
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
@@ -85,23 +115,54 @@ public class SamuraiOnigiri extends SpriteActor {
 		explosion.getSprite().setRegion(128.0f*(frameAmount-1), 0, 128, 128);
 		currentFrame = 0;
 		alpha = 1.0f;
+
+		// animation
+		getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		//TODO to mo¿na init raz
+		shadow.getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		shadow2.getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		shadow3.getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		currentFrame2 = 0;
 	}
 
 	public	void update(final float deltaTime) {
 
 		// stan pocz¹tkowy
 		if(!collisionOccurred) {
+			
+			// animation
+			animationAccumulator2 += deltaTime;
+			
+			if(animationAccumulator2 > FRAME_TIME2) {
+				currentFrame2 = (currentFrame2+1) % (frameAmount2-1);
+				//TODO maybe only when samurai attack?
+			//	getSprite().setRegion(currentFrame2*128, 0, 128, 128);
+				animationAccumulator2 = 0.0f;
+			}
+			
 			float x = getX();
 			float y = getY();
 			float velocity = 5.0f;
-
-
+			
+			float shadowX = x - moveDirection.x * velocity*5;
+			float shadowY = y - moveDirection.y * velocity*5;
+			
+			float shadowX2 = x - moveDirection.x * velocity*10;
+			float shadowY2 = y - moveDirection.y * velocity*10;
+			
+			float shadowX3 = x - moveDirection.x * velocity*15;
+			float shadowY3 = y - moveDirection.y * velocity*15;
+			
 			x += moveDirection.x * velocity;
 			y += moveDirection.y * velocity;
 
 			setPosition(x,y);
 			getSprite().setPosition(x,y);
 
+			shadow.getSprite().setPosition(shadowX, shadowY);
+			shadow2.getSprite().setPosition(shadowX2, shadowY2);
+			shadow3.getSprite().setPosition(shadowX3, shadowY3);
+			
 			// update circle
 			collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
 
@@ -110,17 +171,19 @@ public class SamuraiOnigiri extends SpriteActor {
 				init();
 		}
 		else if(collisionOccurred && deathAccum < 0.5f) {
+			
+			
 			deathAccum += deltaTime;
 			alpha -= deltaTime;
 			t+= deltaTime;
-			
+
 			final float g = 100.0f;		
 			final float v0 = 300.0f;
-		
-//			float deltaX = v0*deltaTime*MathUtils.cosDeg(10.0f);
-//			float deltaY = v0*deltaTime*MathUtils.sinDeg(10.0f) - (g*deltaTime*deltaTime*0.5f);
-//			
-//			
+
+			//			float deltaX = v0*deltaTime*MathUtils.cosDeg(10.0f);
+			//			float deltaY = v0*deltaTime*MathUtils.sinDeg(10.0f) - (g*deltaTime*deltaTime*0.5f);
+			//			
+			//			
 			float x = collisionPos.x + v0*t*MathUtils.cosDeg(angle);
 			float y = collisionPos.y + v0*t*MathUtils.sinDeg(angle) - (g*t*t*0.5f);
 
@@ -128,13 +191,16 @@ public class SamuraiOnigiri extends SpriteActor {
 			float rotationVelocity = 5.0f;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
 
+			getSprite().setRegion((frameAmount2-1)*128, 0, 128, 128);
+			
 			getSprite().setRotation(rotation);
 			setPosition(x,y);
 			getSprite().setPosition(x,y);
 			explosion.getSprite().setPosition(x, y);
+			
 		}
 		else if(collisionOccurred && deathAccum > 0.5f && (currentFrame != frameAmount-1)) {
-			
+
 			alpha -= deltaTime;
 			alpha = MathUtils.clamp(alpha, 0.0f, 1.0f);
 			getSprite().setColor(1.0f, 1.0f, 1.0f, alpha);
@@ -150,13 +216,17 @@ public class SamuraiOnigiri extends SpriteActor {
 		else if(collisionOccurred && (currentFrame == frameAmount-1))
 			init();
 	}
-	
+
 	public void hit() {
 		// losowanie 60, 120, -60, -120
-		
-		getSprite().setTexture(new Texture(Gdx.files.internal("onigiriSamuraiDead.png")));
+
+
 		collisionOccurred = true;
 		collisionPos.set(getX(), getY());
 		angle = angleOptions[MathUtils.random(0, 3)];
+		
+		shadow.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		shadow2.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);	
+		shadow3.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 	}
 }

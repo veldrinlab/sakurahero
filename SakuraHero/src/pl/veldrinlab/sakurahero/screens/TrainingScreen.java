@@ -55,21 +55,21 @@ import com.badlogic.gdx.utils.Array;
 public class TrainingScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
 
 	public PauseScreen pauseScreen;
-	
+
 	private SakuraHero game;
 	private MultitouchGestureDetector inputDetector;
 	private InputMultiplexer inputMultiplexer;
 
 	// w³aœciwy kod stanu
-	
+
 	private SpriteBatch sceneBatch;
 	private Stage sceneStage;
-	
+
 	//TODO hud class
 	private SpriteBatch hudBatch;
 	private Stage hudStage;
 	private SpriteActor pauseButton;
-	
+
 
 	// katana swing
 	private KatanaSwing katana;
@@ -81,36 +81,46 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private SpriteActor background;
 	private SpriteBatch backgroundBatch;
 	private Stage backgroundStage;
-	
+
 	private SamuraiOnigiri enemy;
 	private NinjaOnigiri enemy2;
 	private OniOnigiri enemy3;
-	
+
 	// test
-	
+
 	private float slashTimer;
-	
+
 	// gui 
 	private int pointAmount;
 	private Label points;
-	private Label hit;
-	private Label combo;
-	
-	private int comboAmount;
-	
+
+
 	private SpriteActor katanaLevelBar;
 	private SpriteActor katanaLevelBackground;
 	private Label katanaLevelInfo;
 	private int katanaLevel;
-	
-	
+
+
 	// state logic flow
-	
+
 	private float flowAccumulator;
 	private Label stateMessage;
+
+
+	// msq flow control - mo¿e jakaœ dodatkowa struktura do tego TODO? 
+
+	private Label hit;
+	private int hitAmount;
+	private float hitAccumulator;
+	private final float HIT_DURATION = 2.0f;
+	private float hitAlpha;
+
+	private Label combo;
+	private int comboAmount;
+	private float comboAlpha;
 	
 	
-	
+
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
 
@@ -121,19 +131,19 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 		enemy = new SamuraiOnigiri(game.resources.getTexture("onigiriSamurai"),game.resources.getTexture("explosion"));
 		enemy.init();
-		
+
 		enemy2 = new NinjaOnigiri(game.resources.getTexture("onigiriNinja"),game.resources.getTexture("explosion"));
 		enemy2.init();
-		
+
 		enemy3 = new OniOnigiri(game.resources.getTexture("onigiriOni"),game.resources.getTexture("explosion"));
 		enemy3.init();
-		
+
 		//TODO katana
 		katana = new KatanaSwing();
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
 
-			
+
 		//
 		sceneBatch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
@@ -141,29 +151,37 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		sceneStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sceneBatch);
 		hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
 		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
-		
-		
+
+
 		//
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 		LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
 		stateMessage = new Label("", style);
-		
-		combo = new Label(String.valueOf(comboAmount) + " Onigiri Combo",style);
-		combo.setTouchable(Touchable.disabled);
-		combo.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+
 		//
 		background = new SpriteActor(game.resources.getTexture("dojo"));
-		
-		
+
+
 		pointAmount = 0;
-		points = new Label("Points: " + String.valueOf(pointAmount), style);
+		points = new Label("Points: " + String.valueOf(pointAmount), styleSmall);
 		points.setTouchable(Touchable.disabled);
-		
-		
+
+
 		katanaLevelBackground = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
 		katanaLevelBar = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
 		katanaLevel = 0;
 		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),styleSmall);
+
+
+		// msg flow 
+
+		//TODO hit i combo czcionka inna i kolor odpowiedni! Ten Mario Bros font bedzie dobry
+		hit = new Label(String.valueOf(hitAmount) + " Hit!", style);
+		hit.setTouchable(Touchable.disabled);
+		combo = new Label(String.valueOf(comboAmount) + "  Combo!",style);
+		combo.setTouchable(Touchable.disabled);
+		
 	}
 
 	@Override
@@ -189,10 +207,10 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public void processLogic(final float deltaTime) {
 		//TODO jakiœ fajniejszy pomys³ na konkretne stany??
-		
+
 		//for tests
 		flowAccumulator += deltaTime*10.75f;
-		
+
 		if(flowAccumulator < 1.0f) {
 			stateMessage.setColor(1.0f,1.0f,1.0f,flowAccumulator);
 		}
@@ -220,53 +238,133 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		else { // typical training state
 			//
 			stateMessage.setText("");
-			
+
 			enemy.update(deltaTime);
 			enemy2.update(deltaTime);
 			enemy3.update(deltaTime);
-			
+
 			// collisiom detection
-			
-			// 
-			comboAmount = 0;
-			
+
+
+			// liczba zabitych per klatka
+
+			int enemyHitAmount = 0;
+
 			if(input.size > 3) {
 
 				//TODO update explosion inside
 				enemy.explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
 				enemy2.explosion.getSprite().setPosition(enemy2.getSprite().getX(), enemy2.getSprite().getY());
-				
+
 				for(int i = 0; i < input.size; ++i) {
 
 					if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
 						enemy.hit();
+						enemyHitAmount++;
 						comboAmount++;
-						Gdx.app.log("collision"," occurred");
-						break;
+						//Gdx.app.log("collision"," occurred");
 					}
 					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-						enemy2.hit();
-						comboAmount++;
-						Gdx.app.log("collision"," occurred");
-						break;
+						if(enemy2.hit()) { //TODO lepiej
+							enemyHitAmount++;
+							comboAmount++;
+							Gdx.app.log("collision"," occurred");
+						}
 					}
 					else if(!enemy3.collisionOccurred && enemy3.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
 						enemy3.hit();
+						enemyHitAmount++;
 						comboAmount++;
-						Gdx.app.log("collision"," occurred");
-						break;
+						//Gdx.app.log("collision"," occurred");
 					}
 				}
 			}
+
+
+			if(hitAmount > 0) {
+				// bylo juz cos zabite
+
+				if(enemyHitAmount > 0) {
+					// zabiliœmy znowy
+					hitAmount += enemyHitAmount;
+					hitAlpha = 1.0f;
+
+					hit.setText(String.valueOf(hitAmount) + " Hit!");
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+				}
+				else {
+					//nic nie zabilismy
+					hitAccumulator += deltaTime;
+					hitAlpha -= deltaTime*0.5f;	
+
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+
+					if(hitAccumulator > HIT_DURATION) {
+						hitAmount = 0;
+						hitAccumulator = 0.0f;
+						hitAlpha = 0.0f;
+					}
+
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+				}
+
+
+			}
+			else if(hitAmount == 0 && enemyHitAmount > 0)  {
+				// jezeli zaczynamy zabijac 
+				hitAccumulator += deltaTime;
+				hitAlpha = 1.0f;
+
+				hitAmount += enemyHitAmount;
+
+				hit.setText(String.valueOf(hitAmount) + " Hit!"); 
+				//TODO pozycja odpowiednia
+				hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+			}
+
 			
-			//TODO potrzebny akumulator na utrzymanie stanu - klasa HUD wchodzi w grê teraz bo burdel siê robi
 			if(comboAmount > 0) {
-				combo.setText(String.valueOf(comboAmount) + " Onigiri Combo");
+				
+				if(enemyHitAmount > 1) {
+					comboAlpha = 1.0f;
+					comboAmount = enemyHitAmount;
+					
+					//TODO pozycja odpowiednia
+					combo.setText(String.valueOf(comboAmount) + " Combo!"); 
+					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+					combo.setPosition(0.0f, hit.getTextBounds().height); 
+				}
+				else {
+					//by³o ju¿ combo
+					comboAlpha -= deltaTime;
+					
+					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+					
+					if(comboAlpha < 0.00001f)
+						comboAmount = 0;					
+				}
+			}
+			else if(comboAmount == 0 && enemyHitAmount > 1) {
+				comboAlpha = 1.0f;
+				comboAmount = enemyHitAmount;
+				
+				//TODO pozycja odpowiednia
+				combo.setText(String.valueOf(comboAmount) + " Combo!"); 
+				combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+				combo.setPosition(0.0f, hit.getTextBounds().height);
+			}
+
+			
+			
+			if(comboAmount > 0) {
+				combo.setText(String.valueOf(comboAmount) + " Combo!");
 				combo.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 			else
 				combo.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 
+			
+			
 			katana.update(input);
 
 			katanaTime += deltaTime;
@@ -277,7 +375,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 				input.pop();
 				katanaTime = 0.0f;
 			}
-			
+
 		}
 	}
 
@@ -308,19 +406,26 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		//		}
 
 		//	Gdx.input.setInputProcessor(inputDetector);
-		
-		
+
+
 
 		backgroundStage.addActor(background);
-		
+
 		//TODO to jakoœ po³¹czyæ ze sob¹
+		sceneStage.addActor(enemy.shadow3);
+		sceneStage.addActor(enemy.shadow2);
+		sceneStage.addActor(enemy.shadow);
+
 		sceneStage.addActor(enemy);
 		sceneStage.addActor(enemy.explosion);
 		sceneStage.addActor(enemy2);
 		sceneStage.addActor(enemy2.explosion);
 		sceneStage.addActor(enemy3);
 		sceneStage.addActor(enemy3.explosion);
-		
+
+
+
+
 		//TODO hud stage
 		hudStage.addActor(pauseButton);
 		hudStage.addActor(stateMessage);
@@ -332,7 +437,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		//		Gdx.input.setInputProcessor(inputDetector);
 		//		Gdx.input.setInputProcessor(this);
 
-		
+
 		// logic
 		flowAccumulator = 0.0f;
 		stateMessage.setTouchable(Touchable.disabled);
@@ -340,35 +445,55 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
 		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
 		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
-		
-		hudStage.addActor(combo);
+
 		hudStage.addActor(points);
-		
+
 		hudStage.addActor(katanaLevelBackground);
 		hudStage.addActor(katanaLevelInfo);
 		hudStage.addActor(katanaLevelBar);
-		
-		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.05f);	
+
+		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.025f);	
 		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
-		
+
 		katanaLevelBackground.getSprite().setY(Configuration.getHeight() - katanaLevelBackground.getSprite().getHeight());
 		katanaLevelBackground.getSprite().setX(Configuration.getWidth()-katanaLevelBackground.getSprite().getWidth());
-		
+
 		katanaLevelBar.getSprite().setY(Configuration.getHeight() - katanaLevelBar.getSprite().getHeight());
 		katanaLevelBar.getSprite().setX(Configuration.getWidth()-katanaLevelBar.getSprite().getWidth());
-		
+
 		katanaLevelInfo.setX(katanaLevelBackground.getSprite().getX()+katanaLevelBackground.getSprite().getWidth()*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
 		katanaLevelInfo.setY(katanaLevelBackground.getSprite().getY()-katanaLevelBackground.getSprite().getHeight()*0.5f);
-		
+
 		//katanaLevelBackground.getSprite().setRotation(180.0f);
-		
+
 		//292 czyli 100 % miecza daje 228 pikseli
-		
+
 		katanaLevelBar.getSprite().setSize(164,62);
 		katanaLevelBar.getSprite().setRegion(0,0, 164, 62);
-		
+
 		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.45f);
-		katanaLevelBar.getSprite().setColor(1.0f, 105.0f/255.0f, 188.0f/255.0f, 1.0f);
+		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+		// pause button hud
+		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
+
+
+		//hit/combo msg
+		hitAmount = 0;
+		hitAccumulator = 0.0f;
+		hitAlpha = 0.0f;
+
+		hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+
+		comboAmount = 0;
+		comboAlpha = 0.0f;
+		
+		combo.setColor(1.0f,1.0f,1.0f,comboAlpha);
+		
+		hudStage.addActor(hit);
+		hudStage.addActor(combo);
+		
 	}
 
 	@Override
@@ -403,7 +528,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			//	if(Configuration.getInstance().musicOn)
 			//	gameMusic.pause();
 
-			Gdx.app.log("test", "test");
+			//	Gdx.app.log("test", "test");
 			game.setScreen(pauseScreen);
 		}
 
@@ -490,14 +615,14 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		Gdx.app.log("touch", " dragged");
+		//	Gdx.app.log("touch", " dragged");
 		// jakis maksymalny rozmiar swinga
 
 		slashTimer += Timer.TIME_STEP;
-		
+
 		if(slashTimer > 0.2f)
 			return true;
-		
+
 		final float maxLength = 10.0f;
 
 		float swingLength = 0.0f;
@@ -505,7 +630,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		for(int i = 0; i < input.size-1; ++i)
 			swingLength += input.get(i).dst(input.get(i+1));
 
-	//	Gdx.app.log("distance", String.valueOf(swingLength));
+		//	Gdx.app.log("distance", String.valueOf(swingLength));
 
 		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
 
