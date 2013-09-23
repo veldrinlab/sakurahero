@@ -355,13 +355,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			}
 
 			
-			
-			if(comboAmount > 0) {
-				combo.setText(String.valueOf(comboAmount) + " Combo!");
-				combo.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-			}
-			else
-				combo.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 			
 			
