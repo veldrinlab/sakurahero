@@ -90,15 +90,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	private float slashTimer;
 
-	// gui 
-	private int pointAmount;
-	private Label points;
 
-
-	private SpriteActor katanaLevelBar;
-	private SpriteActor katanaLevelBackground;
-	private Label katanaLevelInfo;
-	private int katanaLevel;
 
 
 	// state logic flow
@@ -109,17 +101,28 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	// msq flow control - mo¿e jakaœ dodatkowa struktura do tego TODO? 
 
+	// system hit
 	private Label hit;
 	private int hitAmount;
 	private float hitAccumulator;
 	private final float HIT_DURATION = 2.0f;
 	private float hitAlpha;
 
+	// system combo
 	private Label combo;
 	private int comboAmount;
 	private float comboAlpha;
 	
-	
+	// system points
+	private int pointAmount;
+	private Label points;
+
+	// system katana level
+
+	private SpriteActor katanaLevelBar;
+	private SpriteActor katanaLevelBackground;
+	private Label katanaLevelInfo;
+	private int katanaLevel;
 
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
@@ -262,12 +265,14 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 						enemy.hit();
 						enemyHitAmount++;
 						comboAmount++;
+						pointAmount += 10;
 						//Gdx.app.log("collision"," occurred");
 					}
 					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
 						if(enemy2.hit()) { //TODO lepiej
 							enemyHitAmount++;
 							comboAmount++;
+							pointAmount += 10;
 							Gdx.app.log("collision"," occurred");
 						}
 					}
@@ -275,6 +280,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 						enemy3.hit();
 						enemyHitAmount++;
 						comboAmount++;
+						pointAmount += 10;
 						//Gdx.app.log("collision"," occurred");
 					}
 				}
@@ -329,6 +335,9 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 					comboAlpha = 1.0f;
 					comboAmount = enemyHitAmount;
 					
+					// bonus za Combo
+					pointAmount += comboAmount*100;
+					
 					//TODO pozycja odpowiednia
 					combo.setText(String.valueOf(comboAmount) + " Combo!"); 
 					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
@@ -347,6 +356,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			else if(comboAmount == 0 && enemyHitAmount > 1) {
 				comboAlpha = 1.0f;
 				comboAmount = enemyHitAmount;
+				pointAmount += comboAmount*100;
 				
 				//TODO pozycja odpowiednia
 				combo.setText(String.valueOf(comboAmount) + " Combo!"); 
@@ -370,6 +380,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			}
 
 		}
+		
+		points.setText("Points: " + String.valueOf(pointAmount));
 	}
 
 	@Override
