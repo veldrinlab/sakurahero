@@ -123,6 +123,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private SpriteActor katanaLevelBackground;
 	private Label katanaLevelInfo;
 	private int katanaLevel;
+	private float katanaExp;
+	
 
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
@@ -266,6 +268,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 						enemyHitAmount++;
 						comboAmount++;
 						pointAmount += 10;
+						katanaExp += 0.1f; //TODO z levelu na level coraz trudniej - jakiœ geometryczny wspó³czynnik
 						//Gdx.app.log("collision"," occurred");
 					}
 					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
@@ -273,6 +276,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 							enemyHitAmount++;
 							comboAmount++;
 							pointAmount += 10;
+							katanaExp += 0.1f;
 							Gdx.app.log("collision"," occurred");
 						}
 					}
@@ -281,6 +285,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 						enemyHitAmount++;
 						comboAmount++;
 						pointAmount += 10;
+						katanaExp += 0.1f;
 						//Gdx.app.log("collision"," occurred");
 					}
 				}
@@ -338,6 +343,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 					// bonus za Combo
 					pointAmount += comboAmount*100;
 					
+					//TODO katana exp boost
+					
 					//TODO pozycja odpowiednia
 					combo.setText(String.valueOf(comboAmount) + " Combo!"); 
 					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
@@ -358,6 +365,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 				comboAmount = enemyHitAmount;
 				pointAmount += comboAmount*100;
 				
+				//TODO katana exp boost
+				
 				//TODO pozycja odpowiednia
 				combo.setText(String.valueOf(comboAmount) + " Combo!"); 
 				combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
@@ -365,8 +374,15 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			}
 
 			
-
+			// katana system
 			
+			if(katanaExp > 1.0f) {
+				katanaExp = 0.0f;
+				katanaLevel++;
+				katanaLevelInfo.setText("Level " + katanaLevel);
+			}
+			katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
+			katanaLevelBar.getSprite().setRegion(0,0, (int)(katanaExp*228)+64, 62);
 			
 			katana.update(input);
 
@@ -469,22 +485,14 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		katanaLevelInfo.setX(katanaLevelBackground.getSprite().getX()+katanaLevelBackground.getSprite().getWidth()*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
 		katanaLevelInfo.setY(katanaLevelBackground.getSprite().getY()-katanaLevelBackground.getSprite().getHeight()*0.5f);
 
-		//katanaLevelBackground.getSprite().setRotation(180.0f);
 
-		//292 czyli 100 % miecza daje 228 pikseli
-
-		katanaLevelBar.getSprite().setSize(164,62);
-		katanaLevelBar.getSprite().setRegion(0,0, 164, 62);
-
-		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.45f);
-		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 
 		// pause button hud
 		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
 
 
-		//hit/combo msg
+		//hit/combo system
 		hitAmount = 0;
 		hitAccumulator = 0.0f;
 		hitAlpha = 0.0f;
@@ -498,6 +506,17 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		
 		hudStage.addActor(hit);
 		hudStage.addActor(combo);
+		
+		//katana level system
+		
+		//292 czyli 100 % miecza daje 228 pikseli
+
+		katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
+		katanaLevelBar.getSprite().setRegion(0,0, (int)katanaExp*228+64, 62);
+
+		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);
+		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 		
 	}
 
