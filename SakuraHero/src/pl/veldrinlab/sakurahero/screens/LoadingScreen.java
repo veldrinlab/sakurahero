@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,6 +9,7 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
@@ -19,16 +19,13 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	private SakuraHero game;
 	private GestureDetector inputDetector;
-
+	private FallingLeavesEffect fallingSakura;
+	
 	private SceneEntity background;
-
-	private SceneEntity logoAng;
+	private SceneEntity logo;
+	private SceneEntity loadingStatus;
 	private SceneEntity katana;
-	private SceneEntity shine;
-
-	//TODO maybe change to only one later - when we will have TextureAtlas for all GUI elements. One SceneEntity - status
-	private SceneEntity loading;
-	private SceneEntity tapToContinue;
+	private SceneEntity shineEffect;
 
 	private boolean fadeState;
 	private boolean loadingState;
@@ -38,39 +35,40 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	private float fadeInAlpha;
 	private float blinking;
-
-	// katana animation
-
 	private Vector2 direction;
 	private float timeDistance;
 	private float velocity;
-
-	// shine animation
 	private float shineTime;
 
-
-	//
-	private FallingLeavesEffect fallingSakura;
-
+	//test
+	TextureAtlas atlas;
+	
 	public LoadingScreen(final SakuraHero game) {
 		this.game = game;
 
 		background = new SceneEntity(game.resources.getTexture("menuBackground"));
 				
+		//test
+		atlas = game.resources.getTextureAtlas("englishAtlas");
+		
+		logo = new SceneEntity(atlas.createSprite("logo"));
+		loadingStatus = new SceneEntity(atlas.createSprite("loading"));
+			
 		katana = new SceneEntity(game.resources.getTexture("katana"));
-		shine = new SceneEntity(game.resources.getTexture("shine"));
+		shineEffect = new SceneEntity(game.resources.getTexture("shine"));
 
-		shine.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		shine.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
+		shineEffect.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		shineEffect.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
 
-		// katana
 		direction = new Vector2(-1.0f,-1.0f);
 		timeDistance = 0.75f;
 		velocity = 750.0f;
-
-		//shine
 		shineTime = 1.0f;
-
+		fallingSakura = game.fallingSakura;
+		fadeState = true;
+		fallingSakura.setLeavesAlpha(0.0f);
+		
+		initializeInterface();
 		inputDetector = new GestureDetector(this);
 	}
 
@@ -83,26 +81,15 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	public void processLogic(final float deltaTime) {
 
 		fallingSakura.updateEffect(deltaTime);
-		/*
-		 * STATE data flow
-		 * 
-		 * Fade in with loading
-		 * Loading 
-		 * Finish loading - change to tap to start
-		 * Perform katana animation
-		 * Start blinking and up screen ready to finish flag
-		 * 
-		 */
-
 
 		if(fadeState) {
 			fadeInAlpha += deltaTime*1.0f;
 			fadeInAlpha = MathUtils.clamp(fadeInAlpha, 0.0f, 1.0f);
 
 			background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-			loading.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-			logoAng.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-
+			logo.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+			loadingStatus.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+		
 			if(fadeInAlpha > 0.99f) {
 				fadeState = false;
 				loadingState = true;
@@ -111,11 +98,11 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 			}
 		}
 		else if(loadingState) {
-			//load
-			if(game.resources.updateLoading()) {
-
-				//if loading completed
-				loading.getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
+			if(game.resources.updateLoading()) {	
+				loadingStatus.changeEntitySprite(atlas.createSprite("tapToContinue"));
+				loadingStatus.getSprite().setX((Configuration.getWidth()-loadingStatus.getSprite().getWidth())*0.5f);
+				loadingStatus.getSprite().setY(Configuration.getHeight()*0.25f -loadingStatus.getSprite().getHeight());
+				loadingStatus.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 				loadingState = false;
 				katanaState = true;
 			}
@@ -139,7 +126,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		}
 		else if(shineState) {
 			//TODO sword slash sound
-			shine.getSprite().setColor(1.0f, 1.0f, 1.0f, shineTime);
+			shineEffect.getSprite().setColor(1.0f, 1.0f, 1.0f, shineTime);
 			
 			shineTime -= deltaTime;
 			
@@ -150,13 +137,10 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 				shineState = false;
 				readyToGo = true;				
 			}
-			
-			
-
 		}
 		else if(readyToGo) {
 			blinking += deltaTime*5.0f;
-			tapToContinue.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
+			loadingStatus.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
 		}			
 	}
 
@@ -201,74 +185,21 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void show() {	
-
-		//TU NIE LOGIKA, to ogarniaæ kwestie zawartoœci sceny tylko i wy³¹cznie, ew. init jak coœ siê powtarza
-		// jednorazowa logika show() w konstruktorze
 		
-		//		Renderer.enterOrthoMode();
 		//		if(Configuration.getInstance().musicOn) {
 		//			menuMusic.play();
 		//			menuMusic.setVolume(0.1f);
 		//		}
 		//
 		
-		//TODO mo¿e jakoœ inaczej? choæ show jest raz wiêc jeden chuj
-		
-	
-//		if(game.options.language == Language.ENGLISH) {
-//			loading = new SceneEntity(game.resources.getTexture("loadingAng"));
-//			tapToContinue = new SceneEntity(game.resources.getTexture("tapToAng"));
-//			logoAng = new SceneEntity(game.resources.getTexture("logoAng"));
-//			
-//			
-//			
-//		}
-//		else {
-//			loading = new SceneEntity(game.resources.getTexture("loadingJap"));
-//			tapToContinue = new SceneEntity(game.resources.getTexture("tapToJap"));
-//			logoAng = new SceneEntity(game.resources.getTexture("logoJap"));
-//		}
-		
-		
-		// test atlasu
-		
-		
-		logoAng = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
-		loading = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
-		tapToContinue = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
-		
-		logoAng.getSprite().setRegion(0, 310, 700, 150);
-		logoAng.getSprite().setSize(700, 150);
-		
-		loading.getSprite().setRegion(602, 182, 240, 50);
-		loading.getSprite().setSize(240, 50);
-		
-		tapToContinue.getSprite().setRegion(0, 124, 600, 60);
-		tapToContinue.getSprite().setSize(600, 60);
-		
-		
-		fallingSakura = game.fallingSakura;
-		
 		Renderer.backgroundStage.addActor(background);
 		
 		Renderer.hudStage.addActor(katana);
-		Renderer.hudStage.addActor(logoAng);
-		Renderer.hudStage.addActor(loading);
-		Renderer.hudStage.addActor(tapToContinue);
-		Renderer.hudStage.addActor(shine);
+		Renderer.hudStage.addActor(logo);
+		Renderer.hudStage.addActor(loadingStatus);
+		Renderer.hudStage.addActor(shineEffect);
 
-		fadeState = true;
-
-		fallingSakura.setLeavesAlpha(0.0f);
-		
-		background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-		logoAng.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-		loading.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-		tapToContinue.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
 		Gdx.input.setInputProcessor(inputDetector);
-		
-//		
-		initializeInterface();
 	}
 
 	@Override
@@ -287,23 +218,18 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {
+		
+		background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+		logo.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+		loadingStatus.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+				
+		logo.getSprite().setX((Configuration.getWidth()-logo.getSprite().getWidth())*0.5f);	
+		logo.getSprite().setY(Configuration.getHeight()*0.80f - logo.getSprite().getHeight());
 
-		logoAng.getSprite().setX((Configuration.getWidth()-logoAng.getSprite().getWidth())*0.5f);	
-		logoAng.getSprite().setY(Configuration.getHeight()*0.80f - logoAng.getSprite().getHeight());
+		loadingStatus.getSprite().setX((Configuration.getWidth()-loadingStatus.getSprite().getWidth())*0.5f);
+		loadingStatus.getSprite().setY(Configuration.getHeight()*0.25f -loadingStatus.getSprite().getHeight());
 
-		katana.getSprite().setX((Configuration.getWidth()-katana.getSprite().getWidth())*0.5f);	
-		katana.getSprite().setY(Configuration.getHeight()*1.00f - katana.getSprite().getHeight());
-
-		//TODO smarter
 		katana.getSprite().setPosition(325.0f, 480.0f-15.0f-katana.getSprite().getHeight());
-
-		loading.getSprite().setX((Configuration.getWidth()-loading.getSprite().getWidth())*0.5f);
-		loading.getSprite().setY(Configuration.getHeight()*0.25f -loading.getSprite().getHeight());
-
-		tapToContinue.getSprite().setX((Configuration.getWidth()-tapToContinue.getSprite().getWidth())*0.5f);
-		tapToContinue.getSprite().setY(Configuration.getHeight()*0.25f -tapToContinue.getSprite().getHeight());
-
-		//ruch katany
 
 		float x = katana.getSprite().getX();
 		float y = katana.getSprite().getY();

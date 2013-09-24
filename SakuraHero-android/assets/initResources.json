@@ -91,9 +91,9 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/englishAtlas.png",
+			"path" : "img/hud/englishAtlas.atlas",
 			"name" : "englishAtlas",
-			"type" : "TEXTURE"
+			"type" : "ATLAS"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",

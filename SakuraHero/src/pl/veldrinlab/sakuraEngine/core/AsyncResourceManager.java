@@ -12,18 +12,20 @@ import pl.veldrinlab.sakuraEngine.utils.ResourceType;
 import pl.veldrinlab.sakuraEngine.utils.ShaderDescriptor;
 import pl.veldrinlab.sakuraEngine.utils.ShaderLoader;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+
+//TODO fonty potrafi wczytywaæ!!
 
 /**
  * Class represents Sakura Engine Asynchronous Resource Manager. It is used to load, store and release game resource like meshes, textures, shaders, fonts and audio.
@@ -78,6 +80,8 @@ public class AsyncResourceManager {
 
 				if(desc.type == ResourceType.TEXTURE)
 					assets.load(desc.path, Texture.class);
+				else if(desc.type == ResourceType.ATLAS)
+					assets.load(desc.path, TextureAtlas.class);
 				else if(desc.type == ResourceType.SOUND)
 					assets.load(desc.path, Sound.class);
 				else if(desc.type == ResourceType.MUSIC)
@@ -189,6 +193,16 @@ public class AsyncResourceManager {
 	public Music getMusic(final String name) {
 		
 		return assets.get(resourceDescriptors.get(name), Music.class);
+	}
+	
+	/**
+	 * Accessor to loaded TextureAtlas resource
+	 * @param name is resource name id.
+	 * @return
+	 */
+	public TextureAtlas getTextureAtlas(final String name) {
+		
+		return assets.get(resourceDescriptors.get(name), TextureAtlas.class);
 	}
 	
 	/**

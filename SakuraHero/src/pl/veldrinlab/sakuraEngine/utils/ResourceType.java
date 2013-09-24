@@ -8,6 +8,7 @@ package pl.veldrinlab.sakuraEngine.utils;
 public enum ResourceType {
 	MESH,
 	TEXTURE,
+	ATLAS,
 	SHADER,
 	SOUND,
 	MUSIC

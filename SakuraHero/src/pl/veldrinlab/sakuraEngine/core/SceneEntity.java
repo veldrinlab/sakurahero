@@ -31,7 +31,7 @@ public class SceneEntity extends Actor {
 	
 	/**
 	 * Class constructor, creates spirte.
-	 * @param splashTexture is sprite texture.
+	 * @param texture is sprite texture.
 	 */
 	public SceneEntity(final Texture texture) {	
 		sprite = new Sprite(texture);	
@@ -39,14 +39,40 @@ public class SceneEntity extends Actor {
 		velocity = new Vector3();
 		collisionCircle = new Circle();
 	}
+	
+	/**
+	 * Class constructor, creates SceneEntity from TextureAtlas.
+	 * @param sprite is reference to Sprite created from TextureAtlas.
+	 */
+	public SceneEntity(final Sprite sprite) {	
+		this.sprite = sprite;
+		position = new Vector2();
+		velocity = new Vector3();
+		collisionCircle = new Circle();
+	}
 
 	/**
-	 * Class constructor, creates spirte with defined name.
-	 * @param splashTexture is sprite texture.
+	 * Class constructor, creates Sprite with defined name.
+	 * @param texture is sprite texture.
 	 * @param name is Actor name;
 	 */
 	public SceneEntity(final Texture texture, final String name) {
 		sprite = new Sprite(texture);
+		
+		setName(name);
+		setTouchable(Touchable.enabled);
+		setWidth(sprite.getWidth());
+		setHeight(sprite.getHeight());
+		setBounds(0, 0, getWidth(), getHeight());
+	}
+	
+	/**
+	 * Class constructor, creates SceneEntity with defined name.
+	 * @param texture is sprite texture.
+	 * @param name is Actor name;
+	 */
+	public SceneEntity(final Sprite sprite, final String name) {
+		this.sprite = sprite;
 		
 		setName(name);
 		setTouchable(Touchable.enabled);
@@ -65,6 +91,10 @@ public class SceneEntity extends Actor {
 		sprite.draw(batch);
 	}
 	
+	
+	public void changeEntitySprite(final Sprite sprite) {
+		this.sprite = sprite;
+	}
 	
 	//TODO paczkê metod zamiast tego
 	

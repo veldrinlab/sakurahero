@@ -1,142 +1,142 @@
 
-japaneseGUI.png
+japaneseAtlas.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-logoJap
+logo
   rotate: false
   xy: 0, 310
   size: 700, 150
   orig: 700, 150
   offset: 0, 0
   index: -1
-worldSelectionJap
+worldSelection
   rotate: false
   xy: 0, 248
   size: 620, 60
   orig: 620, 60
   offset: 0, 0
   index: -1
-modeSelectionJap
+modeSelection
   rotate: false
   xy: 0, 186
   size: 600, 60
   orig: 600, 60
   offset: 0, 0
   index: -1
-tapToContinueJap
+tapToContinue
   rotate: false
   xy: 0, 124
   size: 600, 60
   orig: 600, 60
   offset: 0, 0
   index: -1
-gameOverJap
+gameOver
   rotate: false
   xy: 0, 62
   size: 440, 60
   orig: 440, 60
   offset: 0, 0
   index: -1
-pauseJap
+pause
   rotate: false
   xy: 0, 0
   size: 340, 60
   orig: 340, 60
   offset: 0, 0
   index: -1
-creditsBigJap
+creditsBig
   rotate: false
   xy: 702, 400
   size: 300, 60
   orig: 300, 60
   offset: 0, 0
   index: -1
-optionsBigJap
+optionsBig
   rotate: false
   xy: 702, 338
   size: 300, 60
   orig: 300, 60
   offset: 0, 0
   index: -1
-tryAgainJap
+tryAgain
   rotate: false
   xy: 702, 286
   size: 300, 50
   orig: 300, 50
   offset: 0, 0
   index: -1
-resumeJap
+resume
   rotate: false
   xy: 622, 234
   size: 340, 50
   orig: 340, 50
   offset: 0, 0
   index: -1
-loadingJap
+loading
   rotate: false
   xy: 602, 182
   size: 240, 50
   orig: 240, 50
   offset: 0, 0
   index: -1
-creditsJap
+credits
   rotate: false
   xy: 602, 132
   size: 240, 48
   orig: 240, 48
   offset: 0, 0
   index: -1
-optionsJap
+options
   rotate: false
   xy: 602, 82
   size: 240, 48
   orig: 240, 48
   offset: 0, 0
   index: -1
-akiJap
+aki
   rotate: false
   xy: 442, 62
   size: 150, 60
   orig: 150, 60
   offset: 0, 0
   index: -1
-natsuJap
+natsu
   rotate: false
   xy: 342, 0
   size: 230, 60
   orig: 230, 60
   offset: 0, 0
   index: -1
-menuJap
+menu
   rotate: false
   xy: 594, 20
   size: 220, 60
   orig: 220, 60
   offset: 0, 0
   index: -1
-backJap
+back
   rotate: false
   xy: 844, 182
   size: 150, 50
   orig: 150, 50
   offset: 0, 0
   index: -1
-exitJap
+exit
   rotate: false
   xy: 844, 132
   size: 160, 48
   orig: 160, 48
   offset: 0, 0
   index: -1
-playJap
+play
   rotate: false
   xy: 844, 82
   size: 140, 48
   orig: 140, 48
   offset: 0, 0
   index: -1
-menuSmallJap
+menuSmall
   rotate: false
   xy: 816, 32
   size: 180, 48
