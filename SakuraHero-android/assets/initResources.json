@@ -19,38 +19,56 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "selectLanguage.png",
+			"path" : "img/hud/selectLanguage.png",
 			"name" : "selectLanguage",	
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "english.png",
+			"path" : "img/hud/english.png",
 			"name" : "english",	
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "nihongo.png",
+			"path" : "img/hud/japanese.png",
 			"name" : "japanese",	
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "loading.png",
+			"path" : "img/hud/loading.png",
 			"name" : "loadingAng",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "tapToContinue.png",
+			"path" : "img/hud/loadingJap.png",
+			"name" : "loadingJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/tapToContinue.png",
 			"name" : "tapToAng",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "logoAng.png",
+			"path" : "img/hud/tapToContinueJap.png",
+			"name" : "tapToJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/logoAng.png",
 			"name" : "logoAng",	
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/logoJap.png",
+			"name" : "logoJap",
 			"type" : "TEXTURE"
 		},
 		{
@@ -73,20 +91,14 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "logoJap.png",
-			"name" : "logoJap",
+			"path" : "img/hud/englishAtlas.png",
+			"name" : "englishAtlas",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "loadingJap.png",
-			"name" : "loadingJap",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "tapToJap.png",
-			"name" : "tapToJap",
+			"path" : "img/hud/japaneseAtlas.png",
+			"name" : "japaneseAtlas",
 			"type" : "TEXTURE"
 		}
 	],

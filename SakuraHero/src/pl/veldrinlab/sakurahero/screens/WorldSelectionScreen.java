@@ -2,6 +2,7 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,15 +11,11 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class WorldSelectionScreen extends GameScreen implements GestureListener  {
 
@@ -32,38 +29,25 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	private SceneEntity background;
 	private SceneEntity worldSelection;
+	private SceneEntity natsu;
+	private SceneEntity aki;
 	private SceneEntity back;
 
 	private SceneEntity natsuBackground;
 	private SceneEntity akiBackground;
-	private Label natsu;
-	private Label aki;
 
 
-	//TODO dla japoñskiego - kanji
 
 	public WorldSelectionScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
 		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
-		worldSelection = new SceneEntity(new Texture(Gdx.files.internal("worldSelection.png")));
-		back = new SceneEntity(game.resources.getTexture("back"),"Back");
 
-		natsuBackground = new SceneEntity(game.resources.getTexture("natsu"),"natsu");
-		akiBackground = new SceneEntity(game.resources.getTexture("aki"),"aki");
-
-
-		//TODO to tylko dla angielskiego - chyba ¿e dorzuæ to do atlasó gui poszczególnych jêzyków
-
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
-
-		aki = new Label("Aki",style);	
-		natsu = new Label("Natsu",style);
+		natsuBackground = new SceneEntity(game.resources.getTexture("natsuBackground"),"natsuBackground");
+		akiBackground = new SceneEntity(game.resources.getTexture("akiBackground"),"akiBackground");
 
 		inputDetector = new GestureDetector(this);    
-
-		initializeInterface();
 
 	}
 
@@ -106,16 +90,23 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 	@Override
 	public void show() {
 
-		//		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-		//			options = new SceneEntity(game.resources.getTexture("optionsBig"));
-		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-		//
-		//		}
-		//		else {
-		//			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
-		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-		//		}
+		//TODO Aki/Natsu
+		if(game.options.language == Language.ENGLISH) {
+			worldSelection = new SceneEntity(game.resources.getTexture("worldSelection"));
+			back = new SceneEntity(game.resources.getTexture("back"),"Back");
+			aki = new SceneEntity(game.resources.getTexture("aki"));	
+			natsu = new SceneEntity(game.resources.getTexture("natsu"));
 
+
+		}
+		else {
+			worldSelection = new SceneEntity(game.resources.getTexture("worldSelectionJap"));
+			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
+			aki = new SceneEntity(game.resources.getTexture("akiJap"));	
+			natsu = new SceneEntity(game.resources.getTexture("natsuJap"));
+		}
+		
+		initializeInterface();
 
 		Renderer.backgroundStage.addActor(background);
 
@@ -176,13 +167,10 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		natsuBackground.setBounds(natsuBackground.getSprite().getX(), natsuBackground.getSprite().getY(), natsuBackground.getSprite().getWidth(), natsuBackground.getSprite().getHeight());
 		akiBackground.setBounds(akiBackground.getSprite().getX(), akiBackground.getSprite().getY(), akiBackground.getSprite().getWidth(), akiBackground.getSprite().getHeight());
 
-		natsu.setTouchable(Touchable.disabled);
-		aki.setTouchable(Touchable.disabled);
-
-		natsu.setX(natsuBackground.getSprite().getX()+natsuBackground.getSprite().getWidth()*0.5f-natsu.getTextBounds().width*0.5f);
-		natsu.setY(natsuBackground.getSprite().getY()-natsuBackground.getSprite().getHeight()*0.5f);
-		aki.setX(akiBackground.getSprite().getX()+akiBackground.getSprite().getWidth()*0.5f-aki.getTextBounds().width*0.5f);
-		aki.setY(akiBackground.getSprite().getY()-akiBackground.getSprite().getHeight()*0.5f);	
+		natsu.getSprite().setX(natsuBackground.getSprite().getX()+natsuBackground.getSprite().getWidth()*0.5f-natsu.getSprite().getWidth()*0.5f);
+		natsu.getSprite().setY(natsuBackground.getSprite().getY()-natsuBackground.getSprite().getHeight()*0.40f);
+		aki.getSprite().setX(akiBackground.getSprite().getX()+akiBackground.getSprite().getWidth()*0.5f-aki.getSprite().getWidth()*0.5f);
+		aki.getSprite().setY(akiBackground.getSprite().getY()-akiBackground.getSprite().getHeight()*0.40f);	
 	}
 
 	@Override

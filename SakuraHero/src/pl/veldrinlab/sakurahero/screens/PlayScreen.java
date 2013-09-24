@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.FixedList;
 import pl.veldrinlab.sakurahero.SakuraHero;
@@ -16,38 +15,15 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
-//
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 
 public class PlayScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
 
@@ -57,18 +33,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private MultitouchGestureDetector inputDetector;
 	private InputMultiplexer inputMultiplexer;
 
-	// na razie chuj tam z optymalizacj¹ tego - jakas scena z tego 
-	
-	private SpriteBatch backgroundBatch;
-	private Stage backgroundStage;
-	
-	private SpriteBatch sceneBatch;
-	private Stage sceneStage;
-	
-	//TODO hud class
-	private SpriteBatch hudBatch;
-	private Stage hudStage;
-	
 	// w³aœciwy kod
 	private SceneEntity pauseButton;
 	private SceneEntity background;
@@ -108,7 +72,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		this.game = game;
 
 		pauseButton = new SceneEntity(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SceneEntity(game.resources.getTexture("natsu"));
+		background = new SceneEntity(game.resources.getTexture("natsuBackground"));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
@@ -133,16 +97,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		katana = new KatanaSwing();
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
-
-		
-		
-		//
-		backgroundBatch = new SpriteBatch();
-		sceneBatch = new SpriteBatch();
-		hudBatch = new SpriteBatch();
-		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
-		sceneStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sceneBatch);
-		hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
 	}
 
 	@Override
@@ -258,14 +212,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void processRendering() { 
 		Renderer.clearScreen();
-		backgroundStage.draw();
+		Renderer.backgroundStage.draw();
 		tree.render();
-		sceneStage.draw();
+		Renderer.sceneStage.draw();
 		katana.draw(tree.sakuraTreeStage.getCamera());
-		hudStage.draw();
+		Renderer.hudStage.draw();
 		
 		fallingSakura.renderEffect();
-
 	}
 
 	@Override
@@ -294,16 +247,16 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		//
 		background.getSprite().setTexture(game.resources.getTexture(game.options.worldName));
-		backgroundStage.addActor(background);
+		Renderer.backgroundStage.addActor(background);
 		
 		//todo to jakoœ po³¹czyæ ze sob¹
-		sceneStage.addActor(enemy);
-		sceneStage.addActor(explosion);
+		Renderer.sceneStage.addActor(enemy);
+		Renderer.sceneStage.addActor(explosion);
 		
 		
 
 		//TODO hud stage
-		hudStage.addActor(pauseButton);
+		Renderer.hudStage.addActor(pauseButton);
 
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(inputDetector);
@@ -322,7 +275,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
+		Renderer.backgroundStage.clear();
+		Renderer.sceneStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -333,8 +288,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
 		Vector2 stageCoords = Vector2.Zero;
-		hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = hudStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		//test
 		fallingSakura.setFallingBoundary(stageCoords.x-32.0f, stageCoords.y, stageCoords.x+32.0f, stageCoords.y);

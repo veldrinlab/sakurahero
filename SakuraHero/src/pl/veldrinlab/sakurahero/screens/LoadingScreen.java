@@ -27,7 +27,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	private SceneEntity shine;
 
 	//TODO maybe change to only one later - when we will have TextureAtlas for all GUI elements. One SceneEntity - status
-	//TODO SceneEntity is very bad name. We had it in Cows and Expendables but it is really but I think.
 	private SceneEntity loading;
 	private SceneEntity tapToContinue;
 
@@ -215,16 +214,38 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		
 		//TODO mo¿e jakoœ inaczej? choæ show jest raz wiêc jeden chuj
 		
-		if(game.options.language == Language.ENGLISH) {
-			loading = new SceneEntity(game.resources.getTexture("loadingAng"));
-			tapToContinue = new SceneEntity(game.resources.getTexture("tapToAng"));
-			logoAng = new SceneEntity(game.resources.getTexture("logoAng"));
-		}
-		else {
-			loading = new SceneEntity(game.resources.getTexture("loadingJap"));
-			tapToContinue = new SceneEntity(game.resources.getTexture("tapToJap"));
-			logoAng = new SceneEntity(game.resources.getTexture("logoJap"));
-		}
+	
+//		if(game.options.language == Language.ENGLISH) {
+//			loading = new SceneEntity(game.resources.getTexture("loadingAng"));
+//			tapToContinue = new SceneEntity(game.resources.getTexture("tapToAng"));
+//			logoAng = new SceneEntity(game.resources.getTexture("logoAng"));
+//			
+//			
+//			
+//		}
+//		else {
+//			loading = new SceneEntity(game.resources.getTexture("loadingJap"));
+//			tapToContinue = new SceneEntity(game.resources.getTexture("tapToJap"));
+//			logoAng = new SceneEntity(game.resources.getTexture("logoJap"));
+//		}
+		
+		
+		// test atlasu
+		
+		
+		logoAng = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
+		loading = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
+		tapToContinue = new SceneEntity(game.resources.getTexture(game.options.language.getTextureAtlas()));
+		
+		logoAng.getSprite().setRegion(0, 310, 700, 150);
+		logoAng.getSprite().setSize(700, 150);
+		
+		loading.getSprite().setRegion(602, 182, 240, 50);
+		loading.getSprite().setSize(240, 50);
+		
+		tapToContinue.getSprite().setRegion(0, 124, 600, 60);
+		tapToContinue.getSprite().setSize(600, 60);
+		
 		
 		fallingSakura = game.fallingSakura;
 		
@@ -248,7 +269,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		
 //		
 		initializeInterface();
-		
 	}
 
 	@Override

@@ -16,41 +16,16 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
-//
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.utils.Array;
 
 public class TrainingScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
 
@@ -62,12 +37,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	// w³aœciwy kod stanu
 
-	private SpriteBatch sceneBatch;
-	private Stage sceneStage;
 
 	//TODO hud class
-	private SpriteBatch hudBatch;
-	private Stage hudStage;
 	private SceneEntity pauseButton;
 
 
@@ -79,8 +50,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	//
 	private SceneEntity background;
-	private SpriteBatch backgroundBatch;
-	private Stage backgroundStage;
 
 	private SamuraiOnigiri enemy;
 	private NinjaOnigiri enemy2;
@@ -148,21 +117,10 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
 
-
-		//
-		sceneBatch = new SpriteBatch();
-		hudBatch = new SpriteBatch();
-		backgroundBatch = new SpriteBatch();
-		sceneStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sceneBatch);
-		hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
-		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
-
-
 		//
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 		LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
 		stateMessage = new Label("", style);
-
 
 		//
 		background = new SceneEntity(game.resources.getTexture("dojo"));
@@ -403,10 +361,10 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public void processRendering() { 
 		Renderer.clearScreen(Color.LIGHT_GRAY);
-		backgroundStage.draw();
-		sceneStage.draw();
-		katana.draw(sceneStage.getCamera());
-		hudStage.draw();
+		Renderer.backgroundStage.draw();
+		Renderer.sceneStage.draw();
+		katana.draw(Renderer.sceneStage.getCamera());
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -427,28 +385,26 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 		//	Gdx.input.setInputProcessor(inputDetector);
 
-
-
-		backgroundStage.addActor(background);
+		Renderer.backgroundStage.addActor(background);
 
 		//TODO to jakoœ po³¹czyæ ze sob¹
-		sceneStage.addActor(enemy.shadow3);
-		sceneStage.addActor(enemy.shadow2);
-		sceneStage.addActor(enemy.shadow);
+		Renderer.sceneStage.addActor(enemy.shadow3);
+		Renderer.sceneStage.addActor(enemy.shadow2);
+		Renderer.sceneStage.addActor(enemy.shadow);
 
-		sceneStage.addActor(enemy);
-		sceneStage.addActor(enemy.explosion);
-		sceneStage.addActor(enemy2);
-		sceneStage.addActor(enemy2.explosion);
-		sceneStage.addActor(enemy3);
-		sceneStage.addActor(enemy3.explosion);
+		Renderer.sceneStage.addActor(enemy);
+		Renderer.sceneStage.addActor(enemy.explosion);
+		Renderer.sceneStage.addActor(enemy2);
+		Renderer.sceneStage.addActor(enemy2.explosion);
+		Renderer.sceneStage.addActor(enemy3);
+		Renderer.sceneStage.addActor(enemy3.explosion);
 
 
 
 
 		//TODO hud stage
-		hudStage.addActor(pauseButton);
-		hudStage.addActor(stateMessage);
+		Renderer.hudStage.addActor(pauseButton);
+		Renderer.hudStage.addActor(stateMessage);
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(inputDetector);
 		inputMultiplexer.addProcessor(this);
@@ -466,11 +422,11 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
 		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
 
-		hudStage.addActor(points);
+		Renderer.hudStage.addActor(points);
 
-		hudStage.addActor(katanaLevelBackground);
-		hudStage.addActor(katanaLevelInfo);
-		hudStage.addActor(katanaLevelBar);
+		Renderer.hudStage.addActor(katanaLevelBackground);
+		Renderer.hudStage.addActor(katanaLevelInfo);
+		Renderer.hudStage.addActor(katanaLevelBar);
 
 		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.025f);	
 		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
@@ -503,8 +459,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		
 		combo.setColor(1.0f,1.0f,1.0f,comboAlpha);
 		
-		hudStage.addActor(hit);
-		hudStage.addActor(combo);
+		Renderer.hudStage.addActor(hit);
+		Renderer.hudStage.addActor(combo);
 		
 		//katana level system
 		
@@ -526,7 +482,9 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
+		Renderer.backgroundStage.clear();
+		Renderer.sceneStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -537,8 +495,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
 		Vector2 stageCoords = Vector2.Zero;
-		hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = hudStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;
@@ -613,7 +571,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector2 stageCoords = new Vector2();
-		sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 		input.insert(stageCoords);
 		lastPoint.set(stageCoords.x, stageCoords.y);
@@ -661,7 +619,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 			Vector2 stageCoords = new Vector2();
 			//cos innego
-			sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 			// this is dst2 in Vector class
 			float lenSq = distSq(stageCoords,lastPoint);

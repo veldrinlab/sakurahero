@@ -2,146 +2,164 @@
 	"resources" : [
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menu.png",
+			"path" : "img/hud/menu.png",
 			"name" : "menu",	
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menuJap.png",
+			"path" : "img/hud/menuJap.png",
 			"name" : "menuJap",	
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "play.png",
+			"path" : "img/hud/play.png",
 			"name" : "play",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "playJap.png",
+			"path" : "img/hud/playJap.png",
 			"name" : "playJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "options.png",
+			"path" : "img/hud/options.png",
 			"name" : "options",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "optionsJap.png",
+			"path" : "img/hud/optionsJap.png",
 			"name" : "optionsJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "credits.png",
+			"path" : "img/hud/credits.png",
 			"name" : "credits",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "creditsJap.png",
+			"path" : "img/hud/creditsJap.png",
 			"name" : "creditsJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "optionsBig.png",
+			"path" : "img/hud/optionsBig.png",
 			"name" : "optionsBig",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "optionsBigJap.png",
+			"path" : "img/hud/optionsBigJap.png",
 			"name" : "optionsBigJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "creditsBig.png",
+			"path" : "img/hud/creditsBig.png",
 			"name" : "creditsBig",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "creditsBigJap.png",
+			"path" : "img/hud/creditsBigJap.png",
 			"name" : "creditsBigJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "exit.png",
+			"path" : "img/hud/exit.png",
 			"name" : "exit",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "exitJap.png",
+			"path" : "img/hud/exitJap.png",
 			"name" : "exitJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "back.png",
+			"path" : "img/hud/back.png",
 			"name" : "back",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "backJap.png",
+			"path" : "img/hud/backJap.png",
 			"name" : "backJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/pause.png",
+			"path" : "img/hud/pauseButton.png",
 			"name" : "pauseButton",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "pause.png",
+			"path" : "img/hud/pause.png",
 			"name" : "pause",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "resume.png",
+			"path" : "img/hud/pauseJap.png",
+			"name" : "pauseJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/resume.png",
 			"name" : "resume",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menuSmall.png",
+			"path" : "img/hud/resumeJap.png",
+			"name" : "resumeJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/menuSmall.png",
 			"name" : "menuSmall",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "menuSmallJap.png",
+			"path" : "img/hud/menuSmallJap.png",
 			"name" : "menuSmallJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "gameOver.png",
+			"path" : "img/hud/gameOver.png",
 			"name" : "gameOver",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "gameOverJap.png",
+			"path" : "img/hud/gameOverJap.png",
 			"name" : "gameOverJap",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "tryAgain.png",
+			"path" : "img/hud/tryAgain.png",
 			"name" : "tryAgain",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/tryAgainJap.png",
+			"name" : "tryAgainJap",
 			"type" : "TEXTURE"
 		},
 		{
@@ -183,13 +201,13 @@
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "img/scene/natsuBackground.png",
-			"name" : "natsu",
+			"name" : "natsuBackground",
 			"type" : "TEXTURE"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "img/scene/akiBackground.png",
-			"name" : "aki",
+			"name" : "akiBackground",
 			"type" : "TEXTURE"
 		},
 		{
@@ -202,6 +220,54 @@
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "katanaLevelBar.png",
 			"name" : "katanaLevelBar",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/modeSelection.png",
+			"name" : "modeSelection",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/modeSelectionJap.png",
+			"name" : "modeSelectionJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/worldSelection.png",
+			"name" : "worldSelection",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/worldSelectionJap.png",
+			"name" : "worldSelectionJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/natsu.png",
+			"name" : "natsu",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/natsuJap.png",
+			"name" : "natsuJap",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/aki.png",
+			"name" : "aki",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/hud/akiJap.png",
+			"name" : "akiJap",
 			"type" : "TEXTURE"
 		}
 	],

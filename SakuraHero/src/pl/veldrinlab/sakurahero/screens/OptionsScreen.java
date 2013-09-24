@@ -41,8 +41,6 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	private Label sound;
 	private Label soundState;
 
-	private float blinking;
-
 	public OptionsScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
@@ -51,7 +49,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		options = new SceneEntity(game.resources.getTexture("optionsBig"));
 		back = new SceneEntity(game.resources.getTexture("back"),"Back");
 
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
+		LabelStyle style = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
 
 		currentHighScore = new Label("High Score "+ 0,style);
 		currentSurvivalTime = new Label("Survival Time "+ 0 + " sec",style);
@@ -112,7 +110,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		}
 		else {
 			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
-			back = new SceneEntity(game.resources.getTexture("back"),"Back");
+			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
 		}
 
 		initializeInterface();
@@ -128,8 +126,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		Renderer.hudStage.addActor(musicState);
 		Renderer.hudStage.addActor(sound);
 		Renderer.hudStage.addActor(soundState);
-		
-	    	
+		    	
 		currentHighScore.setText("High Score "+ 0);
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
 		
@@ -143,15 +140,6 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
-		
-		blinking += deltaTime*5.0f;
-		
-		float alpha = (float) ((Math.sin(blinking)+1.0f)/2.0f);
-		
-		musicState.setColor(1.0f, 1.0f, 1.0f, alpha);
-		soundState.setColor(1.0f, 1.0f, 1.0f, alpha);
-		resetHighScore.setColor(1.0f, 1.0f, 1.0f, alpha);
-		//backToMenu.setColor(1.0f, 1.0f, 1.0f, alpha);
 	}
 
 	@Override

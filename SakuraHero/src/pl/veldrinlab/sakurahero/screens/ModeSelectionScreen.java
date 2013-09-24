@@ -12,17 +12,13 @@ import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.sun.xml.internal.fastinfoset.algorithm.BuiltInEncodingAlgorithm.WordListener;
 
 public class ModeSelectionScreen extends GameScreen implements GestureListener  {
 
@@ -53,8 +49,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		fallingSakura = game.fallingSakura;
 
 		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
-		modeSelection = new SceneEntity(new Texture(Gdx.files.internal("modeSelection.png")));
-		back = new SceneEntity(game.resources.getTexture("back"),"Back");
 		
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 
@@ -106,7 +100,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void resize(final int width, final int height) {
-		//	Renderer.defaultStage.setViewport(Configuration.getInstance().width, Configuration.getInstance().height, false);
+
 	}
 
 	@Override
@@ -117,15 +111,15 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	@Override
 	public void show() {
 
-		//		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-		//			options = new SceneEntity(game.resources.getTexture("optionsBig"));
-		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-		//
-		//		}
-		//		else {
-		//			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
-		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-		//		}
+		if(game.options.language == Language.ENGLISH) {
+			modeSelection = new SceneEntity(game.resources.getTexture("modeSelection"));
+			back = new SceneEntity(game.resources.getTexture("back"),"Back");
+
+		}
+		else {
+			modeSelection = new SceneEntity(game.resources.getTexture("modeSelectionJap"));
+			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
+		}
 
 		initializeInterface();
 

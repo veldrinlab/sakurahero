@@ -106,8 +106,8 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			pause = new SceneEntity(game.resources.getTexture("pause"));
-			resume = new SceneEntity(game.resources.getTexture("resume"),"Resume");
+			pause = new SceneEntity(game.resources.getTexture("pauseJap"));
+			resume = new SceneEntity(game.resources.getTexture("resumeJap"),"Resume");
 			menu = new SceneEntity(game.resources.getTexture("menuSmallJap"),"Menu");
 			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");	
 		}
