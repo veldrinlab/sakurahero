@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
-//to jest generalnie z³a nazwa, zmienic i zrobic cos z tego - SpriteActor
-public class SamuraiOnigiri extends SpriteActor {
+//to jest generalnie z³a nazwa, zmienic i zrobic cos z tego - SceneEntity
+public class SamuraiOnigiri extends SceneEntity {
 
 	//TODO animacja itp. - moze basowa klasa samego Enemy i jakies roznice w funkcji aktualizaujacej - cos w stylu wzorca Strategii
 
 	//fake motion blur
-	public SpriteActor shadow;
-	public SpriteActor shadow2;
-	public SpriteActor shadow3;
+	public SceneEntity shadow;
+	public SceneEntity shadow2;
+	public SceneEntity shadow3;
 	
 	// tor ruchu opracowac
 
@@ -28,7 +28,7 @@ public class SamuraiOnigiri extends SpriteActor {
 	public float deathAccum;
 
 	//TODO try to use Libgdx Animation class or write something own
-	public SpriteActor explosion;
+	public SceneEntity explosion;
 	private float animationAccumulator;
 	private int frameAmount = 15;
 	private int currentFrame = 0;
@@ -53,7 +53,7 @@ public class SamuraiOnigiri extends SpriteActor {
 		// TODO Auto-generated constructor stub
 
 		//TODO remove magic strings, use with/height 
-		explosion = new SpriteActor(explosionTexture);
+		explosion = new SceneEntity(explosionTexture);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
@@ -64,13 +64,13 @@ public class SamuraiOnigiri extends SpriteActor {
 		getSprite().setSize(128.0f, 128.0f);
 		getSprite().setOrigin(64,64);
 		
-		shadow = new SpriteActor(enemyTexture);	
+		shadow = new SceneEntity(enemyTexture);	
 		shadow.getSprite().setSize(128.0f, 128.0f);
 		
-		shadow2 = new SpriteActor(enemyTexture);
+		shadow2 = new SceneEntity(enemyTexture);
 		shadow2.getSprite().setSize(128.0f, 128.0f);
 		
-		shadow3 = new SpriteActor(enemyTexture);
+		shadow3 = new SceneEntity(enemyTexture);
 		shadow3.getSprite().setSize(128.0f, 128.0f);
 	}
 

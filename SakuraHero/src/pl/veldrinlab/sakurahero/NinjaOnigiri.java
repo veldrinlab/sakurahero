@@ -4,15 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
-public class NinjaOnigiri extends SpriteActor {
+public class NinjaOnigiri extends SceneEntity {
 
 	public boolean collisionOccurred;
 	public float deathAccum;
 	
 	//TODO try to use Libgdx Animation class or write something own
-	public SpriteActor explosion;
+	public SceneEntity explosion;
 	private float animationAccumulator;
 	private int frameAmount = 15;
 	private int currentFrame = 0;
@@ -30,7 +30,7 @@ public class NinjaOnigiri extends SpriteActor {
 	public NinjaOnigiri(Texture enemyTexture, final Texture explosionTexture) {
 		super(enemyTexture);
 		
-		explosion = new SpriteActor(explosionTexture);
+		explosion = new SceneEntity(explosionTexture);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;

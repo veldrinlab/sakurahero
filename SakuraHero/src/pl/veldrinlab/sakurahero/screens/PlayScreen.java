@@ -9,7 +9,7 @@ import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureDetector;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
@@ -70,8 +70,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private Stage hudStage;
 	
 	// w³aœciwy kod
-	private SpriteActor pauseButton;
-	private SpriteActor background;
+	private SceneEntity pauseButton;
+	private SceneEntity background;
 
 	// level Editor
 
@@ -83,10 +83,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private FallingLeavesEffect fallingSakura;
 	
 	// enemy
-	private SpriteActor enemy;
+	private SceneEntity enemy;
 
 	//TODO try to use Libgdx Animation class or write something own
-	private SpriteActor explosion;
+	private SceneEntity explosion;
 	private float animationAccumulator;
 	private int frameAmount = 15;
 	private int currentFrame = 0;
@@ -107,8 +107,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SpriteActor(game.resources.getTexture("natsu"));
+		pauseButton = new SceneEntity(game.resources.getTexture("pauseButton"),"Pause");
+		background = new SceneEntity(game.resources.getTexture("natsu"));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
@@ -119,12 +119,12 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 
 		//enemey
-		enemy = new SpriteActor(game.resources.getTexture("onigiriSamurai"));
+		enemy = new SceneEntity(game.resources.getTexture("onigiriSamurai"));
 
 		enemy.getSprite().setPosition(350.0f,200.0f);
 		enemy.collisionCircle.set(350.0f, 200.0f, 64.0f);
 
-		explosion = new SpriteActor(game.resources.getTexture("explosion"));
+		explosion = new SceneEntity(game.resources.getTexture("explosion"));
 		explosion.getSprite().setPosition(350.0f,200.0f);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
@@ -270,7 +270,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
+
 	}
 
 	@Override
@@ -293,7 +293,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 
 		//
-		background.getSprite().setTexture(game.resources.getTexture(Configuration.getWorldName()));
+		background.getSprite().setTexture(game.resources.getTexture(game.options.worldName));
 		backgroundStage.addActor(background);
 		
 		//todo to jakoœ po³¹czyæ ze sob¹
@@ -370,7 +370,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //		float rotation = MathUtils.random(0.0f, 360.0f);
 //
 //		//		// to nie tutaj jebnac
-//				SpriteActor flower = new SpriteActor(game.resources.getTexture("sakuraFlower"));
+//				SceneEntity flower = new SceneEntity(game.resources.getTexture("sakuraFlower"));
 //				flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
 //				flower.getSprite().setRotation(rotation);
 //				

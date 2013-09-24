@@ -6,23 +6,17 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 //TODO wszêdzie spadaj¹ce kwiaty wiœni - nawet je¿eli kosztem wielu wartsw renderingu - docelowo d¹¿ymy do jednej
-//TODO Stage per stan??
 public class MenuScreen extends GameScreen implements GestureListener {
 
 	public ModeSelectionScreen modeSelectionScreen;
@@ -32,24 +26,16 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 
-	private SpriteActor background;
-
-	private FallingLeavesEffect fallingSakura;
-	private SpriteBatch stateBatch;
-	private Stage stateStage;
-
-	//TODO pomyœleæ nad rendererm globalnym. Tylko po co? Mo¿e nie w Engine, a jakiœ custom na potrzeby Danego stanu - jeden na backgroud
-	//jeden na hud i jeden na scene. Reszte realizowaæ poprzez dodatki
-	//Jakis Renderer2D czy cos,
+	private SceneEntity background;
 	
-	private SpriteBatch backgroundBatch;
-	private Stage backgroundStage;
+	//
+	private FallingLeavesEffect fallingSakura;
 
-	private SpriteActor menu;
-	private SpriteActor play;
-	private SpriteActor options;
-	private SpriteActor credits;
-	private SpriteActor exit;
+	private SceneEntity menu;
+	private SceneEntity play;
+	private SceneEntity options;
+	private SceneEntity credits;
+	private SceneEntity exit;
 
 	private Music menuMusic;
 
@@ -57,19 +43,9 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));
-
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-
-		backgroundBatch = new SpriteBatch();
-		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
-
-
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));
 
 		inputDetector = new GestureDetector(this);
-		//		
-
 	}
 
 	@Override
@@ -84,9 +60,9 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processRendering() {	
 		Renderer.clearScreen();
-		backgroundStage.draw();
+		Renderer.backgroundStage.draw();
 		fallingSakura.renderEffect();
-		stateStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -107,7 +83,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void hide() {
-
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 		Gdx.input.setInputProcessor(null);
 	}
 
@@ -131,32 +108,31 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		//		}
 		//		
 
-		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-			menu = new SpriteActor(game.resources.getTexture("menu"));
-			play = new SpriteActor(game.resources.getTexture("play"),"Play");
-			options = new SpriteActor(game.resources.getTexture("options"),"Options");
-			credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
-			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		if(game.options.language == Language.ENGLISH) {
+			menu = new SceneEntity(game.resources.getTexture("menu"));
+			play = new SceneEntity(game.resources.getTexture("play"),"Play");
+			options = new SceneEntity(game.resources.getTexture("options"),"Options");
+			credits = new SceneEntity(game.resources.getTexture("credits"),"Credits");
+			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			menu = new SpriteActor(game.resources.getTexture("menu"));
-			play = new SpriteActor(game.resources.getTexture("play"),"Play");
-			options = new SpriteActor(game.resources.getTexture("options"),"Options");
-			credits = new SpriteActor(game.resources.getTexture("credits"),"Credits");
-			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+			menu = new SceneEntity(game.resources.getTexture("menuJap"));
+			play = new SceneEntity(game.resources.getTexture("playJap"),"Play");
+			options = new SceneEntity(game.resources.getTexture("optionsJap"),"Options");
+			credits = new SceneEntity(game.resources.getTexture("creditsJap"),"Credits");
+			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");
 		}
 
 		initializeInterface();
 
-		stateStage.clear();
-		backgroundStage.addActor(background);
+		Renderer.backgroundStage.addActor(background);
 
 
-		stateStage.addActor(menu);
-		stateStage.addActor(play);
-		stateStage.addActor(options);
-		stateStage.addActor(credits);
-		stateStage.addActor(exit);
+		Renderer.hudStage.addActor(menu);
+		Renderer.hudStage.addActor(play);
+		Renderer.hudStage.addActor(options);
+		Renderer.hudStage.addActor(credits);
+		Renderer.hudStage.addActor(exit);
 
 		Gdx.input.setInputProcessor(inputDetector);
 	}
@@ -219,8 +195,8 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public boolean tap(float arg0, float arg1, int arg2, int arg3) {	
 		Vector2 stageCoords = Vector2.Zero;
-		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;

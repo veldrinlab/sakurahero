@@ -7,15 +7,6 @@ public class Configuration {
 	
 	public ConfigurationDescriptor descriptor;
 	
-	// Game Options -> rozdzielic moze na DWA rodzaje conifgów, Config silnika i config gry?
-	
-	private Language language;
-	private SakuraHeroMode mode; //TODO zbedne?
-	// state
-	private boolean soundOn;
-	private boolean musicOn;
-	
-	private static String worldName;
 	
 
 	private Configuration() {
@@ -28,11 +19,6 @@ public class Configuration {
 		descriptor.windowTitle = "Sakura Hero - WIP";
 		descriptor.resourcePath = "resources.json";
 		descriptor.initResourcePath = "initResources.json";
-		
-		//
-		musicOn = soundOn = true;
-		language = Language.ENGLISH;
-		worldName = "natsu";
 	}
 
 	private static class ConfigurationHolder { 
@@ -68,21 +54,5 @@ public class Configuration {
 	
 	public static String getInitResourcePath() {
 		return ConfigurationHolder.instance.descriptor.initResourcePath;
-	}
-	
-	public Language getSelectedLanguage() {
-		return language;
-	}
-
-	public void setLanguage(final Language language) {
-		this.language = language;
-	}	
-	
-	public static void setWorldName(final String name) {
-		worldName = name;
-	}
-	
-	public static String getWorldName() {
-		return worldName;
 	}
 }

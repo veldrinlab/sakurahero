@@ -6,18 +6,16 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -30,16 +28,10 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	private GestureDetector inputDetector;
 
 	private FallingLeavesEffect fallingSakura;
-	private SpriteBatch stateBatch;
-	private Stage stateStage;
 
-	private SpriteBatch backgroundBatch;
-	private Stage backgroundStage;
-	
-	private SpriteActor background;
-	private SpriteActor options;
-	private SpriteActor back;
-
+	private SceneEntity background;
+	private SceneEntity options;
+	private SceneEntity back;
 
 	private Label currentHighScore;
 	private Label currentSurvivalTime;
@@ -55,18 +47,9 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-
-		backgroundBatch = new SpriteBatch();
-		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
-		
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
-		options = new SpriteActor(game.resources.getTexture("optionsBig"));
-		back = new SpriteActor(game.resources.getTexture("back"),"Back");
-
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
+		options = new SceneEntity(game.resources.getTexture("optionsBig"));
+		back = new SceneEntity(game.resources.getTexture("back"),"Back");
 
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 
@@ -89,8 +72,8 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
-		stateStage.clear();
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -122,29 +105,29 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void show() {
 
-		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-			options = new SpriteActor(game.resources.getTexture("optionsBig"));
-			back = new SpriteActor(game.resources.getTexture("back"),"Back");
+		if(game.options.language == Language.ENGLISH) {
+			options = new SceneEntity(game.resources.getTexture("optionsBig"));
+			back = new SceneEntity(game.resources.getTexture("back"),"Back");
 
 		}
 		else {
-			options = new SpriteActor(game.resources.getTexture("optionsBigJap"));
-			back = new SpriteActor(game.resources.getTexture("back"),"Back");
+			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
+			back = new SceneEntity(game.resources.getTexture("back"),"Back");
 		}
 
 		initializeInterface();
 
-		backgroundStage.addActor(background);
-		stateStage.addActor(options);
-		stateStage.addActor(back);
+		Renderer.backgroundStage.addActor(background);
+		Renderer.hudStage.addActor(options);
+		Renderer.hudStage.addActor(back);
 
-		stateStage.addActor(currentHighScore);
-		stateStage.addActor(currentSurvivalTime);
-		stateStage.addActor(resetHighScore);
-		stateStage.addActor(music);
-		stateStage.addActor(musicState);
-		stateStage.addActor(sound);
-		stateStage.addActor(soundState);
+		Renderer.hudStage.addActor(currentHighScore);
+		Renderer.hudStage.addActor(currentSurvivalTime);
+		Renderer.hudStage.addActor(resetHighScore);
+		Renderer.hudStage.addActor(music);
+		Renderer.hudStage.addActor(musicState);
+		Renderer.hudStage.addActor(sound);
+		Renderer.hudStage.addActor(soundState);
 		
 	    	
 		currentHighScore.setText("High Score "+ 0);
@@ -173,12 +156,10 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void processRendering() {
-		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
-		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		backgroundStage.draw();
+		Renderer.backgroundStage.draw();
 		fallingSakura.renderEffect();
-		stateStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -259,8 +240,8 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public boolean tap(float x, float y, int arg2, int arg3) {
 		Vector2 stageCoords = Vector2.Zero;
-		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;

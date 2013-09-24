@@ -6,7 +6,7 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
@@ -30,27 +30,21 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	private GestureDetector inputDetector;
 
 	private FallingLeavesEffect fallingSakura;
-	private SpriteBatch stateBatch;
-	private Stage stateStage;
 
-	private SpriteActor background;
-	private SpriteActor gameOver;
-	private SpriteActor tryAgain;
-	private SpriteActor backToMenu;
-	private SpriteActor exit;
+	private SceneEntity background;
+	private SceneEntity gameOver;
+	private SceneEntity tryAgain;
+	private SceneEntity backToMenu;
+	private SceneEntity exit;
 
 	private Label score; // to bedzie ciekawie zrobic przy pomocy tekstur - chyba, ¿e do tego u¿yjê jednak fontów
 	// w sumie fonty s¹ dobre wszêdzie - ale nie do wersji japoñskiej, wiêc opieram to na spritach - generyczna wersja
-
 
 	public GameOverScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));
 		inputDetector = new GestureDetector(this);
 	}
 
@@ -67,44 +61,37 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		//		}
 		//		
 		
-		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-			gameOver= new SpriteActor(game.resources.getTexture("gameOver"));
-			tryAgain = new SpriteActor(game.resources.getTexture("tryAgain"),"Try Again");
-			backToMenu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
-			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		if(game.options.language == Language.ENGLISH) {
+			gameOver= new SceneEntity(game.resources.getTexture("gameOver"));
+			tryAgain = new SceneEntity(game.resources.getTexture("tryAgain"),"Try Again");
+			backToMenu = new SceneEntity(game.resources.getTexture("menuSmall"),"Menu");
+			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			gameOver= new SpriteActor(game.resources.getTexture("gameOverJap"));
-			tryAgain = new SpriteActor(game.resources.getTexture("tryAgain"),"Try Again");
-			backToMenu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
-			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+			gameOver= new SceneEntity(game.resources.getTexture("gameOverJap"));
+			tryAgain = new SceneEntity(game.resources.getTexture("tryAgain"),"Try Again");
+			backToMenu = new SceneEntity(game.resources.getTexture("menuSmall"),"Menu");
+			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
 
 		}
-
-
-
-
 
 		initializeInterface();
 
-
-		Renderer.defaultStage.clear();
-		stateStage.clear();
-		Renderer.defaultStage.addActor(background);
+		Renderer.backgroundStage.addActor(background);
 
 		//Renderer.defaultStage.addActor(score);
-		stateStage.addActor(tryAgain);
-		stateStage.addActor(backToMenu);
-		stateStage.addActor(gameOver);
-		stateStage.addActor(exit);
+		Renderer.hudStage.addActor(tryAgain);
+		Renderer.hudStage.addActor(backToMenu);
+		Renderer.hudStage.addActor(gameOver);
+		Renderer.hudStage.addActor(exit);
 
 		Gdx.input.setInputProcessor(inputDetector);
 	}
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
-		Renderer.defaultStage.clear();
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -124,10 +111,9 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-
-		Renderer.defaultStage.draw();
+		Renderer.backgroundStage.draw();
 		fallingSakura.renderEffect();
-		stateStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -143,7 +129,6 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
 	}
 
 	@Override
@@ -212,8 +197,8 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	@Override
 	public boolean tap(float x, float y, int arg2, int arg3) {
 		Vector2 stageCoords = Vector2.Zero;
-		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;

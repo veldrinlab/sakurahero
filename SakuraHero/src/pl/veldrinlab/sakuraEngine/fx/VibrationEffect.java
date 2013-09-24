@@ -1,6 +1,6 @@
 package pl.veldrinlab.sakuraEngine.fx;
 
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -30,7 +30,7 @@ public class VibrationEffect extends PostEffect {
 
 		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
-		actor = new SpriteActor(renderTarget.getColorBufferTexture());
+		actor = new SceneEntity(renderTarget.getColorBufferTexture());
 		stage.addActor(actor);
 		actor.getSprite().flip(false,true);
 		finished = false;

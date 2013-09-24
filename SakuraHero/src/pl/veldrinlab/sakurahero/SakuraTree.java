@@ -1,6 +1,6 @@
 package pl.veldrinlab.sakurahero;
 
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,7 +17,7 @@ public class SakuraTree {
 	
 	public SakuraTreeDescriptor leaves;
 
-	public SpriteActor tree;
+	public SceneEntity tree;
 	public SpriteBatch sakuraTreeBatch;
 	public Stage sakuraTreeStage;
 	
@@ -26,7 +26,7 @@ public class SakuraTree {
 	public SakuraTree(final Texture treeTexture, final Texture leafTexture) {
 		this.leafTexture = leafTexture;
 		
-		tree = new SpriteActor(treeTexture);
+		tree = new SceneEntity(treeTexture);
 		tree.getSprite().setY(-10.0f);
 
 		sakuraTreeBatch = new SpriteBatch();
@@ -46,7 +46,7 @@ public class SakuraTree {
 		for(int i = 0; i < leaves.leaves.size; ++i) {
 			
 			// to nie tutaj jebnac
-			SpriteActor flower = new SpriteActor(leafTexture);
+			SceneEntity flower = new SceneEntity(leafTexture);
 			flower.getSprite().setPosition(leaves.leaves.get(i).x-flower.getSprite().getWidth()*0.5f, leaves.leaves.get(i).y-flower.getSprite().getHeight()*0.5f);
 			flower.getSprite().setRotation(leaves.leaves.get(i).rotation);
 

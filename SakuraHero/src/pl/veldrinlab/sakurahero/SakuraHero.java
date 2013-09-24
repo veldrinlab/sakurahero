@@ -32,7 +32,10 @@ public class SakuraHero extends Game {
 
 	public AsyncResourceManager resources;
 	public FallingLeavesEffect fallingSakura; //TODO jakoœ inaczej?
+	public GameOptions options;
+	
 	private Timer timer;
+	
 
 	private SplashScreen teamSplashScreen;
 	private SplashScreen engineSplashScreen;
@@ -104,7 +107,7 @@ public class SakuraHero extends Game {
 		
 		timer = new Timer();
 		resources = new AsyncResourceManager();
-		
+		options = new GameOptions();
 	
 		
 		initializeEngine();
@@ -128,7 +131,7 @@ public class SakuraHero extends Game {
 		// na pewno zwyk³y na points, fps i credits
 		
 		
-		Renderer.defaultFont = resources.getFont("defaultFont");	
+		
 		
 		// testable hack
 		
@@ -143,7 +146,7 @@ public class SakuraHero extends Game {
 	//	setScreen(playScreen);
 	//	setScreen(creditsScreen);
 	//	setScreen(optionsScreen);
-		setScreen(trainingScreen);
+	//	setScreen(trainingScreen);
 //		setScreen(modeSelectionScreen);
 ///		setScreen(playScreen);
 	//	Renderer.defaultShader = resources.getShader("defaultMesh");

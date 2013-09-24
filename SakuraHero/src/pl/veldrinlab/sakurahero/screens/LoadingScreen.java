@@ -6,38 +6,30 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class LoadingScreen extends GameScreen implements GestureListener {
 
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 
-	private SpriteActor background;
+	private SceneEntity background;
 
-	private SpriteActor logoAng;
-	private SpriteActor katana;
-	private SpriteActor shine;
+	private SceneEntity logoAng;
+	private SceneEntity katana;
+	private SceneEntity shine;
 
-	//TODO maybe change to only one later - when we will have TextureAtlas for all GUI elements. One SpriteActor - status
-	//TODO SpriteActor is very bad name. We had it in Cows and Expendables but it is really but I think.
-	private SpriteActor loading;
-	private SpriteActor tapToContinue;
-
+	//TODO maybe change to only one later - when we will have TextureAtlas for all GUI elements. One SceneEntity - status
+	//TODO SceneEntity is very bad name. We had it in Cows and Expendables but it is really but I think.
+	private SceneEntity loading;
+	private SceneEntity tapToContinue;
 
 	private boolean fadeState;
 	private boolean loadingState;
@@ -58,22 +50,16 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	private float shineTime;
 
 
-	// inne podejœcie do Stage - per stan tam gdzie jest to potrzebne
-	// trzeba zrobiæ nowy Renderer2D, wrzuciæ tam trochê ciekawych mo¿liwych renderingu do tekstury itp, bazowych danych
-	// 
 	//
 	private FallingLeavesEffect fallingSakura;
-	private SpriteBatch stateBatch;
-	private Stage stateStage;
-	
-	
+
 	public LoadingScreen(final SakuraHero game) {
 		this.game = game;
 
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));
 				
-		katana = new SpriteActor(game.resources.getTexture("katana"));
-		shine = new SpriteActor(game.resources.getTexture("shine"));
+		katana = new SceneEntity(game.resources.getTexture("katana"));
+		shine = new SceneEntity(game.resources.getTexture("shine"));
 
 		shine.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		shine.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
@@ -87,12 +73,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		shineTime = 1.0f;
 
 		inputDetector = new GestureDetector(this);
-		
-		
-		
-		//
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
 	}
 
 	@Override
@@ -184,9 +164,9 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processRendering() {	
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();
+		Renderer.backgroundStage.draw();
 		fallingSakura.renderEffect();
-		stateStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -202,14 +182,12 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		//TODO to jest chyba i tak zbêdne??/
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);	
 	}
 
 	@Override
 	public void hide() {
-		Renderer.defaultStage.clear();
-		Gdx.input.setInputProcessor(null);
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -237,27 +215,26 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		
 		//TODO mo¿e jakoœ inaczej? choæ show jest raz wiêc jeden chuj
 		
-		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-			loading = new SpriteActor(game.resources.getTexture("loadingAng"));
-			tapToContinue = new SpriteActor(game.resources.getTexture("tapToAng"));
-			logoAng = new SpriteActor(game.resources.getTexture("logoAng"));
+		if(game.options.language == Language.ENGLISH) {
+			loading = new SceneEntity(game.resources.getTexture("loadingAng"));
+			tapToContinue = new SceneEntity(game.resources.getTexture("tapToAng"));
+			logoAng = new SceneEntity(game.resources.getTexture("logoAng"));
 		}
 		else {
-			loading = new SpriteActor(game.resources.getTexture("loadingJap"));
-			tapToContinue = new SpriteActor(game.resources.getTexture("tapToJap"));
-			logoAng = new SpriteActor(game.resources.getTexture("logoJap"));
+			loading = new SceneEntity(game.resources.getTexture("loadingJap"));
+			tapToContinue = new SceneEntity(game.resources.getTexture("tapToJap"));
+			logoAng = new SceneEntity(game.resources.getTexture("logoJap"));
 		}
 		
 		fallingSakura = game.fallingSakura;
 		
-		Renderer.defaultStage.clear();		
-		Renderer.defaultStage.addActor(background);
+		Renderer.backgroundStage.addActor(background);
 		
-		stateStage.addActor(katana);
-		stateStage.addActor(logoAng);
-		stateStage.addActor(loading);
-		stateStage.addActor(tapToContinue);
-		stateStage.addActor(shine);
+		Renderer.hudStage.addActor(katana);
+		Renderer.hudStage.addActor(logoAng);
+		Renderer.hudStage.addActor(loading);
+		Renderer.hudStage.addActor(tapToContinue);
+		Renderer.hudStage.addActor(shine);
 
 		fadeState = true;
 
@@ -277,7 +254,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		stateStage.dispose();
 	}
 
 	@Override

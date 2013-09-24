@@ -9,7 +9,7 @@ import pl.veldrinlab.sakurahero.KatanaSwing;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureDetector;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
@@ -68,7 +68,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	//TODO hud class
 	private SpriteBatch hudBatch;
 	private Stage hudStage;
-	private SpriteActor pauseButton;
+	private SceneEntity pauseButton;
 
 
 	// katana swing
@@ -78,7 +78,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	Vector2 lastPoint = new Vector2();
 
 	//
-	private SpriteActor background;
+	private SceneEntity background;
 	private SpriteBatch backgroundBatch;
 	private Stage backgroundStage;
 
@@ -119,8 +119,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	// system katana level
 
-	private SpriteActor katanaLevelBar;
-	private SpriteActor katanaLevelBackground;
+	private SceneEntity katanaLevelBar;
+	private SceneEntity katanaLevelBackground;
 	private Label katanaLevelInfo;
 	private int katanaLevel;
 	private float katanaExp;
@@ -129,7 +129,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SpriteActor(game.resources.getTexture("pauseButton"),"Pause");
+		pauseButton = new SceneEntity(game.resources.getTexture("pauseButton"),"Pause");
 		inputDetector = new MultitouchGestureDetector(this);
 
 		//enemy
@@ -165,7 +165,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 
 		//
-		background = new SpriteActor(game.resources.getTexture("dojo"));
+		background = new SceneEntity(game.resources.getTexture("dojo"));
 
 
 		pointAmount = 0;
@@ -173,8 +173,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		points.setTouchable(Touchable.disabled);
 
 
-		katanaLevelBackground = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
-		katanaLevelBar = new SpriteActor(game.resources.getTexture("katanaLevelBar"));
+		katanaLevelBackground = new SceneEntity(game.resources.getTexture("katanaLevelBar"));
+		katanaLevelBar = new SceneEntity(game.resources.getTexture("katanaLevelBar"));
 		katanaLevel = 0;
 		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),styleSmall);
 
@@ -411,7 +411,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void resize(final int width, final int height) {
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
 	}
 
 	@Override

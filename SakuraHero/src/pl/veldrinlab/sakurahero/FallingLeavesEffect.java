@@ -1,6 +1,6 @@
 package pl.veldrinlab.sakurahero;
 
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +15,7 @@ public class FallingLeavesEffect {
 	private SpriteBatch effectBatch;
 	private Stage effectStage;
 	
-	private Array<SpriteActor> leaves;
+	private Array<SceneEntity> leaves;
 	private float sakuraAccumulator;
 	
 	private Rectangle boundary;
@@ -26,19 +26,19 @@ public class FallingLeavesEffect {
 		effectBatch = new SpriteBatch();
 		effectStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,effectBatch);
 		
-		leaves = new Array<SpriteActor>();
+		leaves = new Array<SceneEntity>();
 		boundary = new Rectangle(0.0f,0.0f,Configuration.getWidth(),Configuration.getHeight());
 		
 		fallingVelocity = 50.0f;
 	
 		for(int i = 0; i < amount; i++) {
-			SpriteActor leaf = new SpriteActor(texture);
+			SceneEntity leaf = new SceneEntity(texture);
 			leaves.add(leaf);
 		}
 	}
 	
 	public void initializeEffect() {
-		for(SpriteActor a : leaves) {
+		for(SceneEntity a : leaves) {
 			a.getSprite().setPosition(MathUtils.random(boundary.x, boundary.width), MathUtils.random(boundary.y, boundary.height));
 			a.rotationVelocity = MathUtils.random(0.0f, 1.0f);
 			effectStage.addActor(a);
@@ -47,7 +47,7 @@ public class FallingLeavesEffect {
 	
 	public void setLeavesAlpha(final float alpha) {
 		
-		for(SpriteActor actor : leaves)
+		for(SceneEntity actor : leaves)
 			actor.getSprite().setColor(1.0f,1.0f, 1.0f, alpha);
 	}
 	

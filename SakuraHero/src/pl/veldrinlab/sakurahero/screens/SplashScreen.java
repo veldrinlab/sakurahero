@@ -1,10 +1,9 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
 
@@ -24,7 +23,7 @@ public class SplashScreen extends GameScreen {
 	private GameScreen nextScreen;
 	
 	private SakuraHero game;
-	private SpriteActor splash;
+	private SceneEntity splash;
 	private FadeEffectParameters fade;
 	
 	private float effectTime;
@@ -34,7 +33,7 @@ public class SplashScreen extends GameScreen {
     	this.game = game;
     	this.fade = fadeParams;
     	this.nextScreen = nextScreen;
-    	splash = new SpriteActor(game.resources.getTexture(fadeParams.textureName));
+    	splash = new SceneEntity(game.resources.getTexture(fadeParams.textureName));
     }
     
 	@Override
@@ -44,7 +43,7 @@ public class SplashScreen extends GameScreen {
 
 	@Override
 	public void processLogic(final float deltaTime) {
-			
+		
 		if((fade.skippable && fade.skippableWhileFadingIn && Gdx.input.justTouched()) || elapsedTime > effectTime) {
 			game.setScreen(nextScreen);
 			dispose();
@@ -63,11 +62,12 @@ public class SplashScreen extends GameScreen {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen(Color.BLACK);
-		Renderer.defaultStage.draw();	
+		Renderer.backgroundStage.draw();
 	}
     
 	@Override
 	public void render(final float deltaTime) {
+		
 		if(deltaTime > 0.5f)
 			return;
 		
@@ -82,13 +82,11 @@ public class SplashScreen extends GameScreen {
 
 	@Override
 	public void resize(int width, int height) {
-		//Renderer.defaultStage.setViewport(Configuration.getInstance().descriptor.width, Configuration.getInstance().descriptor.height, false);
 	}
 	
 	@Override
 	public void hide() {
-		Renderer.defaultStage.clear();
-		Gdx.input.setInputProcessor(null);
+		Renderer.backgroundStage.clear();
 	}
 
 	@Override
@@ -105,11 +103,8 @@ public class SplashScreen extends GameScreen {
 	public void show() {
 		effectTime = fade.fadeInTime + fade.stayTime + fade.fadeOutTime;
 		elapsedTime = 0.0f;
-		
 		splash.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
-		
-		Renderer.defaultStage.addActor(splash);
-    	Gdx.input.setInputProcessor(Renderer.defaultStage);
+		Renderer.backgroundStage.addActor(splash);
 	}
 
 	@Override

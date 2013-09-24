@@ -6,7 +6,7 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
@@ -35,19 +35,14 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	private GestureDetector inputDetector;
 
 	private FallingLeavesEffect fallingSakura;
-	private SpriteBatch stateBatch;
-	private Stage stateStage;
-
-	private SpriteBatch backgroundBatch;
-	private Stage backgroundStage;
 	
-	private SpriteActor background;
-	private SpriteActor modeSelection;
-	private SpriteActor back;
+	private SceneEntity background;
+	private SceneEntity modeSelection;
+	private SceneEntity back;
 
-	private SpriteActor normalEmblem;
-	private SpriteActor survivalEmblem;
-	private SpriteActor trainingEmblem;
+	private SceneEntity normalEmblem;
+	private SceneEntity survivalEmblem;
+	private SceneEntity trainingEmblem;
 	
 	private Label normal;
 	private Label survival;
@@ -57,19 +52,9 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-
-
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));  
-		modeSelection = new SpriteActor(new Texture(Gdx.files.internal("modeSelection.png")));
-		back = new SpriteActor(game.resources.getTexture("back"),"Back");
-
-		stateBatch = new SpriteBatch();
-		stateStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,stateBatch);
-
-		backgroundBatch = new SpriteBatch();
-		backgroundStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,backgroundBatch);
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
+		modeSelection = new SceneEntity(new Texture(Gdx.files.internal("modeSelection.png")));
+		back = new SceneEntity(game.resources.getTexture("back"),"Back");
 		
 		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
 
@@ -78,11 +63,10 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		training = new Label("Training",style);
 
 		inputDetector = new GestureDetector(this);    
-
-		
-		normalEmblem = new SpriteActor(game.resources.getTexture("onigiriSamurai"));
-		survivalEmblem = new SpriteActor(game.resources.getTexture("onigiriOni"));
-		trainingEmblem = new SpriteActor(game.resources.getTexture("onigiriNinja"));
+	
+		normalEmblem = new SceneEntity(game.resources.getTexture("onigiriSamurai"));
+		survivalEmblem = new SceneEntity(game.resources.getTexture("onigiriOni"));
+		trainingEmblem = new SceneEntity(game.resources.getTexture("onigiriNinja"));
 		
 		normalEmblem.getSprite().setRegion(0, 0, 128, 128);
 		survivalEmblem.getSprite().setRegion(0, 0, 128, 128);
@@ -100,8 +84,8 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
-		stateStage.clear();
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -134,28 +118,28 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	public void show() {
 
 		//		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-		//			options = new SpriteActor(game.resources.getTexture("optionsBig"));
-		//			back = new SpriteActor(game.resources.getTexture("back"),"Back");
+		//			options = new SceneEntity(game.resources.getTexture("optionsBig"));
+		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
 		//
 		//		}
 		//		else {
-		//			options = new SpriteActor(game.resources.getTexture("optionsBigJap"));
-		//			back = new SpriteActor(game.resources.getTexture("back"),"Back");
+		//			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
+		//			back = new SceneEntity(game.resources.getTexture("back"),"Back");
 		//		}
 
 		initializeInterface();
 
-		backgroundStage.addActor(background);
-		stateStage.addActor(modeSelection);
-		stateStage.addActor(back);
+		Renderer.backgroundStage.addActor(background);
+		Renderer.hudStage.addActor(modeSelection);
+		Renderer.hudStage.addActor(back);
 
-		stateStage.addActor(normal);
-		stateStage.addActor(survival);
-		stateStage.addActor(training);
+		Renderer.hudStage.addActor(normal);
+		Renderer.hudStage.addActor(survival);
+		Renderer.hudStage.addActor(training);
 		
-		stateStage.addActor(normalEmblem);
-		stateStage.addActor(survivalEmblem);
-		stateStage.addActor(trainingEmblem);
+		Renderer.hudStage.addActor(normalEmblem);
+		Renderer.hudStage.addActor(survivalEmblem);
+		Renderer.hudStage.addActor(trainingEmblem);
 		
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}
@@ -167,18 +151,14 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	@Override
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
-
-
 	}
 
 	@Override
 	public void processRendering() {
-		//TODO pytanie czy nie layer dodatkowy do backgrounda? tak dzia³a³o to z Rendererem?
-		// w tym projekcie mo¿e ju¿ rozwin¹æ silnik o to
 		Renderer.clearScreen();
-		backgroundStage.draw();
+		Renderer.backgroundStage.draw();
 		fallingSakura.renderEffect();
-		stateStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -240,8 +220,8 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	@Override
 	public boolean tap(float x, float y, int arg2, int arg3) {
 		Vector2 stageCoords = Vector2.Zero;
-		stateStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = stateStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;

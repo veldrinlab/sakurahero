@@ -5,7 +5,7 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
@@ -29,12 +29,12 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	private FrameBuffer renderTarget;
 	private Stage pauseStage;
 	private SpriteBatch pauseBatch;
-	private SpriteActor pauseBackground;
+	private SceneEntity pauseBackground;
 
-	private SpriteActor pause;
-	private SpriteActor resume;
-	private SpriteActor menu;
-	private SpriteActor exit;
+	private SceneEntity pause;
+	private SceneEntity resume;
+	private SceneEntity menu;
+	private SceneEntity exit;
 
 	private float alpha;
 
@@ -44,7 +44,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		pauseBatch = new SpriteBatch();
 		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
 		pauseStage = new Stage(Configuration.getWidth(), Configuration.getHeight(), false, pauseBatch);
-		pauseBackground = new SpriteActor(renderTarget.getColorBufferTexture());
+		pauseBackground = new SceneEntity(renderTarget.getColorBufferTexture());
 		pauseBackground.getSprite().flip(false,true);
 
 		inputDetector = new GestureDetector(this);
@@ -99,17 +99,17 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 		// TO ju¿ w taki sposób nie mo¿e byæ! i nie bêdzie na koñcu, teraz tesowo taka architektrua
 
-		if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
-			pause = new SpriteActor(game.resources.getTexture("pause"));
-			resume = new SpriteActor(game.resources.getTexture("resume"),"Resume");
-			menu = new SpriteActor(game.resources.getTexture("menuSmall"),"Menu");
-			exit = new SpriteActor(game.resources.getTexture("exit"),"Exit");
+		if(game.options.language == Language.ENGLISH) {
+			pause = new SceneEntity(game.resources.getTexture("pause"));
+			resume = new SceneEntity(game.resources.getTexture("resume"),"Resume");
+			menu = new SceneEntity(game.resources.getTexture("menuSmall"),"Menu");
+			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
 		}
 		else {
-			pause = new SpriteActor(game.resources.getTexture("pause"));
-			resume = new SpriteActor(game.resources.getTexture("resume"),"Resume");
-			menu = new SpriteActor(game.resources.getTexture("menuSmallJap"),"Menu");
-			exit = new SpriteActor(game.resources.getTexture("exitJap"),"Exit");	
+			pause = new SceneEntity(game.resources.getTexture("pause"));
+			resume = new SceneEntity(game.resources.getTexture("resume"),"Resume");
+			menu = new SceneEntity(game.resources.getTexture("menuSmallJap"),"Menu");
+			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");	
 		}
 		
 		initializeInterface();

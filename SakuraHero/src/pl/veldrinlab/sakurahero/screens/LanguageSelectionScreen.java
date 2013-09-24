@@ -5,12 +5,11 @@ import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,10 +29,10 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	private GestureDetector inputDetector;
 	private FadeEffectParameters fade;
 
-	private SpriteActor background;
-	private SpriteActor selection;
-	private SpriteActor english;
-	private SpriteActor japanese;
+	private SceneEntity background;
+	private SceneEntity selection;
+	private SceneEntity english;
+	private SceneEntity japanese;
 
 	private boolean fadeInState;
 	private boolean selectState;
@@ -47,10 +46,10 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 		this.fade = fadeParams;
 		this.nextScreen = nextScreen;
 
-		background = new SpriteActor(game.resources.getTexture("menuBackground"));
-		selection = new SpriteActor(game.resources.getTexture("selectLanguage"));
-		english = new SpriteActor(game.resources.getTexture("english"),"English");
-		japanese = new SpriteActor(game.resources.getTexture("japanese"),"Japanese");
+		background = new SceneEntity(game.resources.getTexture("menuBackground"));
+		selection = new SceneEntity(game.resources.getTexture("selectLanguage"));
+		english = new SceneEntity(game.resources.getTexture("english"),"English");
+		japanese = new SceneEntity(game.resources.getTexture("japanese"),"Japanese");
 		blinking = 1.0f;
 		inputDetector = new GestureDetector(this);    
 		
@@ -94,7 +93,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 			background.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
 			selection.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
 
-			if(Configuration.getInstance().getSelectedLanguage() == Language.ENGLISH) {
+			if(game.options.language == Language.ENGLISH) {
 				english.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
 				japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 			}
@@ -111,7 +110,8 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-		Renderer.defaultStage.draw();	
+		Renderer.backgroundStage.draw();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
@@ -127,13 +127,12 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public void resize(int width, int height) {
-		Renderer.defaultStage.setViewport(Configuration.getWidth(), Configuration.getHeight(), false);
 	}
 
 	@Override
 	public void hide() {
-		Renderer.defaultStage.clear();
-		Gdx.input.setInputProcessor(null);
+		Renderer.backgroundStage.clear();
+		Renderer.hudStage.clear();
 	}
 
 	@Override
@@ -155,10 +154,10 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 		english.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 
-		Renderer.defaultStage.addActor(background);
-		Renderer.defaultStage.addActor(selection);
-		Renderer.defaultStage.addActor(english);
-		Renderer.defaultStage.addActor(japanese);
+		Renderer.backgroundStage.addActor(background);
+		Renderer.hudStage.addActor(selection);
+		Renderer.hudStage.addActor(english);
+		Renderer.hudStage.addActor(japanese);
 
 		Gdx.input.setInputProcessor(inputDetector);
 	}
@@ -177,8 +176,8 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		Vector2 stageCoords = Vector2.Zero;
-		Renderer.defaultStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.defaultStage.hit(stageCoords.x, stageCoords.y, true);
+		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
 		if(actor == null)
 			return false;
@@ -189,9 +188,9 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 			elapsedTime = 0.0f;
 
 			if(actor.getName().equals("English"))
-				Configuration.getInstance().setLanguage(Language.ENGLISH);
+				game.options.language = Language.ENGLISH;
 			else
-				Configuration.getInstance().setLanguage(Language.JAPANESE);
+				game.options.language = Language.JAPANESE;
 		}
 
 		return true;

@@ -1,7 +1,7 @@
 package pl.veldrinlab.sakuraEngine.fx;
 
 import pl.veldrinlab.sakuraEngine.core.Renderer;
-import pl.veldrinlab.sakuraEngine.core.SpriteActor;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -16,7 +16,7 @@ public abstract class PostEffect extends SpecialEffect {
 
 	protected FrameBuffer renderTarget;
 	protected Stage stage;
-	protected SpriteActor actor;
+	protected SceneEntity actor;
 	
 	/**
 	 * Class constructor. Initailize Special Effect batch.
