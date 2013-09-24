@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pl.veldrinlab.sakuraEngine.utils.AssetDescriptor;
-import pl.veldrinlab.sakuraEngine.utils.FontDescriptor;
-import pl.veldrinlab.sakuraEngine.utils.FontLoader;
 import pl.veldrinlab.sakuraEngine.utils.MeshLoader;
 import pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor;
 import pl.veldrinlab.sakuraEngine.utils.ResourceType;
@@ -24,8 +22,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-
-//TODO fonty potrafi wczytywaæ!!
 
 /**
  * Class represents Sakura Engine Asynchronous Resource Manager. It is used to load, store and release game resource like meshes, textures, shaders, fonts and audio.
@@ -48,7 +44,6 @@ public class AsyncResourceManager {
 		assets = new AssetManager();
 		assets.setLoader(ShaderProgram.class, new ShaderLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Mesh.class, new MeshLoader(new InternalFileHandleResolver()));
-		assets.setLoader(BitmapFont.class, new FontLoader(new InternalFileHandleResolver()));
 		resourceDescriptors = new HashMap<String, String>();
 	}
 
@@ -82,6 +77,8 @@ public class AsyncResourceManager {
 					assets.load(desc.path, Texture.class);
 				else if(desc.type == ResourceType.ATLAS)
 					assets.load(desc.path, TextureAtlas.class);
+				else if(desc.type == ResourceType.FONT)
+					assets.load(desc.path, BitmapFont.class);
 				else if(desc.type == ResourceType.SOUND)
 					assets.load(desc.path, Sound.class);
 				else if(desc.type == ResourceType.MUSIC)
@@ -97,13 +94,6 @@ public class AsyncResourceManager {
 				String completePath = desc.vertPath+"+"+desc.fragPath;
 				resourceDescriptors.put(desc.name, completePath);
 				assets.load(completePath,ShaderProgram.class);
-			}
-		
-		if(descriptor.fontDescriptors != null)
-			for(FontDescriptor desc : descriptor.fontDescriptors) {
-				String completePath = desc.fntPath+"+"+desc.imagePath;
-				resourceDescriptors.put(desc.name, completePath);
-				assets.load(completePath,BitmapFont.class);
 			}
 	}
 	
@@ -126,11 +116,6 @@ public class AsyncResourceManager {
 		
 		if(descriptor.shaderDescriptors != null)
 			for(ShaderDescriptor desc : descriptor.shaderDescriptors) {
-				assets.unload(desc.name);
-			}
-		
-		if(descriptor.fontDescriptors != null)
-			for(FontDescriptor desc : descriptor.fontDescriptors) {
 				assets.unload(desc.name);
 			}
 	}

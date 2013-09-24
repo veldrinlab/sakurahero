@@ -269,21 +269,18 @@
 			"path" : "img/hud/akiJap.png",
 			"name" : "akiJap",
 			"type" : "TEXTURE"
-		}
-	],
-	"shaders" : [],
-	"fonts" : [
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
-			"name" : "defaultFont",
-			"fntPath" : "font/default.fnt",
-			"imagePath" : "font/default.png"
 		},
 		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.FontDescriptor",
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "font/default.fnt",
+			"name" : "defaultFont",
+			"type" : "FONT"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "font/small.fnt",
 			"name" : "smallFont",
-			"fntPath" : "font/small.fnt",
-			"imagePath" : "font/small.png"
+			"type" : "FONT"
 		}
 	]
 }

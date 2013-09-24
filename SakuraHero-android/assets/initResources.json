@@ -101,8 +101,6 @@
 			"name" : "japaneseAtlas",
 			"type" : "TEXTURE"
 		}
-	],
-	"shaders" : [],
-	"fonts" : []
+	]
 }
 

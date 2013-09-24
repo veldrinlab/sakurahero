@@ -9,6 +9,7 @@ public enum ResourceType {
 	MESH,
 	TEXTURE,
 	ATLAS,
+	FONT,
 	SHADER,
 	SOUND,
 	MUSIC

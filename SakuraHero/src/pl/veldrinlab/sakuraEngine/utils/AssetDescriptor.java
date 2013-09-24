@@ -15,7 +15,6 @@ public class AssetDescriptor implements Serializable {
 	
 	public Array<ResourceDescriptor> resourceDescriptors;
 	public Array<ShaderDescriptor> shaderDescriptors;
-	public Array<FontDescriptor> fontDescriptors;
 
 	/**
 	 * Class default constructor. Create descriptor arrays.
@@ -23,7 +22,6 @@ public class AssetDescriptor implements Serializable {
 	public AssetDescriptor() {
 		resourceDescriptors = new Array<ResourceDescriptor>();
 		shaderDescriptors = new Array<ShaderDescriptor>();
-		fontDescriptors = new Array<FontDescriptor>();	
 	}
 	
 	/**
@@ -34,7 +32,6 @@ public class AssetDescriptor implements Serializable {
 	public void write(final Json json) {
 		json.writeValue("resources",resourceDescriptors);
 		json.writeValue("shaders",shaderDescriptors);
-		json.writeValue("fonts",fontDescriptors);
 	}
 
 	/**
@@ -45,9 +42,7 @@ public class AssetDescriptor implements Serializable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void read(final Json json, final JsonValue jsonData) {
-		// TODO Auto-generated method stub
 		resourceDescriptors = json.readValue("resources",Array.class,jsonData);
 		shaderDescriptors = json.readValue("shaders",Array.class,jsonData);
-		fontDescriptors = json.readValue("fonts",Array.class,jsonData);	
 	}
 }
