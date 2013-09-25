@@ -93,8 +93,10 @@ public class SakuraHero extends Game {
 		initializeGame();
 //		
 		
-		setScreen(menuScreen);
-		setScreen(trainingScreen);
+//		setScreen(menuScreen);
+		//setScreen(trainingScreen);
+		setScreen(playScreen);
+		
 		//setScreen(modeSelectionScreen);
 	//	setScreen(teamSplashScreen);
 	}
@@ -109,7 +111,7 @@ public class SakuraHero extends Game {
 		
 		Renderer.smallFont = new LabelStyle(resources.getFont("smallFont"),Color.WHITE);
 		Renderer.standardFont = new LabelStyle(resources.getFont("standardFont"),Color.WHITE);
-		Renderer.specialFont = new LabelStyle(resources.getFont("specialFont"),Color.GREEN);
+		Renderer.specialFont = new LabelStyle(resources.getFont("specialFont"),Color.YELLOW);
 		
 		fallingSakura = new FallingLeavesEffect(20);
 		fallingSakura.initializeEffect();
@@ -136,17 +138,17 @@ public class SakuraHero extends Game {
 		fadeEffect.textureName = "teamLogo";		
 		teamSplashScreen = new SplashScreen(this,fadeEffect,engineSplashScreen);		
 		
-	//	setScreen(teamSplashScreen);
+		setScreen(teamSplashScreen);
 	}
 	
 	public void initializeLoading() {
-	//	Renderer.guiAtlas = resources.getTextureAtlas(options.language.getTextureAtlas());
+		Renderer.guiAtlas = resources.getTextureAtlas(options.language.getTextureAtlas());
 		loadingScreen = new LoadingScreen(this);
-		//setScreen(loadingScreen);
+		setScreen(loadingScreen);
 	}
 		
 	public void initializeGame() {
-	//	Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
+		Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
 
 
 		menuScreen = new MenuScreen(this);
@@ -167,7 +169,7 @@ public class SakuraHero extends Game {
 		
 		buildGameStateGraph();
 		
-		//setScreen(menuScreen);
+		setScreen(menuScreen);
 	}
 	
 	public void buildGameStateGraph() {

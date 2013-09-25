@@ -356,7 +356,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void processRendering() { 
-		Renderer.clearScreen(Color.LIGHT_GRAY);
+		Renderer.clearScreen(Color.BLACK);
 		Renderer.backgroundStage.draw();
 		Renderer.sceneStage.draw();
 		katana.draw(Renderer.sceneStage.getCamera());
@@ -416,7 +416,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
 		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
 
-		Renderer.hudStage.addActor(points);
+	//	Renderer.hudStage.addActor(points);
 
 		Renderer.hudStage.addActor(katanaLevelBackground);
 		Renderer.hudStage.addActor(katanaLevelInfo);
@@ -578,7 +578,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 
-		input.clear();
+		//input.clear();
 		slashTimer = 0.0f;
 		return false;
 	}

@@ -1,11 +1,16 @@
 package pl.veldrinlab.sakurahero.screens;
 
+import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.FixedList;
+import pl.veldrinlab.sakurahero.NinjaOnigiri;
+import pl.veldrinlab.sakurahero.OniOnigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
+import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
+import pl.veldrinlab.sakurahero.SamuraiOnigiri;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -16,8 +21,11 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Json;
 
 import com.badlogic.gdx.InputMultiplexer;
@@ -33,7 +41,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private MultitouchGestureDetector inputDetector;
 	private InputMultiplexer inputMultiplexer;
 
-	// w³aœciwy kod
+	// w³aœciwy kod stanu
 	private SceneEntity pauseButton;
 	private SceneEntity background;
 
@@ -42,61 +50,111 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	//
 	public SakuraTree tree;
 
-	//TODO To nie do koñca to bêdzie - chyba ¿e jakiœ nowy effekt/wersja, chodzi o spadanie 4 p³atków/kwiat
-	//tez element klasy drzewa
-	private FallingLeavesEffect fallingSakura;
-	
-	// enemy
-	private SceneEntity enemy;
+	float leafAccum = 1.0f;
 
-	//TODO try to use Libgdx Animation class or write something own
-	private SceneEntity explosion;
-	private float animationAccumulator;
-	private int frameAmount = 15;
-	private int currentFrame = 0;
-	private float FRAME_TIME = 0.020f;
-
-	boolean collisionOccured;
 
 	// katana swing
-	KatanaSwing katana;
-	FixedList<Vector2> input;
-
+	private KatanaSwing katana;
+	private FixedList<Vector2> input;
 	float katanaTime;
 	Vector2 lastPoint = new Vector2();
 
-	float leafAccum = 1.0f;
 
+
+	private SamuraiOnigiri enemy;
+	private NinjaOnigiri enemy2;
+	private OniOnigiri enemy3;
+
+	// test
+
+	private float slashTimer;
+
+
+
+
+	// state logic flow
+
+	private float flowAccumulator;
+	private Label stateMessage;
+
+
+	// msq flow control - mo¿e jakaœ dodatkowa struktura do tego TODO? 
+
+	// system hit
+	private Label hit;
+	private int hitAmount;
+	private float hitAccumulator;
+	private final float HIT_DURATION = 2.0f;
+	private float hitAlpha;
+
+	// system combo
+	private Label combo;
+	private int comboAmount;
+	private float comboAlpha;
+
+	// system points
+	private int pointAmount;
+	private Label points;
+
+	// system katana level
+
+	private SceneEntity katanaLevelBar;
+	private SceneEntity katanaLevelBackground;
+	private Label katanaLevelInfo;
+	private int katanaLevel;
+	private float katanaExp;
+
+	private FallingLeavesEffect fallingSakura;
 
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
 		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
-	//	background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
 		inputDetector = new MultitouchGestureDetector(this);
 
+		//enemy
 
+		enemy = new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion"));
+		enemy.init();
 
-		// level Editor
+		enemy2 = new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion"));
+		enemy2.init();
 
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
-
-
-		//enemey
-		enemy = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
-
-		enemy.getSprite().setPosition(350.0f,200.0f);
-		enemy.collisionCircle.set(350.0f, 200.0f, 64.0f);
-
-		explosion = new SceneEntity(Renderer.sceneAtlas.createSprite("explosion"));
-		explosion.getSprite().setPosition(350.0f,200.0f);
-		explosion.getSprite().setSize(128.0f, 128.0f);
-		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
+		enemy3 = new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion"));
+		enemy3.init();
 
 		//TODO katana
 		katana = new KatanaSwing();
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
+
+		stateMessage = new Label("", Renderer.standardFont);
+
+		//
+		background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
+
+
+		pointAmount = 0;
+		points = new Label("Points: " + String.valueOf(pointAmount), Renderer.smallFont);
+		points.setTouchable(Touchable.disabled);
+
+
+		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
+		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
+		katanaLevel = 0;
+		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),Renderer.smallFont);
+
+
+		// msg flow 
+
+		//TODO hit i combo czcionka inna i kolor odpowiedni! Ten Mario Bros font bedzie dobry
+		hit = new Label(String.valueOf(hitAmount) + " Hit!", Renderer.specialFont);
+		hit.setTouchable(Touchable.disabled);
+		combo = new Label(String.valueOf(comboAmount) + "  Combo!",Renderer.specialFont);
+		combo.setTouchable(Touchable.disabled);
+
+
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
 	}
 
 	@Override
@@ -144,7 +202,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 				Gdx.app.log("SakuraHero ","Level file loading exception");
 				e.printStackTrace();
 			}
-			
+
 			tree.init();
 		}
 	}
@@ -157,56 +215,195 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		fallingSakura.updateEffect(deltaTime);
 		fallingSakura.setLeavesAlpha(leafAccum);
-		
-		// collisiom detection
-		if(!collisionOccured && input.size > 0) {
 
-			explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
 
-			for(int i = 0; i < input.size; ++i) {
+		//TODO jakiœ fajniejszy pomys³ na konkretne stany??
 
-				if(enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-					enemy.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-					collisionOccured = true;
-					break;
+		//for tests
+		flowAccumulator += deltaTime*10.75f;
+
+		if(flowAccumulator < 1.0f) {
+			stateMessage.setColor(1.0f,1.0f,1.0f,flowAccumulator);
+		}
+		else if(flowAccumulator > 1.0f && flowAccumulator < 2.0f) {
+			stateMessage.setColor(1.0f,1.0f,1.0f,2.0f-flowAccumulator);
+		}
+		else if(flowAccumulator > 2.0f && flowAccumulator < 3.0f) {
+			stateMessage.setText("It is training time");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator-2.0f);
+		}
+		else if(flowAccumulator > 3.0f && flowAccumulator < 4.0f) {
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, 4.0f-flowAccumulator);
+		}
+		else if(flowAccumulator > 4.0f && flowAccumulator < 4.5f) {
+			stateMessage.setText("Ready...");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator - 2.5f);
+		}
+		else if(flowAccumulator > 4.5f && flowAccumulator < 5.0f) {
+			stateMessage.setText("Fight!!!");
+			stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+			stateMessage.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		else { // typical training state
+			//
+			stateMessage.setText("");
+
+			enemy.update(deltaTime);
+			enemy2.update(deltaTime);
+			enemy3.update(deltaTime);
+
+			// collisiom detection
+
+
+			// liczba zabitych per klatka
+
+			int enemyHitAmount = 0;
+
+			if(input.size > 3) {
+
+				//TODO update explosion inside
+				enemy.explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
+				enemy2.explosion.getSprite().setPosition(enemy2.getSprite().getX(), enemy2.getSprite().getY());
+
+				for(int i = 0; i < input.size; ++i) {
+
+					if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						enemy.hit();
+						enemyHitAmount++;
+						comboAmount++;
+						pointAmount += 10;
+						katanaExp += 0.1f; //TODO z levelu na level coraz trudniej - jakiœ geometryczny wspó³czynnik
+						//Gdx.app.log("collision"," occurred");
+					}
+					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						if(enemy2.hit()) { //TODO lepiej
+							enemyHitAmount++;
+							comboAmount++;
+							pointAmount += 10;
+							katanaExp += 0.1f;
+							Gdx.app.log("collision"," occurred");
+						}
+					}
+					else if(!enemy3.collisionOccurred && enemy3.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
+						enemy3.hit();
+						enemyHitAmount++;
+						comboAmount++;
+						pointAmount += 10;
+						katanaExp += 0.1f;
+						//Gdx.app.log("collision"," occurred");
+					}
+				}
+			}
+
+
+			if(hitAmount > 0) {
+				// bylo juz cos zabite
+
+				if(enemyHitAmount > 0) {
+					// zabiliœmy znowy
+					hitAmount += enemyHitAmount;
+					hitAlpha = 1.0f;
+
+					hit.setText(String.valueOf(hitAmount) + " Hit!");
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+				}
+				else {
+					//nic nie zabilismy
+					hitAccumulator += deltaTime;
+					hitAlpha -= deltaTime*0.5f;	
+
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+
+					if(hitAccumulator > HIT_DURATION) {
+						hitAmount = 0;
+						hitAccumulator = 0.0f;
+						hitAlpha = 0.0f;
+					}
+
+					hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 				}
 
+
 			}
-		}
+			else if(hitAmount == 0 && enemyHitAmount > 0)  {
+				// jezeli zaczynamy zabijac 
+				hitAccumulator += deltaTime;
+				hitAlpha = 1.0f;
 
-		// update explosion animation
-		if(collisionOccured) {
-			animationAccumulator += deltaTime;
+				hitAmount += enemyHitAmount;
 
-			if(animationAccumulator > FRAME_TIME) {
-				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion(currentFrame*128, 0, 128, 128);
-				animationAccumulator = 0.0f;
-
-				if(currentFrame == frameAmount-1)
-					collisionOccured = !collisionOccured;
+				hit.setText(String.valueOf(hitAmount) + " Hit!"); 
+				//TODO pozycja odpowiednia
+				hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 			}
+
+
+			if(comboAmount > 0) {
+
+				if(enemyHitAmount > 1) {
+					comboAlpha = 1.0f;
+					comboAmount = enemyHitAmount;
+
+					// bonus za Combo
+					pointAmount += comboAmount*100;
+
+					//TODO katana exp boost
+
+					//TODO pozycja odpowiednia
+					combo.setText(String.valueOf(comboAmount) + " Combo!"); 
+					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+					combo.setPosition(0.0f, hit.getTextBounds().height); 
+				}
+				else {
+					//by³o ju¿ combo
+					comboAlpha -= deltaTime;
+
+					combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+
+					if(comboAlpha < 0.00001f)
+						comboAmount = 0;					
+				}
+			}
+			else if(comboAmount == 0 && enemyHitAmount > 1) {
+				comboAlpha = 1.0f;
+				comboAmount = enemyHitAmount;
+				pointAmount += comboAmount*100;
+
+				//TODO katana exp boost
+
+				//TODO pozycja odpowiednia
+				combo.setText(String.valueOf(comboAmount) + " Combo!"); 
+				combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
+				combo.setPosition(0.0f, hit.getTextBounds().height);
+			}
+
+
+			// katana system
+
+			if(katanaExp > 1.0f) {
+				katanaExp = 0.0f;
+				katanaLevel++;
+				katanaLevelInfo.setText("Level " + katanaLevel);
+			}
+			katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
+			katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)(katanaExp*228)+64, 62);
+
+			katana.update(input);
+
+			katanaTime += deltaTime;
+
+			//mo¿e sterowanie czasem nie jest wcale takie g³upie
+			if(input.size > 2 && katanaTime > Timer.TIME_STEP*20) {
+				input.pop();
+				input.pop();
+				katanaTime = 0.0f;
+			}
+
 		}
 
-
-		if(enemy.getSprite().getColor().a == 0.0f) {
-			enemy.getSprite().setColor(1.0f,1.0f,1.0f,1.0f);
-			enemy.getSprite().setX(MathUtils.random(128.0f,600.0f));
-			enemy.getSprite().setY(MathUtils.random(128.0f,350.0f));
-
-			enemy.collisionCircle.set(enemy.getSprite().getX()+enemy.getSprite().getWidth()*0.5f, enemy.getSprite().getY()+enemy.getSprite().getHeight()*0.5f, 64.0f);
-
-		}
-
-		katana.update(input);
-
-		katanaTime += deltaTime;
-
-		//mo¿e sterowanie czasem nie jest wcale takie g³upie
-		if(input.size > 0 && katanaTime > 0.02f) {
-			input.pop();
-			katanaTime = 0.0f;
-		}
+		points.setText("Points: " + String.valueOf(pointAmount));
 	}
 
 	@Override
@@ -215,9 +412,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.backgroundStage.draw();
 		tree.render();
 		Renderer.sceneStage.draw();
-		katana.draw(tree.sakuraTreeStage.getCamera());
+		katana.draw(Renderer.sceneStage.getCamera());
 		Renderer.hudStage.draw();
-		
+
 		fallingSakura.renderEffect();
 	}
 
@@ -245,19 +442,32 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		fallingSakura.initializeEffect();
 
 
-		//TODO naprawic troche
-		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
+
+		//		if(Configuration.getInstance().musicOn) {
+		//			gameMusic.play();
+		//			gameMusic.setLooping(true);
+		//		}
+
+		//	Gdx.input.setInputProcessor(inputDetector);
+
 		Renderer.backgroundStage.addActor(background);
-		
-		//todo to jakoœ po³¹czyæ ze sob¹
+
+		//TODO to jakoœ po³¹czyæ ze sob¹
+		Renderer.sceneStage.addActor(enemy.shadow3);
+		Renderer.sceneStage.addActor(enemy.shadow2);
+		Renderer.sceneStage.addActor(enemy.shadow);
+
 		Renderer.sceneStage.addActor(enemy);
-		Renderer.sceneStage.addActor(explosion);
-		
-		
+		Renderer.sceneStage.addActor(enemy.explosion);
+		Renderer.sceneStage.addActor(enemy2);
+		Renderer.sceneStage.addActor(enemy2.explosion);
+		Renderer.sceneStage.addActor(enemy3);
+		Renderer.sceneStage.addActor(enemy3.explosion);
+
 
 		//TODO hud stage
 		Renderer.hudStage.addActor(pauseButton);
-
+		Renderer.hudStage.addActor(stateMessage);
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(inputDetector);
 		inputMultiplexer.addProcessor(this);
@@ -265,6 +475,65 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		//		Gdx.input.setInputProcessor(inputDetector);
 		//		Gdx.input.setInputProcessor(this);
+
+
+		// logic
+		flowAccumulator = 0.0f;
+		stateMessage.setTouchable(Touchable.disabled);
+		stateMessage.setText("Wellcome to Dojo!");
+		stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
+		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
+		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
+
+		//	Renderer.hudStage.addActor(points);
+
+		Renderer.hudStage.addActor(katanaLevelBackground);
+		Renderer.hudStage.addActor(katanaLevelInfo);
+		Renderer.hudStage.addActor(katanaLevelBar);
+
+		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.025f);	
+		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
+
+		katanaLevelBackground.getSprite().setY(Configuration.getHeight() - katanaLevelBackground.getSprite().getHeight());
+		katanaLevelBackground.getSprite().setX(Configuration.getWidth()-katanaLevelBackground.getSprite().getWidth());
+
+		katanaLevelBar.getSprite().setY(Configuration.getHeight() - katanaLevelBar.getSprite().getHeight());
+		katanaLevelBar.getSprite().setX(Configuration.getWidth()-katanaLevelBar.getSprite().getWidth());
+
+		katanaLevelInfo.setX(katanaLevelBackground.getSprite().getX()+katanaLevelBackground.getSprite().getWidth()*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
+		katanaLevelInfo.setY(katanaLevelBackground.getSprite().getY()-katanaLevelBackground.getSprite().getHeight()*0.5f);
+
+
+
+
+		// pause button hud
+		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
+
+
+		//hit/combo system
+		hitAmount = 0;
+		hitAccumulator = 0.0f;
+		hitAlpha = 0.0f;
+
+		hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
+
+		comboAmount = 0;
+		comboAlpha = 0.0f;
+
+		combo.setColor(1.0f,1.0f,1.0f,comboAlpha);
+
+		Renderer.hudStage.addActor(hit);
+		Renderer.hudStage.addActor(combo);
+
+		//katana level system
+
+		//292 czyli 100 % miecza daje 228 pikseli
+
+		katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
+		katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)katanaExp*228+64, 62);
+
+		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);
+		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	}
 
@@ -295,7 +564,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		fallingSakura.setFallingBoundary(stageCoords.x-32.0f, stageCoords.y, stageCoords.x+32.0f, stageCoords.y);
 		fallingSakura.initializeEffect();
 		leafAccum = 1.0f;
-		
+
 		if(actor == null)
 			return false;
 
@@ -325,15 +594,15 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 //		float rotation = MathUtils.random(0.0f, 360.0f);
 //
 //		//		// to nie tutaj jebnac
-//				SceneEntity flower = new SceneEntity(game.resources.getTexture("sakuraFlower"));
-//				flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
-//				flower.getSprite().setRotation(rotation);
-//				
-//				tree.sakuraTreeStage.addActor(flower);
+//		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"));
+//		flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
+//		flower.getSprite().setRotation(rotation);
+//
+//		tree.sakuraTreeStage.addActor(flower);
 //
 //		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, rotation));
-		
-		
+
+
 		//jakas kolekcja ich
 
 
@@ -411,7 +680,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		// TODO Auto-generated method stub
 
 		input.clear();
-
+		slashTimer = 0.0f;
 		return false;
 	}
 
@@ -422,8 +691,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-
+		//	Gdx.app.log("touch", " dragged");
 		// jakis maksymalny rozmiar swinga
+
+		slashTimer += Timer.TIME_STEP;
+
+		if(slashTimer > 0.2f)
+			return true;
 
 		final float maxLength = 10.0f;
 
@@ -432,15 +706,15 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		for(int i = 0; i < input.size-1; ++i)
 			swingLength += input.get(i).dst(input.get(i+1));
 
-		Gdx.app.log("distance", String.valueOf(swingLength));
+		//	Gdx.app.log("distance", String.valueOf(swingLength));
 
 		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
 
-		if(swingLength < 500 && input.size < 50) {
+		if(input.size < 100) {
 
 			Vector2 stageCoords = new Vector2();
 			//cos innego
-			tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 			// this is dst2 in Vector class
 			float lenSq = distSq(stageCoords,lastPoint);
