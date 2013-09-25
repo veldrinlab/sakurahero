@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -11,17 +10,12 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-
-
-//TODO potrzebny jakiœ GUIItem - tekst lub grafika któr¹ mo¿na nacisn¹æ -> czyli musi to byæ Actor
 
 public class CreditsScreen extends GameScreen implements GestureListener  {
 
@@ -47,19 +41,19 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
-
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
-		LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
-
-		codeDesignAnimation = new Label("Code, design, animation",styleSmall);
-		jablonski = new Label("Szymon Jablonski",style);
-		graphics = new Label("Graphics",styleSmall);
-		harasimiuk = new Label("Malgorzata Harasimiuk", style);
-		music = new Label("Music",styleSmall);
-		macleod = new Label("Kevin Macleod", style);
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+		credits = new SceneEntity(Renderer.guiAtlas.createSprite("creditsBig"));
+		back = new SceneEntity(Renderer.guiAtlas.createSprite("back"),"Back");	
+		
+		codeDesignAnimation = new Label("Code, design, animation",Renderer.smallFont);
+		jablonski = new Label("Szymon Jablonski",Renderer.standardFont);
+		graphics = new Label("Graphics",Renderer.smallFont);
+		harasimiuk = new Label("Malgorzata Harasimiuk",Renderer.standardFont);
+		music = new Label("Music",Renderer.smallFont);
+		macleod = new Label("Kevin Macleod",Renderer.standardFont);
 
 		inputDetector = new GestureDetector(this);   
+		initializeInterface();
 	}
 
 	@Override
@@ -100,18 +94,6 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void show() {
-
-		if(game.options.language == Language.ENGLISH) {
-			credits = new SceneEntity(game.resources.getTexture("creditsBig"));
-			back = new SceneEntity(game.resources.getTexture("back"),"Back");	
-		}
-		else {
-			credits = new SceneEntity(game.resources.getTexture("creditsBigJap"));
-			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");	
-		}
-
-		initializeInterface();
-
 		Renderer.backgroundStage.addActor(background);
 		Renderer.hudStage.addActor(credits);
 		Renderer.hudStage.addActor(back);

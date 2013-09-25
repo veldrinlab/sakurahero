@@ -22,21 +22,22 @@ import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
-
-//TODO mo¿e pozostawiæ opcjê z High Score na przysz³oœæ?
-//TODO change SettingsScreen to OptionsScreen
 
 public class SakuraHero extends Game {
 
 	public AsyncResourceManager resources;
-	public FallingLeavesEffect fallingSakura; //TODO jakoœ inaczej?
+	public FallingLeavesEffect fallingSakura;
 	public GameOptions options;
 	
 	private Timer timer;
 	
-
+	//TODO mo¿e raz wczytaæ tutaj atlasy, albo do Renderera, ¿eby nie prosiæ o wskaŸnik za ka¿dym razem? - publiczne atlasy
+	//TODO tak samo gdzieœ Label style wszystkie - mo¿e faktycznie Renderer - trochê na architektruê to wp³ywn
+	
 	private SplashScreen teamSplashScreen;
 	private SplashScreen engineSplashScreen;
 	private LanguageSelectionScreen languageSelectionScreen;
@@ -46,7 +47,7 @@ public class SakuraHero extends Game {
 	private OptionsScreen optionsScreen;
 	private CreditsScreen creditsScreen;
 	
-	// nowe, wybor trybu, jakos ograniczyc pamiec
+	//TODO nowe, wybor trybu, jakos ograniczyc pamiec
 	private PlayScreen playScreen;
 	
 	private TrainingScreen trainingScreen;
@@ -71,40 +72,12 @@ public class SakuraHero extends Game {
 	 */
 	@Override
 	public void create() {
-		// launch engine configuration
-			
-		// load config
 		
-//		Json json = new Json();
-//		FileHandle file = Gdx.files.local("config.json");
-//	
-//		if(file.exists()) {
-//			String jsonData = file.readString();
-//			
-//			try {
-//				Configuration.getInstance().descriptor = json.fromJson(ConfigurationDescriptor.class, jsonData);			
-//			} catch(Exception e ) {
-//			
-//				Gdx.app.log("Sakura Hero ","Config file loading exception");
-//				e.printStackTrace();
-//			}
-//		}
-//		
-
+		//usun¹æ
 		Gdx.graphics.setDisplayMode(Configuration.getWidth(), Configuration.getHeight(), Configuration.isFullscreenEnabled());
 		Gdx.graphics.setTitle(Configuration.getWindowTitle());
 		
-		
-		// test
-//		
-//		Json json = new Json();		
-//		FileHandle file = Gdx.files.local("config.json");
-//
-//		if(file.exists()) {
-//			String jsonData = json.toJson(Configuration.getInstance());
-//			file.writeString(jsonData, false);
-//		}
-		
+				
 		timer = new Timer();
 		resources = new AsyncResourceManager();
 		options = new GameOptions();
@@ -113,46 +86,38 @@ public class SakuraHero extends Game {
 		initializeEngine();
 	//	loadHighScore();
 	//	initializeGame();
+		
+		
 		initalizeIntro();
+		initializeLoading();
+		initializeGame();
+//		
+		
+		setScreen(menuScreen);
+		setScreen(trainingScreen);
+		//setScreen(modeSelectionScreen);
+	//	setScreen(teamSplashScreen);
 	}
 
 	private void initializeEngine() {
 		resources.loadResources(Configuration.getInitResourcePath());
 		resources.finishLoading();
+				
+		Renderer.introAtlas = resources.getTextureAtlas("introAtlas");
+		Renderer.guiAtlas = resources.getTextureAtlas(options.language.getTextureAtlas());
+		Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
+		
+		Renderer.smallFont = new LabelStyle(resources.getFont("smallFont"),Color.WHITE);
+		Renderer.standardFont = new LabelStyle(resources.getFont("standardFont"),Color.WHITE);
+		Renderer.specialFont = new LabelStyle(resources.getFont("specialFont"),Color.GREEN);
+		
+		fallingSakura = new FallingLeavesEffect(20);
+		fallingSakura.initializeEffect();
+		fallingSakura.setLeavesAlpha(1.0f);
 		
 		// test hack!
 		resources.loadResources(Configuration.getResourcePath());
 		resources.finishLoading();
-		
-		fallingSakura = new FallingLeavesEffect(20,resources.getTexture("sakuraLeaf"));
-		fallingSakura.initializeEffect();
-		
-		// fonty pewnie kilka rodzajów
-		// na pewno zwyk³y na points, fps i credits
-		
-		
-		
-		
-		// testable hack
-		
-		
-		initalizeIntro();
-		initializeGame();
-		
-		
-//		setScreen(teamSplashScreen);
-	//	setScreen(loadingScreen);
-//		setScreen(pauseScreen);
-//		setScreen(gameOverScreen);
-//		setScreen(menuScreen);
-		//setScreen(worldSelectionScreen);
-	//	setScreen(playScreen);
-		setScreen(creditsScreen);
-	//	setScreen(optionsScreen);
-	//	setScreen(trainingScreen);
-//		setScreen(modeSelectionScreen);
-///		setScreen(playScreen);
-	//	Renderer.defaultShader = resources.getShader("defaultMesh");
 	}
 	
 	private void initalizeIntro() {
@@ -163,8 +128,7 @@ public class SakuraHero extends Game {
 		fadeEffect.fadeOutTime = 1.0f;
 		fadeEffect.skippable = fadeEffect.skippableWhileFadingIn = true;
 		
-		loadingScreen = new LoadingScreen(this);	
-		languageSelectionScreen = new LanguageSelectionScreen(this,fadeEffect,loadingScreen);
+		languageSelectionScreen = new LanguageSelectionScreen(this,fadeEffect);
 		
 		fadeEffect.textureName = "engineLogo";
 		engineSplashScreen = new SplashScreen(this,fadeEffect,languageSelectionScreen);
@@ -174,9 +138,17 @@ public class SakuraHero extends Game {
 		
 	//	setScreen(teamSplashScreen);
 	}
+	
+	public void initializeLoading() {
+	//	Renderer.guiAtlas = resources.getTextureAtlas(options.language.getTextureAtlas());
+		loadingScreen = new LoadingScreen(this);
+		//setScreen(loadingScreen);
+	}
 		
 	public void initializeGame() {
-		
+	//	Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
+
+
 		menuScreen = new MenuScreen(this);
 		optionsScreen = new OptionsScreen(this);	
 		creditsScreen = new CreditsScreen(this);
@@ -195,7 +167,7 @@ public class SakuraHero extends Game {
 		
 		buildGameStateGraph();
 		
-		setScreen(menuScreen);
+		//setScreen(menuScreen);
 	}
 	
 	public void buildGameStateGraph() {

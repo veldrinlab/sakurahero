@@ -10,9 +10,6 @@ import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
-//TODO pytanie czy nie zrobic jakiejs abstrakcji gry je¿eli chodzo o stany
-//wszêdzie wpierdalam ju¿ pointer do konkternej klasy gry
-
 /**
  * Class represents Splash screen. Show game/engine/team logo. It is part of Intro state.
  * @author Szymon Jab³oñski
@@ -33,7 +30,7 @@ public class SplashScreen extends GameScreen {
     	this.game = game;
     	this.fade = fadeParams;
     	this.nextScreen = nextScreen;
-    	splash = new SceneEntity(game.resources.getTexture(fadeParams.textureName));
+    	splash = new SceneEntity(Renderer.introAtlas.createSprite(fadeParams.textureName));
     }
     
 	@Override

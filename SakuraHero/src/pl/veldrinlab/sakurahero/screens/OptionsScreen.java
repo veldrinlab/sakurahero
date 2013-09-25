@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -45,9 +44,9 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
-		options = new SceneEntity(game.resources.getTexture("optionsBig"));
-		back = new SceneEntity(game.resources.getTexture("back"),"Back");
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground")); 
+		options = new SceneEntity(Renderer.guiAtlas.createSprite("optionsBig"));
+		back = new SceneEntity(Renderer.guiAtlas.createSprite("back"),"Back");
 
 		LabelStyle style = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
 
@@ -60,7 +59,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		soundState = new Label("On",style);
 
 		inputDetector = new GestureDetector(this);    	
-
+		initializeInterface();
 	}
 
 	@Override
@@ -103,18 +102,6 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void show() {
 
-		if(game.options.language == Language.ENGLISH) {
-			options = new SceneEntity(game.resources.getTexture("optionsBig"));
-			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-
-		}
-		else {
-			options = new SceneEntity(game.resources.getTexture("optionsBigJap"));
-			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
-		}
-
-		initializeInterface();
-
 		Renderer.backgroundStage.addActor(background);
 		Renderer.hudStage.addActor(options);
 		Renderer.hudStage.addActor(back);
@@ -126,10 +113,10 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		Renderer.hudStage.addActor(musicState);
 		Renderer.hudStage.addActor(sound);
 		Renderer.hudStage.addActor(soundState);
-		    	
+
 		currentHighScore.setText("High Score "+ 0);
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
-		
+
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
@@ -168,41 +155,41 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 
 		//		backToMenu.setName("Back");
-				resetHighScore.setName("Reset");
-				musicState.setName("Music");
-				soundState.setName("Sound");
+		resetHighScore.setName("Reset");
+		musicState.setName("Music");
+		soundState.setName("Sound");
 		//		
 		//		settings.setTouchable(Touchable.disabled);
-				currentHighScore.setTouchable(Touchable.disabled);
-				currentSurvivalTime.setTouchable(Touchable.disabled);
-				music.setTouchable(Touchable.disabled);
-				sound.setTouchable(Touchable.disabled);
+		currentHighScore.setTouchable(Touchable.disabled);
+		currentSurvivalTime.setTouchable(Touchable.disabled);
+		music.setTouchable(Touchable.disabled);
+		sound.setTouchable(Touchable.disabled);
 		//		
 		//		settings.setX((Configuration.getInstance().width-settings.getTextBounds().width)*0.5f);	
 		//		settings.setY(Configuration.getInstance().height*0.90f - settings.getTextBounds().height);
 		//		
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
 		currentHighScore.setY(Configuration.getHeight()*0.70f - currentHighScore.getTextBounds().height);
-		
+
 		currentSurvivalTime.setX((Configuration.getWidth()-currentSurvivalTime.getTextBounds().width)*0.5f);	
 		currentSurvivalTime.setY(Configuration.getHeight()*0.55f - currentSurvivalTime.getTextBounds().height);
 		//		
-				resetHighScore.setX((Configuration.getWidth()-resetHighScore.getTextBounds().width)*0.5f);	
-		
-				resetHighScore.setY(Configuration.getHeight()*0.40f - resetHighScore.getTextBounds().height);
+		resetHighScore.setX((Configuration.getWidth()-resetHighScore.getTextBounds().width)*0.5f);	
+
+		resetHighScore.setY(Configuration.getHeight()*0.40f - resetHighScore.getTextBounds().height);
 		//		
-				music.setX((Configuration.getWidth()-music.getTextBounds().width*2.0f)*0.5f);	
-				music.setY(Configuration.getHeight()*0.30f - music.getTextBounds().height);
-				
-				musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
-				musicState.setY(music.getY());
-				
-				sound.setX((Configuration.getWidth()-sound.getTextBounds().width*2.0f)*0.5f);	
-				sound.setY(Configuration.getHeight()*0.20f - sound.getTextBounds().height);
-		
-				soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
-				soundState.setY(sound.getY());
-				
+		music.setX((Configuration.getWidth()-music.getTextBounds().width*2.0f)*0.5f);	
+		music.setY(Configuration.getHeight()*0.30f - music.getTextBounds().height);
+
+		musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
+		musicState.setY(music.getY());
+
+		sound.setX((Configuration.getWidth()-sound.getTextBounds().width*2.0f)*0.5f);	
+		sound.setY(Configuration.getHeight()*0.20f - sound.getTextBounds().height);
+
+		soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
+		soundState.setY(sound.getY());
+
 		//		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
 		//		backToMenu.setY(Configuration.getInstance().height*0.30f - backToMenu.getTextBounds().height);
 	}

@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-//TODO wszêdzie spadaj¹ce kwiaty wiœni - nawet je¿eli kosztem wielu wartsw renderingu - docelowo d¹¿ymy do jednej
 public class MenuScreen extends GameScreen implements GestureListener {
 
 	public ModeSelectionScreen modeSelectionScreen;
@@ -25,12 +23,9 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	private SakuraHero game;
 	private GestureDetector inputDetector;
-
-	private SceneEntity background;
-	
-	//
 	private FallingLeavesEffect fallingSakura;
-
+	
+	private SceneEntity background;	
 	private SceneEntity menu;
 	private SceneEntity play;
 	private SceneEntity options;
@@ -41,11 +36,18 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	public MenuScreen(final SakuraHero game) {
 		this.game = game;
-		fallingSakura = game.fallingSakura;
+		this.fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));
-
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+		menu = new SceneEntity(Renderer.guiAtlas.createSprite("menu"));
+		play = new SceneEntity(Renderer.guiAtlas.createSprite("play"),"Play");
+		options = new SceneEntity(Renderer.guiAtlas.createSprite("options"),"Options");
+		credits = new SceneEntity(Renderer.guiAtlas.createSprite("credits"),"Credits");
+		exit = new SceneEntity(Renderer.guiAtlas.createSprite("exit"),"Exit");
+		
 		inputDetector = new GestureDetector(this);
+		
+		initializeInterface();
 	}
 
 	@Override
@@ -55,6 +57,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public void processLogic(final float deltaTime) {
 		fallingSakura.updateEffect(deltaTime);
+		
 	}
 
 	@Override
@@ -85,7 +88,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	public void hide() {
 		Renderer.backgroundStage.clear();
 		Renderer.hudStage.clear();
-		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
@@ -101,32 +103,13 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	@Override
 	public void show() {	
 
-		//		Renderer.enterOrthoMode();
 		//		if(Configuration.getInstance().musicOn) {
 		//			menuMusic.play();
 		//			menuMusic.setVolume(0.1f);
 		//		}
 		//		
 
-		if(game.options.language == Language.ENGLISH) {
-			menu = new SceneEntity(game.resources.getTexture("menu"));
-			play = new SceneEntity(game.resources.getTexture("play"),"Play");
-			options = new SceneEntity(game.resources.getTexture("options"),"Options");
-			credits = new SceneEntity(game.resources.getTexture("credits"),"Credits");
-			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
-		}
-		else {
-			menu = new SceneEntity(game.resources.getTexture("menuJap"));
-			play = new SceneEntity(game.resources.getTexture("playJap"),"Play");
-			options = new SceneEntity(game.resources.getTexture("optionsJap"),"Options");
-			credits = new SceneEntity(game.resources.getTexture("creditsJap"),"Credits");
-			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");
-		}
-
-		initializeInterface();
-
 		Renderer.backgroundStage.addActor(background);
-
 
 		Renderer.hudStage.addActor(menu);
 		Renderer.hudStage.addActor(play);

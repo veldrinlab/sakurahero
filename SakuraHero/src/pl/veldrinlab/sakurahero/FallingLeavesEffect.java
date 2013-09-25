@@ -1,9 +1,8 @@
 package pl.veldrinlab.sakurahero;
 
+import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,7 +20,7 @@ public class FallingLeavesEffect {
 	private Rectangle boundary;
 	private float fallingVelocity;
 	
-	public FallingLeavesEffect(final float amount, final Texture texture) {
+	public FallingLeavesEffect(final float amount) {
 	
 		effectBatch = new SpriteBatch();
 		effectStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,effectBatch);
@@ -30,9 +29,9 @@ public class FallingLeavesEffect {
 		boundary = new Rectangle(0.0f,0.0f,Configuration.getWidth(),Configuration.getHeight());
 		
 		fallingVelocity = 50.0f;
-	
+		
 		for(int i = 0; i < amount; i++) {
-			SceneEntity leaf = new SceneEntity(texture);
+			SceneEntity leaf = new SceneEntity(Renderer.introAtlas.createSprite("sakuraLeaf"));
 			leaves.add(leaf);
 		}
 	}

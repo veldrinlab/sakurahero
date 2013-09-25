@@ -47,9 +47,15 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		pauseBackground = new SceneEntity(renderTarget.getColorBufferTexture());
 		pauseBackground.getSprite().flip(false,true);
 
+		pause = new SceneEntity(Renderer.guiAtlas.createSprite("pause"));
+		resume = new SceneEntity(Renderer.guiAtlas.createSprite("resume"),"Resume");
+		menu = new SceneEntity(Renderer.guiAtlas.createSprite("menuSmall"),"Menu");
+		exit = new SceneEntity(Renderer.guiAtlas.createSprite("exit"),"Exit");
+
 		inputDetector = new GestureDetector(this);
 
 		alpha = 0.4f;
+		initializeInterface();
 	}
 
 	public FrameBuffer getFrameBuffer() {
@@ -97,23 +103,6 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void show() {	
 
-		// TO ju¿ w taki sposób nie mo¿e byæ! i nie bêdzie na koñcu, teraz tesowo taka architektrua
-
-		if(game.options.language == Language.ENGLISH) {
-			pause = new SceneEntity(game.resources.getTexture("pause"));
-			resume = new SceneEntity(game.resources.getTexture("resume"),"Resume");
-			menu = new SceneEntity(game.resources.getTexture("menuSmall"),"Menu");
-			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
-		}
-		else {
-			pause = new SceneEntity(game.resources.getTexture("pauseJap"));
-			resume = new SceneEntity(game.resources.getTexture("resumeJap"),"Resume");
-			menu = new SceneEntity(game.resources.getTexture("menuSmallJap"),"Menu");
-			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");	
-		}
-		
-		initializeInterface();
-		
 		pauseStage.clear();
 		pauseStage.addActor(pauseBackground);
 		pauseStage.addActor(pause);

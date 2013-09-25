@@ -71,24 +71,24 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SceneEntity(game.resources.getTexture("pauseButton"),"Pause");
-		background = new SceneEntity(game.resources.getTexture("natsuBackground"));
+		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
+	//	background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
 		inputDetector = new MultitouchGestureDetector(this);
 
 
 
 		// level Editor
 
-		tree = new SakuraTree(game.resources.getTexture("tree"),game.resources.getTexture("sakuraFlower"));
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
 
 
 		//enemey
-		enemy = new SceneEntity(game.resources.getTexture("onigiriSamurai"));
+		enemy = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
 
 		enemy.getSprite().setPosition(350.0f,200.0f);
 		enemy.collisionCircle.set(350.0f, 200.0f, 64.0f);
 
-		explosion = new SceneEntity(game.resources.getTexture("explosion"));
+		explosion = new SceneEntity(Renderer.sceneAtlas.createSprite("explosion"));
 		explosion.getSprite().setPosition(350.0f,200.0f);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
@@ -240,13 +240,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		//	Gdx.input.setInputProcessor(inputDetector);
 
-		fallingSakura = new FallingLeavesEffect(3,game.resources.getTexture("sakuraLeaf"));
+		fallingSakura = new FallingLeavesEffect(3);
 		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
 		fallingSakura.initializeEffect();
 
 
-		//
-		background.getSprite().setTexture(game.resources.getTexture(game.options.worldName));
+		//TODO naprawic troche
+		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		Renderer.backgroundStage.addActor(background);
 		
 		//todo to jakoœ po³¹czyæ ze sob¹

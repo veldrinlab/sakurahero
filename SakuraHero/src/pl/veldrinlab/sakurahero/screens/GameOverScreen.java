@@ -44,8 +44,14 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+		gameOver= new SceneEntity(Renderer.guiAtlas.createSprite("gameOver"));
+		tryAgain = new SceneEntity(Renderer.guiAtlas.createSprite("tryAgain"),"Try Again");
+		backToMenu = new SceneEntity(Renderer.guiAtlas.createSprite("menuSmall"),"Menu");
+		exit = new SceneEntity(Renderer.guiAtlas.createSprite("exit"),"Exit");
+
 		inputDetector = new GestureDetector(this);
+		initializeInterface();
 	}
 
 	@Override
@@ -60,21 +66,8 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 		//			game.resources.getMusic("gameOverMusic").setLooping(true);
 		//		}
 		//		
-		
-		if(game.options.language == Language.ENGLISH) {
-			gameOver= new SceneEntity(game.resources.getTexture("gameOver"));
-			tryAgain = new SceneEntity(game.resources.getTexture("tryAgain"),"Try Again");
-			backToMenu = new SceneEntity(game.resources.getTexture("menuSmall"),"Menu");
-			exit = new SceneEntity(game.resources.getTexture("exit"),"Exit");
-		}
-		else {
-			gameOver= new SceneEntity(game.resources.getTexture("gameOverJap"));
-			tryAgain = new SceneEntity(game.resources.getTexture("tryAgainJap"),"Try Again");
-			backToMenu = new SceneEntity(game.resources.getTexture("menuSmallJap"),"Menu");
-			exit = new SceneEntity(game.resources.getTexture("exitJap"),"Exit");
-		}
 
-		initializeInterface();
+
 
 		Renderer.backgroundStage.addActor(background);
 

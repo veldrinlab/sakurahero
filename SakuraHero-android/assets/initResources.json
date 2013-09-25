@@ -1,105 +1,46 @@
 {
-	"resources" : [{
+	"resources" : [
+		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/splash/teamLogo.png",
-			"name" : "teamLogo",
-			"type" : "TEXTURE"
+			"path" : "img/introAtlas.atlas",
+			"name" : "introAtlas",
+			"type" : "ATLAS"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/splash/engineLogo.png",
-			"name" : "engineLogo",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/scene/menuBackground.png",
-			"name" : "menuBackground",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/selectLanguage.png",
-			"name" : "selectLanguage",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/english.png",
-			"name" : "english",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/japanese.png",
-			"name" : "japanese",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/loading.png",
-			"name" : "loadingAng",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/loadingJap.png",
-			"name" : "loadingJap",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/tapToContinue.png",
-			"name" : "tapToAng",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/tapToContinueJap.png",
-			"name" : "tapToJap",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/logoAng.png",
-			"name" : "logoAng",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/logoJap.png",
-			"name" : "logoJap",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "katana.png",
-			"name" : "katana",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "shine.png",
-			"name" : "shine",	
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sakuraLeaf.png",
-			"name" : "sakuraLeaf",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/englishAtlas.atlas",
+			"path" : "img/englishAtlas.atlas",
 			"name" : "englishAtlas",
 			"type" : "ATLAS"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/hud/japaneseAtlas.png",
+			"path" : "img/japaneseAtlas.atlas",
 			"name" : "japaneseAtlas",
-			"type" : "TEXTURE"
+			"type" : "ATLAS"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/sceneAtlas.atlas",
+			"name" : "sceneAtlas",
+			"type" : "ATLAS"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "font/standard.fnt",
+			"name" : "standardFont",
+			"type" : "FONT"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "font/small.fnt",
+			"name" : "smallFont",
+			"type" : "FONT"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "font/special.fnt",
+			"name" : "specialFont",
+			"type" : "FONT"
 		}
 	]
 }

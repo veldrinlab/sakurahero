@@ -37,7 +37,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	// w³aœciwy kod stanu
 
-
 	//TODO hud class
 	private SceneEntity pauseButton;
 
@@ -98,18 +97,18 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SceneEntity(game.resources.getTexture("pauseButton"),"Pause");
+		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
 		inputDetector = new MultitouchGestureDetector(this);
 
 		//enemy
 
-		enemy = new SamuraiOnigiri(game.resources.getTexture("onigiriSamurai"),game.resources.getTexture("explosion"));
+		enemy = new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion"));
 		enemy.init();
 
-		enemy2 = new NinjaOnigiri(game.resources.getTexture("onigiriNinja"),game.resources.getTexture("explosion"));
+		enemy2 = new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion"));
 		enemy2.init();
 
-		enemy3 = new OniOnigiri(game.resources.getTexture("onigiriOni"),game.resources.getTexture("explosion"));
+		enemy3 = new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion"));
 		enemy3.init();
 
 		//TODO katana
@@ -117,32 +116,29 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
 		input = new FixedList<Vector2>(100,Vector2.class);
 
-		//
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
-		LabelStyle styleSmall = new LabelStyle(game.resources.getFont("smallFont"),Color.WHITE);
-		stateMessage = new Label("", style);
+		stateMessage = new Label("", Renderer.standardFont);
 
 		//
-		background = new SceneEntity(game.resources.getTexture("dojo"));
+		background = new SceneEntity(Renderer.sceneAtlas.createSprite("dojoBackground"));
 
 
 		pointAmount = 0;
-		points = new Label("Points: " + String.valueOf(pointAmount), styleSmall);
+		points = new Label("Points: " + String.valueOf(pointAmount), Renderer.smallFont);
 		points.setTouchable(Touchable.disabled);
 
 
-		katanaLevelBackground = new SceneEntity(game.resources.getTexture("katanaLevelBar"));
-		katanaLevelBar = new SceneEntity(game.resources.getTexture("katanaLevelBar"));
+		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
+		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
 		katanaLevel = 0;
-		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),styleSmall);
+		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),Renderer.smallFont);
 
 
 		// msg flow 
 
 		//TODO hit i combo czcionka inna i kolor odpowiedni! Ten Mario Bros font bedzie dobry
-		hit = new Label(String.valueOf(hitAmount) + " Hit!", style);
+		hit = new Label(String.valueOf(hitAmount) + " Hit!", Renderer.specialFont);
 		hit.setTouchable(Touchable.disabled);
-		combo = new Label(String.valueOf(comboAmount) + "  Combo!",style);
+		combo = new Label(String.valueOf(comboAmount) + "  Combo!",Renderer.specialFont);
 		combo.setTouchable(Touchable.disabled);
 		
 	}
@@ -340,7 +336,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 				katanaLevelInfo.setText("Level " + katanaLevel);
 			}
 			katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
-			katanaLevelBar.getSprite().setRegion(0,0, (int)(katanaExp*228)+64, 62);
+			katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)(katanaExp*228)+64, 62);
 			
 			katana.update(input);
 
@@ -398,8 +394,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		Renderer.sceneStage.addActor(enemy2.explosion);
 		Renderer.sceneStage.addActor(enemy3);
 		Renderer.sceneStage.addActor(enemy3.explosion);
-
-
 
 
 		//TODO hud stage
@@ -467,7 +461,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		//292 czyli 100 % miecza daje 228 pikseli
 
 		katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
-		katanaLevelBar.getSprite().setRegion(0,0, (int)katanaExp*228+64, 62);
+		katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)katanaExp*228+64, 62);
 
 		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);
 		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);

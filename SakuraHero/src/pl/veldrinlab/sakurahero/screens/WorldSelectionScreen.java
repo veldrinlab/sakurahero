@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class WorldSelectionScreen extends GameScreen implements GestureListener  {
 
@@ -36,19 +34,22 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 	private SceneEntity natsuBackground;
 	private SceneEntity akiBackground;
 
-
-
 	public WorldSelectionScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+		worldSelection = new SceneEntity(Renderer.guiAtlas.createSprite("worldSelection"));
+		back = new SceneEntity(Renderer.guiAtlas.createSprite("back"),"Back");
+		aki = new SceneEntity(Renderer.guiAtlas.createSprite("aki"));	
+		natsu = new SceneEntity(Renderer.guiAtlas.createSprite("natsu"));
 
-		natsuBackground = new SceneEntity(game.resources.getTexture("natsuBackground"),"natsuBackground");
-		akiBackground = new SceneEntity(game.resources.getTexture("akiBackground"),"akiBackground");
+		natsuBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"),"natsuBackground");
+		akiBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("akiBackground"),"akiBackground");
 
 		inputDetector = new GestureDetector(this);    
-
+		
+		initializeInterface();
 	}
 
 	@Override
@@ -89,27 +90,7 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	@Override
 	public void show() {
-
-		//TODO Aki/Natsu
-		if(game.options.language == Language.ENGLISH) {
-			worldSelection = new SceneEntity(game.resources.getTexture("worldSelection"));
-			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-			aki = new SceneEntity(game.resources.getTexture("aki"));	
-			natsu = new SceneEntity(game.resources.getTexture("natsu"));
-
-
-		}
-		else {
-			worldSelection = new SceneEntity(game.resources.getTexture("worldSelectionJap"));
-			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
-			aki = new SceneEntity(game.resources.getTexture("akiJap"));	
-			natsu = new SceneEntity(game.resources.getTexture("natsuJap"));
-		}
-		
-		initializeInterface();
-
 		Renderer.backgroundStage.addActor(background);
-
 
 		Renderer.hudStage.addActor(worldSelection);
 		Renderer.hudStage.addActor(back);
@@ -119,7 +100,6 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 		Renderer.hudStage.addActor(natsu);
 		Renderer.hudStage.addActor(aki);
-
 
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}

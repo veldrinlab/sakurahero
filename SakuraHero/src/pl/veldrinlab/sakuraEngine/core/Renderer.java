@@ -6,7 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class Renderer {
 	
@@ -18,6 +20,15 @@ public class Renderer {
 	
 	public static SpriteBatch hudBatch = new SpriteBatch();
 	public static Stage hudStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,hudBatch);
+		
+	public static TextureAtlas introAtlas;
+	public static TextureAtlas guiAtlas;
+	public static TextureAtlas sceneAtlas;
+	public static TextureAtlas hudAtlas;
+	
+	public static LabelStyle smallFont;
+	public static LabelStyle standardFont;
+	public static LabelStyle specialFont;
 	
 	public static void clearScreen() {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

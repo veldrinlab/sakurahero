@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -27,16 +28,22 @@ public class NinjaOnigiri extends SceneEntity {
 	//
 	private boolean fadeIn;
 	
-	public NinjaOnigiri(Texture enemyTexture, final Texture explosionTexture) {
-		super(enemyTexture);
+	//
+	private Vector2 spriteOrigin;
+	private Vector2 explosionOrigin;
+	
+	public NinjaOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
+		super(enemySprite);
 		
-		explosion = new SceneEntity(explosionTexture);
+		explosion = new SceneEntity(explosionSprite);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
 		
+		spriteOrigin = new Vector2(enemySprite.getRegionX(),enemySprite.getRegionY());
+		explosionOrigin = new Vector2(explosionSprite.getRegionX(),explosionSprite.getRegionY());
 		getSprite().setSize(128,128);
 		getSprite().setOrigin(64.0f, 64.0f);
 	}
@@ -56,15 +63,14 @@ public class NinjaOnigiri extends SceneEntity {
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
-		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
 		collisionOccurred = false;
 		getSprite().setRotation(0.0f);
-		explosion.getSprite().setRegion(128.0f*(frameAmount-1), 0, 128, 128);
+		explosion.getSprite().setRegion((int)explosionOrigin.x+128*(frameAmount-1), (int)explosionOrigin.y, 128, 128);
 		currentFrame = 0;
 		
 		//
 		fadeIn = true;
-		getSprite().setRegion(0, 0, 128, 128);
+		sprite.setRegion((int)spriteOrigin.x, (int)spriteOrigin.y, 128,128);
 		
 	}
 	
@@ -119,7 +125,7 @@ public class NinjaOnigiri extends SceneEntity {
 
 			if(animationAccumulator > FRAME_TIME) {
 				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion(currentFrame*128, 0, 128, 128);
+				explosion.getSprite().setRegion((int)explosionOrigin.x+128*currentFrame, (int)explosionOrigin.y, 128, 128);
 				animationAccumulator = 0.0f;
 			}
 		}
@@ -132,7 +138,7 @@ public class NinjaOnigiri extends SceneEntity {
 			collisionOccurred = true;
 			collisionPos.set(getX(), getY());
 			angle = angleOptions[MathUtils.random(0, 3)];
-			getSprite().setRegion(128, 0, 128, 128);
+			getSprite().setRegion((int)spriteOrigin.x+128, (int)spriteOrigin.y, 128, 128);
 			return true;
 		}
 		return false;

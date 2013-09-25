@@ -2,7 +2,6 @@ package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -48,27 +47,20 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));  
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground")); 
+		modeSelection = new SceneEntity(Renderer.guiAtlas.createSprite("modeSelection"));
+		back = new SceneEntity(Renderer.guiAtlas.createSprite("back"),"Back");
+		normalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
+		survivalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriOni"));
+		trainingEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriNinja"));
 		
-		LabelStyle style = new LabelStyle(game.resources.getFont("defaultFont"),Color.WHITE);
-
-		normal = new Label("Normal",style);	
-		survival = new Label("Survival",style);
-		training = new Label("Training",style);
-
-		inputDetector = new GestureDetector(this);    
+		normal = new Label("Normal",Renderer.standardFont);	
+		survival = new Label("Survival",Renderer.standardFont);
+		training = new Label("Training",Renderer.standardFont);
 	
-		normalEmblem = new SceneEntity(game.resources.getTexture("onigiriSamurai"));
-		survivalEmblem = new SceneEntity(game.resources.getTexture("onigiriOni"));
-		trainingEmblem = new SceneEntity(game.resources.getTexture("onigiriNinja"));
-		
-		normalEmblem.getSprite().setRegion(0, 0, 128, 128);
-		survivalEmblem.getSprite().setRegion(0, 0, 128, 128);
-		trainingEmblem.getSprite().setRegion(0, 0, 128, 128);
-		
-		normalEmblem.getSprite().setSize(128, 128);
-		survivalEmblem.getSprite().setSize(128, 128);
-		trainingEmblem.getSprite().setSize(128, 128);
+		inputDetector = new GestureDetector(this);    
+
+		initializeInterface();
 	}
 
 	@Override
@@ -110,19 +102,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void show() {
-
-		if(game.options.language == Language.ENGLISH) {
-			modeSelection = new SceneEntity(game.resources.getTexture("modeSelection"));
-			back = new SceneEntity(game.resources.getTexture("back"),"Back");
-
-		}
-		else {
-			modeSelection = new SceneEntity(game.resources.getTexture("modeSelectionJap"));
-			back = new SceneEntity(game.resources.getTexture("backJap"),"Back");
-		}
-
-		initializeInterface();
-
 		Renderer.backgroundStage.addActor(background);
 		Renderer.hudStage.addActor(modeSelection);
 		Renderer.hudStage.addActor(back);
@@ -166,7 +145,14 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	}
 
 	private void initializeInterface() {
-
+		normalEmblem.getSprite().setRegion(normalEmblem.getSprite().getRegionX(), normalEmblem.getSprite().getRegionY(), 128, 128);
+		survivalEmblem.getSprite().setRegion(survivalEmblem.getSprite().getRegionX(), survivalEmblem.getSprite().getRegionY(), 128, 128);
+		trainingEmblem.getSprite().setRegion(trainingEmblem.getSprite().getRegionX(), trainingEmblem.getSprite().getRegionY(), 128, 128);
+		
+		normalEmblem.getSprite().setSize(128, 128);
+		survivalEmblem.getSprite().setSize(128, 128);
+		trainingEmblem.getSprite().setSize(128, 128);
+		
 		modeSelection.getSprite().setX((Configuration.getWidth()-modeSelection.getSprite().getWidth())*0.5f);	
 		modeSelection.getSprite().setY(Configuration.getHeight()*0.90f - modeSelection.getSprite().getHeight());
 

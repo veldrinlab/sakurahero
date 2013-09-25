@@ -2,9 +2,11 @@ package pl.veldrinlab.sakurahero;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 //to jest generalnie z³a nazwa, zmienic i zrobic cos z tego - SceneEntity
@@ -46,32 +48,41 @@ public class SamuraiOnigiri extends SceneEntity {
 	private float[] angleOptions = new float[4];
 	private float alpha;
 
-	public SamuraiOnigiri(final Texture enemyTexture, final Texture explosionTexture) {
-		super(enemyTexture);
+	//
+	private Vector2 spriteOrigin;
+	private Vector2 explosionOrigin;
+	
+	public SamuraiOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
+		super(enemySprite);
 
 		moveDirection = new Vector2();
 		// TODO Auto-generated constructor stub
 
 		//TODO remove magic strings, use with/height 
-		explosion = new SceneEntity(explosionTexture);
+		explosion = new SceneEntity(explosionSprite);
 		explosion.getSprite().setSize(128.0f, 128.0f);
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
 
+		spriteOrigin = new Vector2(enemySprite.getRegionX(),enemySprite.getRegionY());
+		explosionOrigin = new Vector2(explosionSprite.getRegionX(),explosionSprite.getRegionY());
+		
 		//
 		getSprite().setSize(128.0f, 128.0f);
 		getSprite().setOrigin(64,64);
 		
-		shadow = new SceneEntity(enemyTexture);	
+		shadow = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));	
 		shadow.getSprite().setSize(128.0f, 128.0f);
 		
-		shadow2 = new SceneEntity(enemyTexture);
+		shadow2 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
 		shadow2.getSprite().setSize(128.0f, 128.0f);
 		
-		shadow3 = new SceneEntity(enemyTexture);
+		shadow3 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
 		shadow3.getSprite().setSize(128.0f, 128.0f);
+		
+		
 	}
 
 	public void init() {
@@ -109,19 +120,19 @@ public class SamuraiOnigiri extends SceneEntity {
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
-		explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
 		collisionOccurred = false;
 		getSprite().setRotation(0.0f);
-		explosion.getSprite().setRegion(128.0f*(frameAmount-1), 0, 128, 128);
+		explosion.getSprite().setRegion((int)explosionOrigin.x+128*(frameAmount-1), (int)explosionOrigin.y, 128, 128);
 		currentFrame = 0;
 		alpha = 1.0f;
 
 		// animation
-		getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
+		
 		//TODO to mo¿na init raz
-		shadow.getSprite().setRegion(128*currentFrame2, 0, 128,128);
-		shadow2.getSprite().setRegion(128*currentFrame2, 0, 128,128);
-		shadow3.getSprite().setRegion(128*currentFrame2, 0, 128,128);
+		shadow.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
+		shadow2.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
+		shadow3.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
 		currentFrame2 = 0;
 	}
 
@@ -191,8 +202,8 @@ public class SamuraiOnigiri extends SceneEntity {
 			float rotationVelocity = 5.0f;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
 
-			getSprite().setRegion((frameAmount2-1)*128, 0, 128, 128);
-			
+			sprite.setRegion((int)spriteOrigin.x+(frameAmount2-1)*128, (int)spriteOrigin.y, 128, 128);
+		
 			getSprite().setRotation(rotation);
 			setPosition(x,y);
 			getSprite().setPosition(x,y);
@@ -209,7 +220,7 @@ public class SamuraiOnigiri extends SceneEntity {
 
 			if(animationAccumulator > FRAME_TIME) {
 				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion(currentFrame*128, 0, 128, 128);
+				explosion.getSprite().setRegion((int)explosionOrigin.x+128*currentFrame, (int)explosionOrigin.y, 128, 128);
 				animationAccumulator = 0.0f;
 			}
 		}

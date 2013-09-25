@@ -1,0 +1,89 @@
+
+sceneAtlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+explosion
+  rotate: false
+  xy: 0, 834
+  size: 1920, 128
+  orig: 1920, 128
+  offset: 0, 0
+  index: -1
+onigiriOni
+  rotate: false
+  xy: 0, 704
+  size: 1664, 128
+  orig: 1664, 128
+  offset: 0, 0
+  index: -1
+onigiriSamurai
+  rotate: false
+  xy: 0, 574
+  size: 1152, 128
+  orig: 1152, 128
+  offset: 0, 0
+  index: -1
+akiBackground
+  rotate: false
+  xy: 0, 92
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+dojoBackground
+  rotate: false
+  xy: 1922, 482
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+natsuBackground
+  rotate: false
+  xy: 802, 92
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+tree
+  rotate: false
+  xy: 1604, 0
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+katanaLevelBar
+  rotate: false
+  xy: 1154, 640
+  size: 296, 62
+  orig: 296, 62
+  offset: 0, 0
+  index: -1
+onigiriNinja
+  rotate: false
+  xy: 1452, 574
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+pauseButton
+  rotate: false
+  xy: 1154, 574
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+swingTexture
+  rotate: false
+  xy: 1220, 574
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sakuraFlower
+  rotate: false
+  xy: 0, 58
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

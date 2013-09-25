@@ -23,8 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 public class LanguageSelectionScreen extends GameScreen implements GestureListener {
 
-	private GameScreen nextScreen;
-	
 	private SakuraHero game;
 	private GestureDetector inputDetector;
 	private FadeEffectParameters fade;
@@ -41,15 +39,14 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	private float elapsedTime;
 	private float blinking;
 
-	public LanguageSelectionScreen(final SakuraHero game, final FadeEffectParameters fadeParams, final GameScreen nextScreen) {
+	public LanguageSelectionScreen(final SakuraHero game, final FadeEffectParameters fadeParams) {
 		this.game = game;
 		this.fade = fadeParams;
-		this.nextScreen = nextScreen;
-
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));
-		selection = new SceneEntity(game.resources.getTexture("selectLanguage"));
-		english = new SceneEntity(game.resources.getTexture("english"),"English");
-		japanese = new SceneEntity(game.resources.getTexture("japanese"),"Japanese");
+		
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+		selection = new SceneEntity(Renderer.introAtlas.createSprite("selectLanguage"));
+		english = new SceneEntity(Renderer.introAtlas.createSprite("english"),"English");
+		japanese = new SceneEntity(Renderer.introAtlas.createSprite("japanese"),"Japanese");
 		blinking = 1.0f;
 		inputDetector = new GestureDetector(this);    
 		
@@ -103,7 +100,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 			}
 
 			if(elapsedTime > fade.fadeOutTime-0.001f)
-				game.setScreen(nextScreen);
+				game.initializeLoading();
 		}
 	}
 

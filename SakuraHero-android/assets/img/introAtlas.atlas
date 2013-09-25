@@ -1,0 +1,68 @@
+
+introAtlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+engineLogo
+  rotate: false
+  xy: 0, 482
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+menuBackground
+  rotate: false
+  xy: 0, 0
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+teamLogo
+  rotate: false
+  xy: 802, 482
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+selectLanguage
+  rotate: false
+  xy: 802, 420
+  size: 620, 60
+  orig: 620, 60
+  offset: 0, 0
+  index: -1
+katana
+  rotate: false
+  xy: 802, 185
+  size: 188, 233
+  orig: 188, 233
+  offset: 0, 0
+  index: -1
+english
+  rotate: false
+  xy: 992, 368
+  size: 240, 50
+  orig: 240, 50
+  offset: 0, 0
+  index: -1
+japanese
+  rotate: false
+  xy: 992, 316
+  size: 240, 50
+  orig: 240, 50
+  offset: 0, 0
+  index: -1
+sakuraLeaf
+  rotate: false
+  xy: 1424, 448
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+shine
+  rotate: false
+  xy: 802, 151
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

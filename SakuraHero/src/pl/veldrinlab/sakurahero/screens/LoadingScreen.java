@@ -9,7 +9,6 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
@@ -40,22 +39,17 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	private float velocity;
 	private float shineTime;
 
-	//test
-	TextureAtlas atlas;
-	
 	public LoadingScreen(final SakuraHero game) {
 		this.game = game;
-
-		background = new SceneEntity(game.resources.getTexture("menuBackground"));
-				
-		//test
-		atlas = game.resources.getTextureAtlas("englishAtlas");
+		this.fallingSakura = game.fallingSakura;
 		
-		logo = new SceneEntity(atlas.createSprite("logo"));
-		loadingStatus = new SceneEntity(atlas.createSprite("loading"));
+		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
+				
+		logo = new SceneEntity(Renderer.guiAtlas.createSprite("logo"));
+		loadingStatus = new SceneEntity(Renderer.guiAtlas.createSprite("loading"));
 			
-		katana = new SceneEntity(game.resources.getTexture("katana"));
-		shineEffect = new SceneEntity(game.resources.getTexture("shine"));
+		katana = new SceneEntity(Renderer.introAtlas.createSprite("katana"));
+		shineEffect = new SceneEntity(Renderer.introAtlas.createSprite("shine"));
 
 		shineEffect.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		shineEffect.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
@@ -64,12 +58,11 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		timeDistance = 0.75f;
 		velocity = 750.0f;
 		shineTime = 1.0f;
-		fallingSakura = game.fallingSakura;
 		fadeState = true;
-		fallingSakura.setLeavesAlpha(0.0f);
 		
-		initializeInterface();
 		inputDetector = new GestureDetector(this);
+	
+		initializeInterface();
 	}
 
 	@Override
@@ -99,7 +92,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		}
 		else if(loadingState) {
 			if(game.resources.updateLoading()) {	
-				loadingStatus.changeEntitySprite(atlas.createSprite("tapToContinue"));
+				loadingStatus.changeEntitySprite(Renderer.guiAtlas.createSprite("tapToContinue"));
 				loadingStatus.getSprite().setX((Configuration.getWidth()-loadingStatus.getSprite().getWidth())*0.5f);
 				loadingStatus.getSprite().setY(Configuration.getHeight()*0.25f -loadingStatus.getSprite().getHeight());
 				loadingStatus.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -191,6 +184,8 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		//			menuMusic.setVolume(0.1f);
 		//		}
 		//
+		
+		fallingSakura.setLeavesAlpha(0.0f);
 		
 		Renderer.backgroundStage.addActor(background);
 		
