@@ -143,8 +143,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		music.setTouchable(Touchable.disabled);
 		macleod.setTouchable(Touchable.disabled);
 
-		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
-		credits.getSprite().setY(Configuration.getHeight()*0.90f - credits.getSprite().getHeight());
+		credits.alignCenter(0.90f);
 
 		codeDesignAnimation.setX((Configuration.getWidth()-codeDesignAnimation.getTextBounds().width)*0.5f);	
 		codeDesignAnimation.setY(Configuration.getHeight()*0.70f - codeDesignAnimation.getTextBounds().height);
@@ -163,6 +162,8 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 		macleod.setX((Configuration.getWidth()-macleod.getTextBounds().width)*0.5f);	
 		macleod.setY(Configuration.getHeight()*0.20f - macleod.getTextBounds().height);
+		
+		back.updateBounds();
 	}
 
 	@Override

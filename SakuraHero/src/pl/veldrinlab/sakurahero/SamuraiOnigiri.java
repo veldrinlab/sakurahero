@@ -1,11 +1,10 @@
 package pl.veldrinlab.sakurahero;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.veldrinlab.sakuraEngine.core.Animation;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
@@ -29,18 +28,9 @@ public class SamuraiOnigiri extends SceneEntity {
 	public boolean collisionOccurred;
 	public float deathAccum;
 
-	//TODO try to use Libgdx Animation class or write something own
 	public SceneEntity explosion;
-	private float animationAccumulator;
-	private int frameAmount = 15;
-	private int currentFrame = 0;
-	private float FRAME_TIME = 0.020f;
-
-	//TODO movement animation
-	private float animationAccumulator2;
-	private int frameAmount2 = 9;
-	private int currentFrame2 = 0;
-	private float FRAME_TIME2 = 0.05f;
+	private Animation explosionAnimation;
+	private Animation entityAnimation;
 
 	private float t;
 	public Vector2 collisionPos = new Vector2();
@@ -48,41 +38,25 @@ public class SamuraiOnigiri extends SceneEntity {
 	private float[] angleOptions = new float[4];
 	private float alpha;
 
-	//
-	private Vector2 spriteOrigin;
-	private Vector2 explosionOrigin;
-	
 	public SamuraiOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
-		super(enemySprite);
+		super(enemySprite,128,128);
 
 		moveDirection = new Vector2();
-		// TODO Auto-generated constructor stub
 
-		//TODO remove magic strings, use with/height 
-		explosion = new SceneEntity(explosionSprite);
-		explosion.getSprite().setSize(128.0f, 128.0f);
+		explosion = new SceneEntity(explosionSprite,128,128);
+		
+		explosionAnimation = new Animation(15,0.020f,explosion);
+		entityAnimation = new Animation(9,0.05f,this);
+				
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
 
-		spriteOrigin = new Vector2(enemySprite.getRegionX(),enemySprite.getRegionY());
-		explosionOrigin = new Vector2(explosionSprite.getRegionX(),explosionSprite.getRegionY());
-		
-		//
-		getSprite().setSize(128.0f, 128.0f);
-		getSprite().setOrigin(64,64);
-		
-		shadow = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));	
-		shadow.getSprite().setSize(128.0f, 128.0f);
-		
-		shadow2 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
-		shadow2.getSprite().setSize(128.0f, 128.0f);
-		
-		shadow3 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
-		shadow3.getSprite().setSize(128.0f, 128.0f);
-		
-		
+	
+		shadow = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);	
+		shadow2 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
+		shadow3 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
 	}
 
 	public void init() {
@@ -101,39 +75,32 @@ public class SamuraiOnigiri extends SceneEntity {
 		moveDirection.sub(x, y);
 		moveDirection = moveDirection.nor();
 
-		// pozycja trzymana w aktorze TODO zobaczy co oferuje jeszcze sam aktor, dane tam trzymac!!!
-		setPosition(x, y);
-
-		getSprite().setColor(1.0f,1.0f,1.0f,1.0f);
-		getSprite().setPosition(x,y);
-		collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
+		rotation = 0.0f;
+		rotationVelocity = 5.0f;
+		
+		setEntityAlpha(1.0f);
+		updateEntityState(x,y);
+		
+		//TODO to te¿ dodaæ do stanu?
+		collisionCircle.set(x+sprite.getWidth()*0.5f, y+sprite.getHeight()*0.5f, 64.0f);
 
 		// shadow
-		shadow.getSprite().setPosition(x,y);
-		shadow2.getSprite().setPosition(x,y);
-		shadow3.getSprite().setPosition(x,y);
+		shadow.updateEntityState(x,y);
+		shadow2.updateEntityState(x,y);
+		shadow3.updateEntityState(x,y);
 		
-		shadow.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.75f);
-		shadow2.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);	
-		shadow3.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.25f);
+		shadow.setEntityAlpha(0.75f);
+		shadow2.setEntityAlpha(0.5f);	
+		shadow3.setEntityAlpha(0.25f);
 	
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
 		collisionOccurred = false;
-		getSprite().setRotation(0.0f);
-		explosion.getSprite().setRegion((int)explosionOrigin.x+128*(frameAmount-1), (int)explosionOrigin.y, 128, 128);
-		currentFrame = 0;
 		alpha = 1.0f;
 
-		// animation
-		sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		
-		//TODO to mo¿na init raz
-		shadow.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		shadow2.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		shadow3.getSprite().setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		currentFrame2 = 0;
+		explosionAnimation.initializeAnimation();
+		entityAnimation.initializeAnimation();
 	}
 
 	public	void update(final float deltaTime) {
@@ -141,15 +108,7 @@ public class SamuraiOnigiri extends SceneEntity {
 		// stan pocz¹tkowy
 		if(!collisionOccurred) {
 			
-			// animation
-			animationAccumulator2 += deltaTime;
-			
-			if(animationAccumulator2 > FRAME_TIME2) {
-				currentFrame2 = (currentFrame2+1) % (frameAmount2-1);
-				//TODO maybe only when samurai attack?
-			//	getSprite().setRegion(currentFrame2*128, 0, 128, 128);
-				animationAccumulator2 = 0.0f;
-			}
+			entityAnimation.updateAnimation(deltaTime);
 			
 			float x = getX();
 			float y = getY();
@@ -167,18 +126,18 @@ public class SamuraiOnigiri extends SceneEntity {
 			x += moveDirection.x * velocity;
 			y += moveDirection.y * velocity;
 
-			setPosition(x,y);
-			getSprite().setPosition(x,y);
-
-			shadow.getSprite().setPosition(shadowX, shadowY);
-			shadow2.getSprite().setPosition(shadowX2, shadowY2);
-			shadow3.getSprite().setPosition(shadowX3, shadowY3);
+			updateEntityState(x, y);
+			
+			shadow.updateEntityState(shadowX, shadowY);
+			shadow2.updateEntityState(shadowX2, shadowY2);
+			shadow3.updateEntityState(shadowX3, shadowY3);
 			
 			// update circle
-			collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
+			collisionCircle.set(x+sprite.getWidth()*0.5f, y+sprite.getHeight()*0.5f, 64.0f);
 
-			position.set(x, y);
-			if(position.dst(400.0f, 280.0f) > 1000)
+			Vector2 temp = Vector2.Zero;
+			temp.set(x, y);
+			if(temp.dst(400.0f, 280.0f) > 1000)
 				init();
 		}
 		else if(collisionOccurred && deathAccum < 0.5f) {
@@ -190,41 +149,27 @@ public class SamuraiOnigiri extends SceneEntity {
 
 			final float g = 100.0f;		
 			final float v0 = 300.0f;
-
-			//			float deltaX = v0*deltaTime*MathUtils.cosDeg(10.0f);
-			//			float deltaY = v0*deltaTime*MathUtils.sinDeg(10.0f) - (g*deltaTime*deltaTime*0.5f);
-			//			
-			//			
+		
 			float x = collisionPos.x + v0*t*MathUtils.cosDeg(angle);
 			float y = collisionPos.y + v0*t*MathUtils.sinDeg(angle) - (g*t*t*0.5f);
 
-			float rotation = getSprite().getRotation();
-			float rotationVelocity = 5.0f;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
 
-			sprite.setRegion((int)spriteOrigin.x+(frameAmount2-1)*128, (int)spriteOrigin.y, 128, 128);
-		
-			getSprite().setRotation(rotation);
-			setPosition(x,y);
-			getSprite().setPosition(x,y);
-			explosion.getSprite().setPosition(x, y);
+			entityAnimation.setDefinedFrame(8);
+
+			updateEntityState(x, y);
+			explosion.updateEntityState(x, y);
 			
 		}
-		else if(collisionOccurred && deathAccum > 0.5f && (currentFrame != frameAmount-1)) {
+		else if(collisionOccurred && deathAccum > 0.5f && !explosionAnimation.animationCycleFinished()) {
 
 			alpha -= deltaTime;
 			alpha = MathUtils.clamp(alpha, 0.0f, 1.0f);
-			getSprite().setColor(1.0f, 1.0f, 1.0f, alpha);
-			// update explosion animation
-			animationAccumulator += deltaTime;
-
-			if(animationAccumulator > FRAME_TIME) {
-				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion((int)explosionOrigin.x+128*currentFrame, (int)explosionOrigin.y, 128, 128);
-				animationAccumulator = 0.0f;
-			}
+			setEntityAlpha(alpha);
+			
+			explosionAnimation.updateAnimation(deltaTime);
 		}
-		else if(collisionOccurred && (currentFrame == frameAmount-1))
+		else if(collisionOccurred && explosionAnimation.animationCycleFinished())
 			init();
 	}
 
@@ -236,8 +181,8 @@ public class SamuraiOnigiri extends SceneEntity {
 		collisionPos.set(getX(), getY());
 		angle = angleOptions[MathUtils.random(0, 3)];
 		
-		shadow.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		shadow2.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);	
-		shadow3.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		shadow.setEntityAlpha(0.0f);
+		shadow2.setEntityAlpha(0.0f);
+		shadow3.setEntityAlpha(0.0f);
 	}
 }

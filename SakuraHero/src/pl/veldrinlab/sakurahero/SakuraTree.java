@@ -3,15 +3,9 @@ package pl.veldrinlab.sakurahero;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializable;
-import com.badlogic.gdx.utils.JsonValue;
 
 //TODO tutaj dodaæ animacjê efektu spadania odpowiedni¹
 public class SakuraTree {
@@ -29,7 +23,7 @@ public class SakuraTree {
 		this.leafSprite = leafSprite;
 		
 		tree = new SceneEntity(treeSprite);
-		tree.getSprite().setY(-10.0f);
+		tree.updateEntityState(0,-10);
 
 		sakuraTreeBatch = new SpriteBatch();
 		sakuraTreeStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,sakuraTreeBatch);
@@ -38,20 +32,15 @@ public class SakuraTree {
 		
 		leaves = new SakuraTreeDescriptor();
 		
-
 	}
 	
-	//TODO maybe some init method
-	
-	// moze path to pliku?
 	public void init() {
 		for(int i = 0; i < leaves.leaves.size; ++i) {
 			
-			// to nie tutaj jebnac
-			SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"));
-			flower.getSprite().setPosition(leaves.leaves.get(i).x-flower.getSprite().getWidth()*0.5f, leaves.leaves.get(i).y-flower.getSprite().getHeight()*0.5f);
-			flower.getSprite().setRotation(leaves.leaves.get(i).rotation);
-
+			SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"),32,32);
+			flower.rotation = leaves.leaves.get(i).rotation;
+			flower.updateEntityState(leaves.leaves.get(i).x-flower.width*0.5f, leaves.leaves.get(i).y-flower.height*0.5f);
+		
 			sakuraTreeStage.addActor(flower);
 		}
 	}

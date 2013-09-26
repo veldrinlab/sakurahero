@@ -36,7 +36,7 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	public LevelEditorScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
+		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause",64,64);
 		inputDetector = new MultitouchGestureDetector(this);
 
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
@@ -115,7 +115,8 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 		Renderer.backgroundStage.addActor(background);
 		Renderer.hudStage.addActor(pauseButton);
 
-		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
+		pauseButton.updateEntityState(Configuration.getWidth()*0.98f-pauseButton.width, 0.0f);
+//		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
 	
 		Gdx.input.setInputProcessor(inputDetector);
 	}
@@ -160,14 +161,15 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	public boolean touchDown(float x, float y, int pointer) {
 		Vector2 stageCoords = Vector2.Zero;
 		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		float rotation = MathUtils.random(0.0f, 360.0f);
-
-		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"));
-		flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
-		flower.getSprite().setRotation(rotation);
+	
+		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"),32,32);
+		
+		flower.rotation = MathUtils.random(0.0f, 360.0f);
+		flower.updateEntityState(stageCoords.x-flower.width*0.5f, stageCoords.y-flower.height*0.5f);
+		
 
 		tree.sakuraTreeStage.addActor(flower);
-		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, rotation));
+		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, flower.rotation));
 
 		return true;
 	}

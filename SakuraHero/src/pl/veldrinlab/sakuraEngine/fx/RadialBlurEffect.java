@@ -29,7 +29,7 @@ public class RadialBlurEffect extends PostEffect {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
 		actor = new SceneEntity(renderTarget.getColorBufferTexture());
 		stage.addActor(actor);
-		actor.getSprite().flip(false,true);
+		actor.sprite.flip(false,true);
 		
 		sampleDist = 1.0f;
 		sampleStrength = 2.2f;
@@ -40,7 +40,7 @@ public class RadialBlurEffect extends PostEffect {
 	 */
 	@Override
 	public void renderEffect() {
-		actor.getSprite().setTexture(renderTarget.getColorBufferTexture());
+		actor.sprite.setTexture(renderTarget.getColorBufferTexture());
 		stage.draw();
 	}
 

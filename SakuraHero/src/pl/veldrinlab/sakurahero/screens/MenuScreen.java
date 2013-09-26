@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
@@ -136,25 +135,17 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {
-		menu.getSprite().setX((Configuration.getWidth()-menu.getSprite().getWidth())*0.5f);	
-		menu.getSprite().setY(Configuration.getHeight()*0.90f - menu.getSprite().getHeight());
-
-		play.getSprite().setX((Configuration.getWidth()-play.getSprite().getWidth())*0.5f);	
-		play.getSprite().setY(Configuration.getHeight()*0.65f - play.getSprite().getHeight());
-		options.getSprite().setX((Configuration.getWidth()-options.getSprite().getWidth())*0.5f);	
-		options.getSprite().setY(Configuration.getHeight()*0.50f - options.getSprite().getHeight());
-		credits.getSprite().setX((Configuration.getWidth()-credits.getSprite().getWidth())*0.5f);	
-		credits.getSprite().setY(Configuration.getHeight()*0.35f - credits.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getHeight()*0.20f - exit.getSprite().getHeight());		
-
-		//TODO refactor this getSprite shit
-		//TODO maybe some update method 
-
-		play.setBounds(play.getSprite().getX(), play.getSprite().getY(), play.getSprite().getWidth(), play.getSprite().getHeight());
-		options.setBounds(options.getSprite().getX(), options.getSprite().getY(), options.getSprite().getWidth(), options.getSprite().getHeight());
-		credits.setBounds(credits.getSprite().getX(), credits.getSprite().getY(), credits.getSprite().getWidth(), credits.getSprite().getHeight());
-		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
+		menu.alignCenter(0.90f);
+		
+		play.alignCenter(0.65f);
+		options.alignCenter(0.50f);
+		credits.alignCenter(0.35f);
+		exit.alignCenter(0.20f);
+		
+		play.updateBounds();
+		options.updateBounds();
+		credits.updateBounds();
+		exit.updateBounds();
 	}
 
 	@Override

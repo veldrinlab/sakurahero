@@ -10,14 +10,12 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class ModeSelectionScreen extends GameScreen implements GestureListener  {
 
@@ -50,9 +48,9 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground")); 
 		modeSelection = new SceneEntity(Renderer.guiAtlas.createSprite("modeSelection"));
 		back = new SceneEntity(Renderer.guiAtlas.createSprite("back"),"Back");
-		normalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"));
-		survivalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriOni"));
-		trainingEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriNinja"));
+		normalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
+		survivalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriOni"),128,128);
+		trainingEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriNinja"),128,128);
 		
 		normal = new Label("Normal",Renderer.standardFont);	
 		survival = new Label("Survival",Renderer.standardFont);
@@ -65,7 +63,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -76,7 +73,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -97,7 +93,6 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub	
 	}
 
 	@Override
@@ -144,22 +139,11 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		return false;
 	}
 
-	private void initializeInterface() {
-		normalEmblem.getSprite().setRegion(normalEmblem.getSprite().getRegionX(), normalEmblem.getSprite().getRegionY(), 128, 128);
-		survivalEmblem.getSprite().setRegion(survivalEmblem.getSprite().getRegionX(), survivalEmblem.getSprite().getRegionY(), 128, 128);
-		trainingEmblem.getSprite().setRegion(trainingEmblem.getSprite().getRegionX(), trainingEmblem.getSprite().getRegionY(), 128, 128);
-		
-		normalEmblem.getSprite().setSize(128, 128);
-		survivalEmblem.getSprite().setSize(128, 128);
-		trainingEmblem.getSprite().setSize(128, 128);
-		
-		modeSelection.getSprite().setX((Configuration.getWidth()-modeSelection.getSprite().getWidth())*0.5f);	
-		modeSelection.getSprite().setY(Configuration.getHeight()*0.90f - modeSelection.getSprite().getHeight());
-
+	private void initializeInterface() {		
 		normal.setName("Normal");
 		survival.setName("Survival");
 		training.setName("Training");
-	
+		
 		normal.setX((Configuration.getWidth()-normal.getTextBounds().width)*0.5f);
 		normal.setY(Configuration.getHeight()*0.55f - normal.getTextBounds().height);
 		
@@ -169,31 +153,26 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		training.setX(Configuration.getWidth()*0.9f - training.getTextBounds().width);
 		training.setY(Configuration.getHeight()*0.25f - training.getTextBounds().height);
 		
-		normalEmblem.getSprite().setX(normal.getX()+normal.getTextBounds().width*0.5f-normalEmblem.getSprite().getWidth()*0.5f);
-		normalEmblem.getSprite().setY(normal.getY()+normal.getTextBounds().height);
+		modeSelection.alignCenter(0.90f);
 		
-		survivalEmblem.getSprite().setX(survival.getX()+survival.getTextBounds().width*0.5f-survivalEmblem.getSprite().getWidth()*0.5f);
-		survivalEmblem.getSprite().setY(survival.getY()+survival.getTextBounds().height);
-		
-		trainingEmblem.getSprite().setX(training.getX()+training.getTextBounds().width*0.5f-trainingEmblem.getSprite().getWidth()*0.5f);
-		trainingEmblem.getSprite().setY(training.getY()+training.getTextBounds().height);
+		back.updateBounds();
+		normalEmblem.updateEntityState(normal.getX()+normal.getTextBounds().width*0.5f-normalEmblem.width*0.5f, normal.getY()+normal.getTextBounds().height);
+		survivalEmblem.updateEntityState(survival.getX()+survival.getTextBounds().width*0.5f-survivalEmblem.width*0.5f, survival.getY()+survival.getTextBounds().height);
+		trainingEmblem.updateEntityState(training.getX()+training.getTextBounds().width*0.5f-trainingEmblem.width*0.5f, training.getY()+training.getTextBounds().height);
 	}
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -219,17 +198,11 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		else if(actor.getName().equals("Back")) {
 			game.setScreen(menuScreen);
 		}
-		
-		//TODO 
-		//			if(Configuration.getInstance().soundOn)
-		//				game.resources.getSoundEffect("selection").play();
-	
 		return true;
 	}
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

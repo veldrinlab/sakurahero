@@ -31,14 +31,14 @@ public class FallingLeavesEffect {
 		fallingVelocity = 50.0f;
 		
 		for(int i = 0; i < amount; i++) {
-			SceneEntity leaf = new SceneEntity(Renderer.introAtlas.createSprite("sakuraLeaf"));
+			SceneEntity leaf = new SceneEntity(Renderer.introAtlas.createSprite("sakuraLeaf"),32,32);
 			leaves.add(leaf);
 		}
 	}
 	
 	public void initializeEffect() {
 		for(SceneEntity a : leaves) {
-			a.getSprite().setPosition(MathUtils.random(boundary.x, boundary.width), MathUtils.random(boundary.y, boundary.height));
+			a.updateEntityState(MathUtils.random(boundary.x, boundary.width), MathUtils.random(boundary.y, boundary.height));
 			a.rotationVelocity = MathUtils.random(0.0f, 1.0f);
 			effectStage.addActor(a);
 		}
@@ -47,7 +47,7 @@ public class FallingLeavesEffect {
 	public void setLeavesAlpha(final float alpha) {
 		
 		for(SceneEntity actor : leaves)
-			actor.getSprite().setColor(1.0f,1.0f, 1.0f, alpha);
+			actor.setEntityAlpha(alpha);
 	}
 	
 	public void setFallingBoundary(final float x, final float y, final float width, final float height) {
@@ -59,21 +59,17 @@ public class FallingLeavesEffect {
 		sakuraAccumulator += deltaTime;
 		
 		for(int i = 0; i < leaves.size; ++i) {
-			float currentX = leaves.get(i).getSprite().getX();
-			float currentY = leaves.get(i).getSprite().getY();
+			float currentX = leaves.get(i).position.x;
+			float currentY = leaves.get(i).position.y;
 				
 			currentX += Math.sin(leaves.get(i).rotationVelocity+sakuraAccumulator)*0.5f;
 			currentY -= fallingVelocity * deltaTime;
 			
-			leaves.get(i).getSprite().setX(currentX);
-			leaves.get(i).getSprite().setY(currentY);
-			
-			leaves.get(i).getSprite().setRotation((float) (-Math.abs(Math.sin(leaves.get(i).rotationVelocity+sakuraAccumulator))*30.0f));
-			
-			if(currentY < -leaves.get(i).getSprite().getHeight())
-				leaves.get(i).getSprite().setPosition(MathUtils.random(boundary.x,boundary.width), boundary.height);
+			leaves.get(i).rotation = (float) (-Math.abs(Math.sin(leaves.get(i).rotationVelocity+sakuraAccumulator))*30.0f);
+			leaves.get(i).updateEntityState(currentX, currentY);
 
-//			leaves.get(i).getSprite().setPosition(MathUtils.random(250.0f, 600.0f), 150.0f);
+			if(currentY < -leaves.get(i).height)
+				leaves.get(i).updateEntityState(MathUtils.random(boundary.x,boundary.width), boundary.height);
 		}
 	}
 	

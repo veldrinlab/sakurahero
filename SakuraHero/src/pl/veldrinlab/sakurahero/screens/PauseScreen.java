@@ -1,7 +1,6 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.Configuration;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -45,7 +44,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
 		pauseStage = new Stage(Configuration.getWidth(), Configuration.getHeight(), false, pauseBatch);
 		pauseBackground = new SceneEntity(renderTarget.getColorBufferTexture());
-		pauseBackground.getSprite().flip(false,true);
+		pauseBackground.sprite.flip(false,true);
 
 		pause = new SceneEntity(Renderer.guiAtlas.createSprite("pause"));
 		resume = new SceneEntity(Renderer.guiAtlas.createSprite("resume"),"Resume");
@@ -70,13 +69,11 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
 		pauseStage.clear();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -92,17 +89,14 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public void resize(final int width, final int height) {
-		//	Renderer.defaultStage.setViewport(Configuration.getInstance().width, Configuration.getInstance().height, false);		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void show() {	
-
 		pauseStage.clear();
 		pauseStage.addActor(pauseBackground);
 		pauseStage.addActor(pause);
@@ -125,8 +119,8 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	@Override
 	public void processRendering() {
 		Renderer.clearScreen();
-		pauseBackground.getSprite().setTexture(renderTarget.getColorBufferTexture());
-		pauseBackground.getSprite().setColor(1.0f,1.0f,1.0f,alpha);
+		pauseBackground.sprite.setTexture(renderTarget.getColorBufferTexture());
+		pauseBackground.setEntityAlpha(alpha);
 		pauseStage.draw();
 	}
 
@@ -141,38 +135,28 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 	}
 
 	private void initializeInterface() {
-
-		pause.getSprite().setX((Configuration.getWidth()-pause.getSprite().getWidth())*0.5f);	
-		pause.getSprite().setY(Configuration.getHeight()*0.9f - pause.getSprite().getHeight());
-
-		resume.getSprite().setX((Configuration.getWidth()-resume.getSprite().getWidth())*0.5f);	
-		resume.getSprite().setY(Configuration.getHeight()*0.65f - resume.getSprite().getHeight());
-		menu.getSprite().setX((Configuration.getWidth()-menu.getSprite().getWidth())*0.5f);	
-		menu.getSprite().setY(Configuration.getHeight()*0.50f - menu.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getHeight()*0.35f - exit.getSprite().getHeight());
-
-		resume.setBounds(resume.getSprite().getX(), resume.getSprite().getY(), resume.getSprite().getWidth(), resume.getSprite().getHeight());
-		menu.setBounds(menu.getSprite().getX(), menu.getSprite().getY(), menu.getSprite().getWidth(), menu.getSprite().getHeight());
-		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
-
+		pause.alignCenter(0.9f);		
+		resume.alignCenter(0.65f);
+		menu.alignCenter(0.50f);
+		exit.alignCenter(0.35f);
+		
+		resume.updateBounds();
+		menu.updateBounds();
+		exit.updateBounds();
 	}
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -214,7 +198,6 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -13,11 +13,9 @@ public class OniOnigiri extends SceneEntity {
 	public float deathAccum;
 
 	private Vector2 moveDirection;
-	
-	
+		
 	public SceneEntity explosion;
 	private Animation explosionAnimation;
-	
 	private Animation entityAnimation;
 	
 	private float t;
@@ -26,30 +24,20 @@ public class OniOnigiri extends SceneEntity {
 	private float[] angleOptions = new float[4];
 	private float alpha;
 	
-	//
-//	private Vector2 spriteOrigin;
-	//private Vector2 explosionOrigin;
-	
 	public OniOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
-		super(enemySprite);
+		super(enemySprite,128,128);
 
 		moveDirection = new Vector2();
 		
-		explosion = new SceneEntity(explosionSprite);
-		explosion.getSprite().setSize(128.0f, 128.0f);
+		explosion = new SceneEntity(explosionSprite,128,128);
 		
 		explosionAnimation = new Animation(15,0.020f,explosion);
-		
 		entityAnimation = new Animation(12,0.020f,this);
-		
 		
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
-		
-		getSprite().setSize(128.0f, 128.0f);
-		getSprite().setOrigin(64,64);
 	}
 
 	public void init() {
@@ -63,11 +51,12 @@ public class OniOnigiri extends SceneEntity {
 		else
 			y = MathUtils.random(Configuration.getHeight(),Configuration.getHeight()*1.5f);
 
-		// set target - samrua leaf
+		// set target - sakura leaf (some %)
 		moveDirection.set(300.0f, 380.0f);
 		moveDirection.sub(x, y);
 		moveDirection = moveDirection.nor();
 
+		
 		// pozycja trzymana w aktorze TODO zobaczy co oferuje jeszcze sam aktor, dane tam trzymac!!!
 		setPosition(x, y);
 
@@ -78,7 +67,6 @@ public class OniOnigiri extends SceneEntity {
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
-		//explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
 		explosionAnimation.initializeAnimation();
 		
 		
@@ -86,14 +74,10 @@ public class OniOnigiri extends SceneEntity {
 		sprite.setRotation(0.0f);
 		
 		
-	
+		rotationVelocity = 5.0f;
+		rotation = 0.0f;
 		
 		entityAnimation.initializeAnimation();
-		
-		// animation
-//		sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-//		currentFrame2 = 0;
-		
 	}
 	
 	
@@ -112,14 +96,15 @@ public class OniOnigiri extends SceneEntity {
 			x += moveDirection.x * velocity;
 			y += moveDirection.y * velocity;
 
-			setPosition(x,y);
-			sprite.setPosition(x,y);
+			updateEntityState(x, y);
 
+			
 			// update circle - method
 			collisionCircle.set(x+sprite.getWidth()*0.5f, y+sprite.getHeight()*0.5f, 64.0f);
 
-			position.set(x, y);
-			if(position.dst(400.0f, 280.0f) > 1000)
+			Vector2 temp = Vector2.Zero;
+			temp.set(x, y);
+			if(temp.dst(400.0f, 280.0f) > 1000)
 				init();
 		}
 		else if(collisionOccurred && deathAccum < 0.5f) {
@@ -133,17 +118,12 @@ public class OniOnigiri extends SceneEntity {
 			float x = collisionPos.x + v0*t*MathUtils.cosDeg(angle);
 			float y = collisionPos.y + v0*t*MathUtils.sinDeg(angle) - (g*t*t*0.5f);
 
-			float rotation = getSprite().getRotation();
-			float rotationVelocity = 5.0f;
-
+			entityAnimation.setDefinedFrame(12);
+			
 			rotation -= deltaTime* 90.0f*rotationVelocity;
 
-			entityAnimation.setDefinedFrame(12);
-
-			sprite.setRotation(rotation);
-			setPosition(x,y);
-			sprite.setPosition(x,y);
-			explosion.getSprite().setPosition(x, y);
+			updateEntityState(x, y);
+			explosion.updateEntityState(x, y);
 		}
 		else if(collisionOccurred && deathAccum > 0.5f && !explosionAnimation.animationCycleFinished()) {
 

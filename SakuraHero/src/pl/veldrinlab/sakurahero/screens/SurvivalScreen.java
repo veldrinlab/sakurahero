@@ -260,10 +260,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 			if(input.size > 3) {
 
-				//TODO update explosion inside
-				enemy.explosion.getSprite().setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
-				enemy2.explosion.getSprite().setPosition(enemy2.getSprite().getX(), enemy2.getSprite().getY());
-
 				for(int i = 0; i < input.size; ++i) {
 
 					if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
@@ -378,9 +374,9 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 				katanaLevel++;
 				katanaLevelInfo.setText("Level " + katanaLevel);
 			}
-			katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
-			katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)(katanaExp*228)+64, 62);
-
+			katanaLevelBar.sprite.setSize(katanaExp*228+64,62);
+			katanaLevelBar.sprite.setRegion(katanaLevelBar.sprite.getRegionX(),katanaLevelBar.sprite.getRegionY(), (int)(katanaExp*228)+64, 62);
+			
 			katana.update(input);
 
 			katanaTime += deltaTime;
@@ -492,20 +488,14 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		Renderer.hudStage.addActor(katanaLevelInfo);
 		Renderer.hudStage.addActor(katanaLevelBar);
 
-		katanaLevelBackground.getSprite().setY(Configuration.getHeight() - katanaLevelBackground.getSprite().getHeight());
-		katanaLevelBackground.getSprite().setX(Configuration.getWidth()-katanaLevelBackground.getSprite().getWidth());
-
-		katanaLevelBar.getSprite().setY(Configuration.getHeight() - katanaLevelBar.getSprite().getHeight());
-		katanaLevelBar.getSprite().setX(Configuration.getWidth()-katanaLevelBar.getSprite().getWidth());
-
-		katanaLevelInfo.setX(katanaLevelBackground.getSprite().getX()+katanaLevelBackground.getSprite().getWidth()*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
-		katanaLevelInfo.setY(katanaLevelBackground.getSprite().getY()-katanaLevelBackground.getSprite().getHeight()*0.5f);
-
-
-
+		katanaLevelBackground.updateEntityState(Configuration.getWidth()-katanaLevelBackground.width, Configuration.getHeight() - katanaLevelBackground.height);
+		katanaLevelBar.updateEntityState(Configuration.getWidth()-katanaLevelBar.width, Configuration.getHeight() - katanaLevelBar.height);
+		
+		katanaLevelInfo.setX(katanaLevelBackground.position.x+katanaLevelBackground.width*0.5f-katanaLevelInfo.getTextBounds().width*0.5f);
+		katanaLevelInfo.setY(katanaLevelBackground.position.y-katanaLevelBackground.height*0.5f);
 
 		// pause button hud
-		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
+		pauseButton.updateEntityState(Configuration.getWidth()*0.98f-pauseButton.width, 0.0f);
 
 
 		//hit/combo system
@@ -527,11 +517,13 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 		//292 czyli 100 % miecza daje 228 pikseli
 
-		katanaLevelBar.getSprite().setSize(katanaExp*228+64,62);
-		katanaLevelBar.getSprite().setRegion(katanaLevelBar.getSprite().getRegionX(),katanaLevelBar.getSprite().getRegionY(), (int)katanaExp*228+64, 62);
+		//292 czyli 100 % miecza daje 228 pikseli
 
-		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);
-		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		katanaLevelBar.sprite.setSize(katanaExp*228+64,62);
+		katanaLevelBar.sprite.setRegion(katanaLevelBar.sprite.getRegionX(),katanaLevelBar.sprite.getRegionY(), (int)katanaExp*228+64, 62);
+
+		katanaLevelBackground.setEntityAlpha(0.5f);
+		katanaLevelBar.setEntityAlpha(1.0f);
 		
 		time.setTouchable(Touchable.disabled);
 		Renderer.hudStage.addActor(time);

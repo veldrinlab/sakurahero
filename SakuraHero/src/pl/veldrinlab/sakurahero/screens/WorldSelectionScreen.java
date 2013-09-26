@@ -44,8 +44,8 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		aki = new SceneEntity(Renderer.guiAtlas.createSprite("aki"));	
 		natsu = new SceneEntity(Renderer.guiAtlas.createSprite("natsu"));
 
-		natsuBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"),"natsuBackground");
-		akiBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("akiBackground"),"akiBackground");
+		natsuBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"),"natsuBackground",320,192);
+		akiBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("akiBackground"),"akiBackground",320,192);
 
 		inputDetector = new GestureDetector(this);    
 		
@@ -132,42 +132,29 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 	}
 
 	private void initializeInterface() {
-		worldSelection.getSprite().setX((Configuration.getWidth()-worldSelection.getSprite().getWidth())*0.5f);	
-		worldSelection.getSprite().setY(Configuration.getHeight()*0.90f - worldSelection.getSprite().getHeight());
-
-		natsuBackground.getSprite().setSize(natsuBackground.getSprite().getWidth()*0.4f, natsuBackground.getSprite().getHeight()*0.4f);
-		akiBackground.getSprite().setSize(akiBackground.getSprite().getWidth()*0.4f, akiBackground.getSprite().getHeight()*0.4f);
-
-		natsuBackground.getSprite().setX(Configuration.getWidth()*0.05f);	
-		natsuBackground.getSprite().setY(Configuration.getHeight()*0.70f - natsuBackground.getSprite().getHeight());
-
-		akiBackground.getSprite().setX(Configuration.getWidth()*0.95f - natsuBackground.getSprite().getWidth());	
-		akiBackground.getSprite().setY(Configuration.getHeight()*0.70f - akiBackground.getSprite().getHeight());
-
-		natsuBackground.setBounds(natsuBackground.getSprite().getX(), natsuBackground.getSprite().getY(), natsuBackground.getSprite().getWidth(), natsuBackground.getSprite().getHeight());
-		akiBackground.setBounds(akiBackground.getSprite().getX(), akiBackground.getSprite().getY(), akiBackground.getSprite().getWidth(), akiBackground.getSprite().getHeight());
-
-		natsu.getSprite().setX(natsuBackground.getSprite().getX()+natsuBackground.getSprite().getWidth()*0.5f-natsu.getSprite().getWidth()*0.5f);
-		natsu.getSprite().setY(natsuBackground.getSprite().getY()-natsuBackground.getSprite().getHeight()*0.40f);
-		aki.getSprite().setX(akiBackground.getSprite().getX()+akiBackground.getSprite().getWidth()*0.5f-aki.getSprite().getWidth()*0.5f);
-		aki.getSprite().setY(akiBackground.getSprite().getY()-akiBackground.getSprite().getHeight()*0.40f);	
+		worldSelection.alignCenter(0.90f);
+		
+		natsuBackground.updateEntityState(Configuration.getWidth()*0.05f, Configuration.getHeight()*0.70f - natsuBackground.height);
+		akiBackground.updateEntityState(Configuration.getWidth()*0.95f - akiBackground.width,Configuration.getHeight()*0.70f - akiBackground.height);
+		natsu.updateEntityState(natsuBackground.position.x+natsuBackground.width*0.5f-natsu.width*0.5f,natsuBackground.position.y-natsuBackground.height*0.40f);
+		aki.updateEntityState(akiBackground.position.x+akiBackground.width*0.5f-aki.width*0.5f,akiBackground.position.y-akiBackground.height*0.40f);
+		natsuBackground.updateBounds();
+		akiBackground.updateBounds();	
+		back.updateBounds();
 	}
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -188,15 +175,11 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 			game.setScreen(playScreen);
 		}
 
-		//			if(Configuration.getInstance().soundOn)
-		//				game.resources.getSoundEffect("selection").play();
-
 		return true;
 	}
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

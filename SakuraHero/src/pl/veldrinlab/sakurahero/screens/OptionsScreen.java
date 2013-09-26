@@ -149,10 +149,8 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 	private void initializeInterface() {
 
-
-		options.getSprite().setX((Configuration.getWidth()-options.getSprite().getWidth())*0.5f);	
-		options.getSprite().setY(Configuration.getHeight()*0.90f - options.getSprite().getHeight());
-
+		options.alignCenter(0.90f);
+		
 
 		//		backToMenu.setName("Back");
 		resetHighScore.setName("Reset");
@@ -190,8 +188,7 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
 		soundState.setY(sound.getY());
 
-		//		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
-		//		backToMenu.setY(Configuration.getInstance().height*0.30f - backToMenu.getTextBounds().height);
+		back.updateBounds();
 	}
 
 	@Override

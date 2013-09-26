@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
@@ -65,10 +64,10 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 			elapsedTime += deltaTime;
 			elapsedTime = MathUtils.clamp(elapsedTime, 0.0f, fade.fadeInTime);
 
-			background.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
-			selection.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
-			english.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
-			japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
+			background.setEntityAlpha(elapsedTime);
+			selection.setEntityAlpha(elapsedTime);
+			english.setEntityAlpha(elapsedTime);
+			japanese.setEntityAlpha(elapsedTime);
 
 			if(elapsedTime > fade.fadeInTime-0.001f) {
 				fadeInState = false;
@@ -78,25 +77,25 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 		else if(selectState) {
 			blinking += deltaTime*5.0f;
 
-			background.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
-			selection.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
-			english.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
-			japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
+			background.setEntityAlpha(1.0f);
+			selection.setEntityAlpha(1.0f);
+			english.setEntityAlpha((float) ((Math.sin(blinking)+1.0f)/2.0f));
+			japanese.setEntityAlpha((float) ((Math.sin(blinking)+1.0f)/2.0f));
 		}
 		else if(fadeOutState) {
 			elapsedTime += deltaTime;
 			elapsedTime = MathUtils.clamp(elapsedTime, 0.0f, fade.fadeOutTime);
 
-			background.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
-			selection.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
+			background.setEntityAlpha(fade.fadeOutTime-elapsedTime);
+			selection.setEntityAlpha(fade.fadeOutTime-elapsedTime);
 
 			if(game.options.language == Language.ENGLISH) {
-				english.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
-				japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+				english.setEntityAlpha(fade.fadeOutTime-elapsedTime);
+				japanese.setEntityAlpha(0.0f);
 			}
 			else {
-				english.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-				japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, fade.fadeOutTime-elapsedTime);
+				english.setEntityAlpha(0.0f);
+				japanese.setEntityAlpha(fade.fadeOutTime-elapsedTime);
 			}
 
 			if(elapsedTime > fade.fadeOutTime-0.001f)
@@ -134,22 +133,20 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void show() {
 
 		fadeInState = true;
-		background.getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
-		selection.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		english.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		japanese.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		background.setEntityAlpha(0.0f);
+		selection.setEntityAlpha(0.0f);
+		english.setEntityAlpha(0.0f);
+		japanese.setEntityAlpha(0.0f);
 
 		Renderer.backgroundStage.addActor(background);
 		Renderer.hudStage.addActor(selection);
@@ -166,7 +163,6 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -195,45 +191,35 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public boolean longPress(float x, float y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	private void initializeInterface()	{
-		selection.getSprite().setX((Configuration.getWidth()-selection.getSprite().getWidth())*0.5f);	
-		selection.getSprite().setY(Configuration.getHeight()*0.90f - selection.getSprite().getHeight());
-
-		english.getSprite().setX((Configuration.getWidth()-english.getSprite().getWidth())*0.20f);	
-		english.getSprite().setY(Configuration.getHeight()*0.40f - english.getSprite().getHeight());
-
-		japanese.getSprite().setX((Configuration.getWidth()-japanese.getSprite().getWidth())*0.80f);	
-		japanese.getSprite().setY(Configuration.getHeight()*0.40f - japanese.getSprite().getHeight());
-
-		english.setBounds(english.getSprite().getX(), english.getSprite().getY(), english.getSprite().getWidth(), english.getSprite().getHeight());
-		japanese.setBounds(japanese.getSprite().getX(), japanese.getSprite().getY(), japanese.getSprite().getWidth(), japanese.getSprite().getHeight());
+		selection.alignCenter(0.90f);
+		
+		english.alignRelative(0.20f, 0.40f);
+		japanese.alignRelative(0.80f, 0.40f);
+		english.updateBounds();
+		japanese.updateBounds();
 	}
 }

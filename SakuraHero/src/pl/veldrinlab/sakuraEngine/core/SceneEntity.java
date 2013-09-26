@@ -1,11 +1,12 @@
 package pl.veldrinlab.sakuraEngine.core;
 
+import pl.veldrinlab.sakurahero.Configuration;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
@@ -16,18 +17,21 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
  */
 public class SceneEntity extends Actor {
 	
-	//TODO torchê du¿o tych danych siê robi - pozycja sprite, actora, jeszcze w³asny vector tutaj jest
+	public Sprite sprite;
 	
-	
-	protected Sprite sprite;
-	
-	public Vector3 velocity;
+	public Vector2 velocity;
+	public Vector2 position;
 	public float rotation;
 	public float rotationVelocity;
 	public Circle collisionCircle;
 	
-	// zbêdne?
-	public Vector2 position;
+	//nowe
+	public int width;
+	public int height;
+	public int originX;
+	public int originY;
+	
+	//TODO to siê robi za du¿e trochê!
 	
 	/**
 	 * Class constructor, creates spirte.
@@ -35,8 +39,8 @@ public class SceneEntity extends Actor {
 	 */
 	public SceneEntity(final Texture texture) {	
 		sprite = new Sprite(texture);	
+		velocity = new Vector2();
 		position = new Vector2();
-		velocity = new Vector3();
 		collisionCircle = new Circle();
 	}
 	
@@ -46,9 +50,38 @@ public class SceneEntity extends Actor {
 	 */
 	public SceneEntity(final Sprite sprite) {	
 		this.sprite = sprite;
+		this.width = (int) sprite.getWidth();
+		this.height = (int) sprite.getHeight();
+		velocity = new Vector2();
 		position = new Vector2();
-		velocity = new Vector3();
 		collisionCircle = new Circle();
+			
+		setWidth(sprite.getWidth());
+		setHeight(sprite.getHeight());
+		sprite.setSize(width, height);
+	}
+	
+	/**
+	 * Class constructor, creates SceneEntity from TextureAtlas.
+	 * @param sprite is reference to Sprite created from TextureAtlas.
+	 * @param width is sprite width.
+	 * @param height is sprite height.
+	 */
+	public SceneEntity(final Sprite sprite,final int width, final int height) {	
+		this.sprite = sprite;
+		this.width = width;
+		this.height = height;
+	
+		velocity = new Vector2();
+		position = new Vector2();
+		collisionCircle = new Circle();
+		
+		originX = sprite.getRegionX();
+		originY = sprite.getRegionY();
+		
+		setVerticalRegion(0);
+		sprite.setSize(width, height);
+		sprite.setOrigin(width/2, height/2);		
 	}
 
 	/**
@@ -58,6 +91,7 @@ public class SceneEntity extends Actor {
 	 */
 	public SceneEntity(final Texture texture, final String name) {
 		sprite = new Sprite(texture);
+		position = new Vector2();
 		
 		setName(name);
 		setTouchable(Touchable.enabled);
@@ -73,12 +107,43 @@ public class SceneEntity extends Actor {
 	 */
 	public SceneEntity(final Sprite sprite, final String name) {
 		this.sprite = sprite;
+		this.width = (int) sprite.getWidth();
+		this.height = (int) sprite.getHeight();
+		
+		position = new Vector2();
+		
+		originX = sprite.getRegionX();
+		originY = sprite.getRegionY();
 		
 		setName(name);
 		setTouchable(Touchable.enabled);
 		setWidth(sprite.getWidth());
 		setHeight(sprite.getHeight());
-		setBounds(0, 0, getWidth(), getHeight());
+		setBounds(sprite.getRegionX(), sprite.getRegionY(), getWidth(), getHeight());
+	}
+	
+	/**
+	 * Class constructor, creates SceneEntity with defined name.
+	 * @param texture is sprite texture.
+	 * @param name is Actor name;
+	 */
+	public SceneEntity(final Sprite sprite, final String name, final int width, final int height) {
+		this.sprite = sprite;
+		this.width = width;
+		this.height = height;
+		
+		position = new Vector2();
+		
+		originX = sprite.getRegionX();
+		originY = sprite.getRegionY();
+	
+		sprite.setSize(width, height);
+		
+		setName(name);
+		setTouchable(Touchable.enabled);
+		setWidth(sprite.getWidth());
+		setHeight(sprite.getHeight());
+		setBounds(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
 	}
 	
 	/**
@@ -90,19 +155,39 @@ public class SceneEntity extends Actor {
 	public void draw(final SpriteBatch batch, final float timeDelta) {
 		sprite.draw(batch);
 	}
+		
+	public void updateEntityState(final float x, final float y) {
+		position.set(x, y);
+		setPosition(x, y);
+		sprite.setPosition(x, y);
+		sprite.setRotation(rotation);
+	}
 	
+	public void setEntityAlpha(final float alpha) {
+		sprite.setColor(1.0f, 1.0f, 1.0f, alpha);
+	}
 	
 	public void changeEntitySprite(final Sprite sprite) {
 		this.sprite = sprite;
 	}
 	
-	//TODO paczkê metod zamiast tego
+	public void alignRelative(final float x, final float y) {	
+		sprite.setX((Configuration.getWidth()-sprite.getWidth())*x);	
+		sprite.setY(Configuration.getHeight()*y - sprite.getHeight());
+		
+		position.x = sprite.getX();
+		position.y = sprite.getY();
+	}
 	
-	/**
-	 * Accessor to actor Sprite data.
-	 * @return sprite.
-	 */
-	public Sprite getSprite() {
-		return sprite;
+	public void alignCenter(final float y) {
+		alignRelative(0.5f,y);
+	}
+	
+	public void updateBounds() {
+		setBounds(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+	}
+	
+	public void setVerticalRegion(int regionX) {
+		sprite.setRegion(originX+regionX, originY, width,height);	
 	}
 }

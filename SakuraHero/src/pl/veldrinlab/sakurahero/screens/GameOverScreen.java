@@ -1,8 +1,6 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.Language;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -10,16 +8,11 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class GameOverScreen extends GameScreen implements GestureListener {
 
@@ -56,7 +49,6 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -88,7 +80,6 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -125,7 +116,6 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -139,50 +129,28 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	}
 
 	private void initializeInterface() {		
-		//		score.setTouchable(Touchable.disabled);
-		//		tryAgain.setName("Again");
-		//		backToMenu.setName("Menu");
-		//
-		//		score.setX((Configuration.getInstance().width-score.getTextBounds().width)*0.5f);	
-		//		score.setY(Configuration.getInstance().height*0.70f - score.getTextBounds().height);
-		//
-		//		tryAgain.setX((Configuration.getInstance().width-tryAgain.getTextBounds().width)*0.5f);	
-		//		tryAgain.setY(Configuration.getInstance().height*0.60f - tryAgain.getTextBounds().height);
-		//
-		//		backToMenu.setX((Configuration.getInstance().width-backToMenu.getTextBounds().width)*0.5f);	
-		//		backToMenu.setY(Configuration.getInstance().height*0.50f - backToMenu.getTextBounds().height);
-
-
-		gameOver.getSprite().setX((Configuration.getWidth()-gameOver.getSprite().getWidth())*0.5f);	
-		gameOver.getSprite().setY(Configuration.getHeight()*0.9f - gameOver.getSprite().getHeight());
-
-		tryAgain.getSprite().setX((Configuration.getWidth()-tryAgain.getSprite().getWidth())*0.5f);	
-		tryAgain.getSprite().setY(Configuration.getHeight()*0.45f - tryAgain.getSprite().getHeight());
-		backToMenu.getSprite().setX((Configuration.getWidth()-backToMenu.getSprite().getWidth())*0.5f);	
-		backToMenu.getSprite().setY(Configuration.getHeight()*0.30f - backToMenu.getSprite().getHeight());
-		exit.getSprite().setX((Configuration.getWidth()-exit.getSprite().getWidth())*0.5f);	
-		exit.getSprite().setY(Configuration.getHeight()*0.15f - exit.getSprite().getHeight());
-
-		tryAgain.setBounds(tryAgain.getSprite().getX(), tryAgain.getSprite().getY(), tryAgain.getSprite().getWidth(), tryAgain.getSprite().getHeight());
-		backToMenu.setBounds(backToMenu.getSprite().getX(), backToMenu.getSprite().getY(), backToMenu.getSprite().getWidth(), backToMenu.getSprite().getHeight());
-		exit.setBounds(exit.getSprite().getX(), exit.getSprite().getY(), exit.getSprite().getWidth(), exit.getSprite().getHeight());
+		gameOver.alignCenter(0.9f);
+		tryAgain.alignCenter(0.45f);
+		backToMenu.alignCenter(0.30f);
+		exit.alignCenter(0.15f);
+		
+		tryAgain.updateBounds();
+		backToMenu.updateBounds();
+		exit.updateBounds();
 	}
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -225,7 +193,6 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

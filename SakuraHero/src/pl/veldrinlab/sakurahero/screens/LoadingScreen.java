@@ -51,8 +51,8 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		katana = new SceneEntity(Renderer.introAtlas.createSprite("katana"));
 		shineEffect = new SceneEntity(Renderer.introAtlas.createSprite("shine"));
 
-		shineEffect.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
-		shineEffect.getSprite().setSize(Configuration.getWidth(), Configuration.getHeight());
+		shineEffect.setEntityAlpha(0.0f);
+		shineEffect.sprite.setSize(Configuration.getWidth(), Configuration.getHeight());
 
 		direction = new Vector2(-1.0f,-1.0f);
 		timeDistance = 0.75f;
@@ -78,10 +78,9 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		if(fadeState) {
 			fadeInAlpha += deltaTime*1.0f;
 			fadeInAlpha = MathUtils.clamp(fadeInAlpha, 0.0f, 1.0f);
-
-			background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-			logo.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-			loadingStatus.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+			background.setEntityAlpha(fadeInAlpha);
+			logo.setEntityAlpha(fadeInAlpha);
+			loadingStatus.setEntityAlpha(fadeInAlpha);
 		
 			if(fadeInAlpha > 0.99f) {
 				fadeState = false;
@@ -93,9 +92,8 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		else if(loadingState) {
 			if(game.resources.updateLoading()) {	
 				loadingStatus.changeEntitySprite(Renderer.guiAtlas.createSprite("tapToContinue"));
-				loadingStatus.getSprite().setX((Configuration.getWidth()-loadingStatus.getSprite().getWidth())*0.5f);
-				loadingStatus.getSprite().setY(Configuration.getHeight()*0.25f -loadingStatus.getSprite().getHeight());
-				loadingStatus.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.0f);
+				loadingStatus.alignCenter(0.25f);				
+				loadingStatus.setEntityAlpha(0.0f);
 				loadingState = false;
 				katanaState = true;
 			}
@@ -103,13 +101,13 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		else if(katanaState) {
 			timeDistance -= deltaTime;
 
-			float x = katana.getSprite().getX();
-			float y = katana.getSprite().getY();
+			float x = katana.position.x;
+			float y = katana.position.y;
 
 			x += direction.x*velocity*deltaTime;
 			y += direction.y*velocity*deltaTime;
 
-			katana.getSprite().setPosition(x, y);
+			katana.updateEntityState(x, y);
 		
 			if(timeDistance < 0.0f) {
 				katanaState = false;
@@ -119,7 +117,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		}
 		else if(shineState) {
 			//TODO sword slash sound
-			shineEffect.getSprite().setColor(1.0f, 1.0f, 1.0f, shineTime);
+			shineEffect.setEntityAlpha(shineTime);
 			
 			shineTime -= deltaTime;
 			
@@ -133,7 +131,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		}
 		else if(readyToGo) {
 			blinking += deltaTime*5.0f;
-			loadingStatus.getSprite().setColor(1.0f, 1.0f, 1.0f, (float) ((Math.sin(blinking)+1.0f)/2.0f));
+			loadingStatus.setEntityAlpha((float) ((Math.sin(blinking)+1.0f)/2.0f));
 		}			
 	}
 
@@ -168,12 +166,10 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void resume() {
-		//	 TODO Auto-generated method stub
 	}
 
 	@Override
@@ -199,7 +195,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -214,42 +209,35 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	private void initializeInterface() {
 		
-		background.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-		logo.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
-		loadingStatus.getSprite().setColor(1.0f,1.0f,1.0f,fadeInAlpha);
+		background.setEntityAlpha(fadeInAlpha);
+		logo.setEntityAlpha(fadeInAlpha);
+		loadingStatus.setEntityAlpha(fadeInAlpha);
 				
-		logo.getSprite().setX((Configuration.getWidth()-logo.getSprite().getWidth())*0.5f);	
-		logo.getSprite().setY(Configuration.getHeight()*0.80f - logo.getSprite().getHeight());
+		loadingStatus.alignCenter(0.25f);
+		logo.updateEntityState((Configuration.getWidth()-logo.width)*0.5f,Configuration.getHeight()*0.80f - logo.height);
+		katana.updateEntityState(325.0f, 480.0f-15.0f-katana.height);
 
-		loadingStatus.getSprite().setX((Configuration.getWidth()-loadingStatus.getSprite().getWidth())*0.5f);
-		loadingStatus.getSprite().setY(Configuration.getHeight()*0.25f -loadingStatus.getSprite().getHeight());
-
-		katana.getSprite().setPosition(325.0f, 480.0f-15.0f-katana.getSprite().getHeight());
-
-		float x = katana.getSprite().getX();
-		float y = katana.getSprite().getY();
+		float x = katana.position.x;
+		float y = katana.position.y;
 
 		x += -direction.x*velocity*timeDistance;
 		y += -direction.y*velocity*timeDistance;
 
-		katana.getSprite().setPosition(x, y);
+		katana.updateEntityState(x, y);
 	}
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -263,7 +251,6 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -97,12 +97,8 @@ public class SakuraHero extends Game {
 //		
 		
 //		setScreen(menuScreen);
-		//setScreen(trainingScreen);
-		setScreen(playScreen);
-		
-		//setScreen(levelEditorScreen);
-		//setScreen(modeSelectionScreen);
-	//	setScreen(teamSplashScreen);
+		setScreen(trainingScreen);
+		//setScreen(teamSplashScreen);
 	}
 
 	private void initializeEngine() {

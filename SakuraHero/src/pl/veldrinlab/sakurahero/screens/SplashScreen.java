@@ -49,11 +49,11 @@ public class SplashScreen extends GameScreen {
 		elapsedTime += deltaTime;
 		
 		if(elapsedTime < fade.fadeInTime)
-			splash.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
+			splash.setEntityAlpha(elapsedTime);
 		else if (elapsedTime < fade.fadeInTime + fade.stayTime)
-			splash.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			splash.setEntityAlpha(1.0f);
 		else if(elapsedTime < fade.fadeInTime + fade.stayTime + fade.fadeOutTime)
-			splash.getSprite().setColor(1.0f, 1.0f, 1.0f, effectTime-elapsedTime);
+			splash.setEntityAlpha(effectTime-elapsedTime);
 	}
 
 	@Override
@@ -88,24 +88,21 @@ public class SplashScreen extends GameScreen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void show() {
 		effectTime = fade.fadeInTime + fade.stayTime + fade.fadeOutTime;
 		elapsedTime = 0.0f;
-		splash.getSprite().setColor(1.0f, 1.0f, 1.0f, elapsedTime);
+		splash.setEntityAlpha(elapsedTime);
 		Renderer.backgroundStage.addActor(splash);
 	}
 
 	@Override
 	public void dispose() {
-
 	}
 }

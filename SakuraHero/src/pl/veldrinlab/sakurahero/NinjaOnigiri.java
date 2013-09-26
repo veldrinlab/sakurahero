@@ -1,10 +1,10 @@
 package pl.veldrinlab.sakurahero;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.veldrinlab.sakuraEngine.core.Animation;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 public class NinjaOnigiri extends SceneEntity {
@@ -12,40 +12,34 @@ public class NinjaOnigiri extends SceneEntity {
 	public boolean collisionOccurred;
 	public float deathAccum;
 	
-	//TODO try to use Libgdx Animation class or write something own
 	public SceneEntity explosion;
-	private float animationAccumulator;
-	private int frameAmount = 15;
-	private int currentFrame = 0;
-	private float FRAME_TIME = 0.020f;
-
+	
+	private Animation explosionAnimation;	
+	private Animation entityAnimation;
+	
+	
 	private float t;
 	public Vector2 collisionPos = new Vector2();
 	public float angle;
 	private float[] angleOptions = new float[4];
+
 	private float alphaAccumulator;
-	
-	//
 	private boolean fadeIn;
-	
-	//
-	private Vector2 spriteOrigin;
-	private Vector2 explosionOrigin;
+
 	
 	public NinjaOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
-		super(enemySprite);
+		super(enemySprite,128,128);
 		
-		explosion = new SceneEntity(explosionSprite);
-		explosion.getSprite().setSize(128.0f, 128.0f);
+		explosion = new SceneEntity(explosionSprite,128,128);
+		
+		explosionAnimation = new Animation(15,0.020f,explosion);
+		entityAnimation = new Animation(1,0.020f,this);
+	
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
 		
-		spriteOrigin = new Vector2(enemySprite.getRegionX(),enemySprite.getRegionY());
-		explosionOrigin = new Vector2(explosionSprite.getRegionX(),explosionSprite.getRegionY());
-		getSprite().setSize(128,128);
-		getSprite().setOrigin(64.0f, 64.0f);
 	}
 	
 	public void init() {
@@ -54,24 +48,21 @@ public class NinjaOnigiri extends SceneEntity {
 		float y = MathUtils.random(Configuration.getHeight()*0.2f,Configuration.getHeight()*0.8f);
 	
 		alphaAccumulator = 0.0f;
+		rotation = 0.0f;
+		rotationVelocity = 5.0f;
 		
-		setPosition(x, y);
-		getSprite().setColor(1.0f,1.0f,1.0f,0.0f);
-		getSprite().setPosition(x,y);
-		collisionCircle.set(x+getSprite().getWidth()*0.5f, y+getSprite().getHeight()*0.5f, 64.0f);
+		setEntityAlpha(0.0f);
+		updateEntityState(x,y);
+		collisionCircle.set(x+sprite.getWidth()*0.5f, y+sprite.getHeight()*0.5f, 64.0f);
 
 		// 
 		deathAccum = 0.0f;
 		t = 0.0f;
 		collisionOccurred = false;
-		getSprite().setRotation(0.0f);
-		explosion.getSprite().setRegion((int)explosionOrigin.x+128*(frameAmount-1), (int)explosionOrigin.y, 128, 128);
-		currentFrame = 0;
-		
-		//
 		fadeIn = true;
-		sprite.setRegion((int)spriteOrigin.x, (int)spriteOrigin.y, 128,128);
-		
+	
+		entityAnimation.initializeAnimation();
+		explosionAnimation.initializeAnimation();
 	}
 	
 	public	void update(final float deltaTime) {
@@ -81,7 +72,7 @@ public class NinjaOnigiri extends SceneEntity {
 			
 			alphaAccumulator += deltaTime;
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
-			getSprite().setColor(1.0f,1.0f,1.0f,alpha);
+			setEntityAlpha(alpha);
 			
 			if(alphaAccumulator > 1.4999f)
 				fadeIn = false;			
@@ -90,7 +81,7 @@ public class NinjaOnigiri extends SceneEntity {
 			
 			alphaAccumulator -= deltaTime;
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
-			getSprite().setColor(1.0f,1.0f,1.0f,alpha);
+			setEntityAlpha(alpha);
 			
 			if(alpha < 0.00001f)
 				init();	
@@ -106,30 +97,20 @@ public class NinjaOnigiri extends SceneEntity {
 			float x = collisionPos.x + v0*t*MathUtils.cosDeg(angle);
 			float y = collisionPos.y + v0*t*MathUtils.sinDeg(angle) - (g*t*t*0.5f);
 
-			float rotation = getSprite().getRotation();
-			float rotationVelocity = 5.0f;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
-
-			getSprite().setRotation(rotation);
-			setPosition(x,y);
-			getSprite().setPosition(x,y);
-			explosion.getSprite().setPosition(x, y);
+			updateEntityState(x, y);
+			explosion.updateEntityState(x, y);
 		}
-		else if(collisionOccurred && deathAccum > 0.5f && (currentFrame != frameAmount-1)) {
+		else if(collisionOccurred && deathAccum > 0.5f && !explosionAnimation.animationCycleFinished()) {
 			
 			alphaAccumulator -= deltaTime;
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
-			getSprite().setColor(1.0f, 1.0f, 1.0f, alpha);
-			// update explosion animation
-			animationAccumulator += deltaTime;
+			setEntityAlpha(alpha);
+			
+			explosionAnimation.updateAnimation(deltaTime);
 
-			if(animationAccumulator > FRAME_TIME) {
-				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion((int)explosionOrigin.x+128*currentFrame, (int)explosionOrigin.y, 128, 128);
-				animationAccumulator = 0.0f;
-			}
 		}
-		else if(collisionOccurred && (currentFrame == frameAmount-1))
+		else if(collisionOccurred && explosionAnimation.animationCycleFinished())
 			init();
 	}
 	
@@ -138,7 +119,7 @@ public class NinjaOnigiri extends SceneEntity {
 			collisionOccurred = true;
 			collisionPos.set(getX(), getY());
 			angle = angleOptions[MathUtils.random(0, 3)];
-			getSprite().setRegion((int)spriteOrigin.x+128, (int)spriteOrigin.y, 128, 128);
+			entityAnimation.setDefinedFrame(1);
 			return true;
 		}
 		return false;
