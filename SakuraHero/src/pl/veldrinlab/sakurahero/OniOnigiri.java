@@ -1,11 +1,10 @@
 package pl.veldrinlab.sakurahero;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.veldrinlab.sakuraEngine.core.Animation;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 public class OniOnigiri extends SceneEntity {
@@ -16,19 +15,10 @@ public class OniOnigiri extends SceneEntity {
 	private Vector2 moveDirection;
 	
 	
-	//TODO try to use Libgdx Animation class or write something own
 	public SceneEntity explosion;
-	private float animationAccumulator;
-	private int frameAmount = 15;
-	private int currentFrame = 0;
-	private float FRAME_TIME = 0.020f;
-
-	//TODO movement animation
-	private float animationAccumulator2;
-	private int frameAmount2 = 13;
-	private int currentFrame2 = 0;
-	private float FRAME_TIME2 = 0.020f;
+	private Animation explosionAnimation;
 	
+	private Animation entityAnimation;
 	
 	private float t;
 	public Vector2 collisionPos = new Vector2();
@@ -37,8 +27,8 @@ public class OniOnigiri extends SceneEntity {
 	private float alpha;
 	
 	//
-	private Vector2 spriteOrigin;
-	private Vector2 explosionOrigin;
+//	private Vector2 spriteOrigin;
+	//private Vector2 explosionOrigin;
 	
 	public OniOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
 		super(enemySprite);
@@ -47,13 +37,16 @@ public class OniOnigiri extends SceneEntity {
 		
 		explosion = new SceneEntity(explosionSprite);
 		explosion.getSprite().setSize(128.0f, 128.0f);
+		
+		explosionAnimation = new Animation(15,0.020f,explosion);
+		
+		entityAnimation = new Animation(12,0.020f,this);
+		
+		
 		angleOptions[0] = -60.0f;
 		angleOptions[1] = 60.0f;
 		angleOptions[2] = 120.0f;
 		angleOptions[3] = -120.0f;
-		
-		spriteOrigin = new Vector2(enemySprite.getRegionX(),enemySprite.getRegionY());
-		explosionOrigin = new Vector2(explosionSprite.getRegionX(),explosionSprite.getRegionY());
 		
 		getSprite().setSize(128.0f, 128.0f);
 		getSprite().setOrigin(64,64);
@@ -86,31 +79,31 @@ public class OniOnigiri extends SceneEntity {
 		deathAccum = 0.0f;
 		t = 0.0f;
 		//explosion.getSprite().setRegion(128.0f*frameAmount, 0, 128, 128);
+		explosionAnimation.initializeAnimation();
+		
+		
 		collisionOccurred = false;
 		sprite.setRotation(0.0f);
-		explosion.getSprite().setRegion((int)explosionOrigin.x+128*(frameAmount-1), (int)explosionOrigin.y, 128, 128);
-		currentFrame = 0;
 		
+		
+	
+		
+		entityAnimation.initializeAnimation();
 		
 		// animation
-		sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		currentFrame2 = 0;
+//		sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
+//		currentFrame2 = 0;
 		
 	}
-
-	public	void update(final float deltaTime) {
+	
+	
+	public void update(final float deltaTime) {
 
 		// stan pocz¹tkowy
 		if(!collisionOccurred) {
 
-			// animation
-			animationAccumulator2 += deltaTime;
+			entityAnimation.updateAnimation(deltaTime);
 			
-			if(animationAccumulator2 > FRAME_TIME2) {
-				currentFrame2 = (currentFrame2+1) % (frameAmount2-1);
-				sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-				animationAccumulator2 = 0.0f;
-			}
 			
 			float x = getX();
 			float y = getY();
@@ -145,33 +138,26 @@ public class OniOnigiri extends SceneEntity {
 
 			rotation -= deltaTime* 90.0f*rotationVelocity;
 
-			sprite.setRegion((int)spriteOrigin.x+128*currentFrame2, (int)spriteOrigin.y, 128,128);
-		
+			entityAnimation.setDefinedFrame(12);
+
 			sprite.setRotation(rotation);
 			setPosition(x,y);
 			sprite.setPosition(x,y);
 			explosion.getSprite().setPosition(x, y);
 		}
-		else if(collisionOccurred && deathAccum > 0.5f && (currentFrame != frameAmount-1)) {
+		else if(collisionOccurred && deathAccum > 0.5f && !explosionAnimation.animationCycleFinished()) {
 
 			alpha -= deltaTime;
 			alpha = MathUtils.clamp(alpha, 0.0f, 1.0f);
 			sprite.setColor(1.0f, 1.0f, 1.0f, alpha);
-			// update explosion animation
-			animationAccumulator += deltaTime;
-
-			if(animationAccumulator > FRAME_TIME) {
-				currentFrame = (currentFrame+1) % frameAmount;
-				explosion.getSprite().setRegion((int)explosionOrigin.x+128*currentFrame, (int)explosionOrigin.y, 128, 128);
-				animationAccumulator = 0.0f;
-			}
+			
+			explosionAnimation.updateAnimation(deltaTime);
 		}
-		else if(collisionOccurred && (currentFrame == frameAmount-1))
+		else if(collisionOccurred && explosionAnimation.animationCycleFinished())
 			init();
 	}
 
 	public void hit() {
-
 		collisionOccurred = true;
 		collisionPos.set(getX(), getY());
 		angle = angleOptions[MathUtils.random(0, 3)];

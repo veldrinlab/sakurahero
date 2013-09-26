@@ -4,6 +4,7 @@ import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.screens.CreditsScreen;
 import pl.veldrinlab.sakurahero.screens.GameOverScreen;
 import pl.veldrinlab.sakurahero.screens.LanguageSelectionScreen;
+import pl.veldrinlab.sakurahero.screens.LevelEditorScreen;
 import pl.veldrinlab.sakurahero.screens.LoadingScreen;
 import pl.veldrinlab.sakurahero.screens.MenuScreen;
 import pl.veldrinlab.sakurahero.screens.ModeSelectionScreen;
@@ -59,6 +60,8 @@ public class SakuraHero extends Game {
 	private PauseScreen pauseScreen;
 	private GameOverScreen gameOverScreen;
 	
+	//Level Editor
+	private LevelEditorScreen levelEditorScreen;
 	
 	/**
 	 * Class construtor, nothing to do (it is great!).
@@ -97,6 +100,7 @@ public class SakuraHero extends Game {
 		//setScreen(trainingScreen);
 		setScreen(playScreen);
 		
+		//setScreen(levelEditorScreen);
 		//setScreen(modeSelectionScreen);
 	//	setScreen(teamSplashScreen);
 	}
@@ -166,6 +170,8 @@ public class SakuraHero extends Game {
 		trainingScreen = new TrainingScreen(this);
 		survivalScreen = new SurvivalScreen(this);
 		
+		//
+		levelEditorScreen = new LevelEditorScreen(this);
 		
 		buildGameStateGraph();
 		

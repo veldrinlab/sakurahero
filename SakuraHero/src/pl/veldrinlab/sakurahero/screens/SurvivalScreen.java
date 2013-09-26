@@ -7,6 +7,7 @@ import pl.veldrinlab.sakurahero.NinjaOnigiri;
 import pl.veldrinlab.sakurahero.OniOnigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
+import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
@@ -20,6 +21,7 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -31,7 +33,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class PlayScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
+public class SurvivalScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
 
 	public PauseScreen pauseScreen;
 	public GameOverScreen gameOverScreen;
@@ -90,10 +92,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private int comboAmount;
 	private float comboAlpha;
 
-	// system points
-	private int pointAmount;
-	private Label points;
-
 	// system katana level
 
 	private SceneEntity katanaLevelBar;
@@ -104,7 +102,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	private FallingLeavesEffect fallingSakura;
 
-	public PlayScreen(final SakuraHero game) {
+	private Label time;
+	private float survivedTime;
+	
+	public SurvivalScreen(final SakuraHero game) {
 		this.game = game;
 
 		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
@@ -132,11 +133,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
 
 
-		pointAmount = 0;
-		points = new Label("Points: " + String.valueOf(pointAmount), Renderer.smallFont);
-		points.setTouchable(Touchable.disabled);
-
-
 		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
 		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
 		katanaLevel = 0;
@@ -153,6 +149,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 
 		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
+		
+		//
+		time = new Label("Time ", Renderer.smallFont);
 	}
 
 	@Override
@@ -173,6 +172,36 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		if(Gdx.input.isKeyPressed(Keys.SPACE))
 			game.setScreen(gameOverScreen);
+
+		if(Gdx.input.isKeyPressed(Keys.ENTER))
+			game.setScreen(pauseScreen);
+
+		// level editor
+
+		if(Gdx.input.isKeyPressed(Keys.S)) {
+			Json json = new Json();		
+			FileHandle file = Gdx.files.local("levelSurvival.json");		
+			String jsonData = json.toJson(tree.leaves);
+			file.writeString(jsonData, false);
+		}
+
+		if(Gdx.input.isKeyPressed(Keys.L)) {
+
+			Json json = new Json();		
+			FileHandle file = Gdx.files.local("levelSurvival.json");
+
+			String jsonData = file.readString();
+
+			try {
+				tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
+			} catch(Exception e ) {
+
+				Gdx.app.log("SakuraHero ","Level file loading exception");
+				e.printStackTrace();
+			}
+
+			tree.init();
+		}
 	}
 
 	@Override
@@ -241,7 +270,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 						enemy.hit();
 						enemyHitAmount++;
 						comboAmount++;
-						pointAmount += 10;
 						katanaExp += 0.1f; //TODO z levelu na level coraz trudniej - jakiœ geometryczny wspó³czynnik
 						//Gdx.app.log("collision"," occurred");
 					}
@@ -249,7 +277,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 						if(enemy2.hit()) { //TODO lepiej
 							enemyHitAmount++;
 							comboAmount++;
-							pointAmount += 10;
 							katanaExp += 0.1f;
 							Gdx.app.log("collision"," occurred");
 						}
@@ -258,7 +285,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 						enemy3.hit();
 						enemyHitAmount++;
 						comboAmount++;
-						pointAmount += 10;
 						katanaExp += 0.1f;
 						//Gdx.app.log("collision"," occurred");
 					}
@@ -314,8 +340,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 					comboAlpha = 1.0f;
 					comboAmount = enemyHitAmount;
 
-					// bonus za Combo
-					pointAmount += comboAmount*100;
 
 					//TODO katana exp boost
 
@@ -337,7 +361,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			else if(comboAmount == 0 && enemyHitAmount > 1) {
 				comboAlpha = 1.0f;
 				comboAmount = enemyHitAmount;
-				pointAmount += comboAmount*100;
 
 				//TODO katana exp boost
 
@@ -371,7 +394,17 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		}
 
-		points.setText("Points: " + String.valueOf(pointAmount));
+		
+		
+				// survival time update
+		survivedTime += deltaTime;
+		
+		int hours = (int)survivedTime / 3600;
+		int minutes = ((int)survivedTime / 60) % 60;
+		int seconds = (int)survivedTime % 60;
+		
+		time.setText("Time " + hours/10+(hours-(hours/10)*10)+":"+minutes/10+(minutes-(minutes/10)*10)+":"+seconds/10+(seconds-(seconds/10*10)));
+
 	}
 
 	@Override
@@ -398,24 +431,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void show() {	
-		
-		//initialize SakuraTree
-		Json json = new Json();		
-		FileHandle file = Gdx.files.local("level.json");
-
-		String jsonData = file.readString();
-
-		try {
-			tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
-		} catch(Exception e ) {
-
-			Gdx.app.log("SakuraHero ","Level file loading exception");
-			e.printStackTrace();
-		}
-
-		tree.init();
-		
-		
 		//		if(Configuration.getInstance().musicOn) {
 		//			gameMusic.play();
 		//			gameMusic.setLooping(true);
@@ -471,14 +486,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
 		stateMessage.setColor(1.0f, 1.0f, 1.0f, flowAccumulator);
 
-		Renderer.hudStage.addActor(points);
+		//	Renderer.hudStage.addActor(points);
 
 		Renderer.hudStage.addActor(katanaLevelBackground);
 		Renderer.hudStage.addActor(katanaLevelInfo);
 		Renderer.hudStage.addActor(katanaLevelBar);
-
-		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.025f);	
-		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
 
 		katanaLevelBackground.getSprite().setY(Configuration.getHeight() - katanaLevelBackground.getSprite().getHeight());
 		katanaLevelBackground.getSprite().setX(Configuration.getWidth()-katanaLevelBackground.getSprite().getWidth());
@@ -520,6 +532,15 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 		katanaLevelBackground.getSprite().setColor(1.0f, 1.0f, 1.0f, 0.5f);
 		katanaLevelBar.getSprite().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		
+		time.setTouchable(Touchable.disabled);
+		Renderer.hudStage.addActor(time);
+		
+		
+		time.setX((Configuration.getWidth()-time.getTextBounds().width)*0.025f);	
+		time.setY(Configuration.getHeight()*0.95f - time.getTextBounds().height);
+		
+		survivedTime = 0.0f;
 
 	}
 
@@ -571,6 +592,23 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer) {
+		// Level Editor screen
+
+		//Gdx.app.log("Level","editor");
+
+//		Vector2 stageCoords = Vector2.Zero;
+//		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+//		float rotation = MathUtils.random(0.0f, 360.0f);
+//
+//		//		// to nie tutaj jebnac
+//		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"));
+//		flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
+//		flower.getSprite().setRotation(rotation);
+//
+//		tree.sakuraTreeStage.addActor(flower);
+//
+//		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, rotation));
+
 		return true;
 	}
 
