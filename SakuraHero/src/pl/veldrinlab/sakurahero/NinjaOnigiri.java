@@ -33,7 +33,7 @@ public class NinjaOnigiri extends Onigiri {
 		
 		targetApproved = attack = false;
 		
-		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.0f) {	
+		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.2f) {	
 			int leafTargetId = MathUtils.random(0, sakuraLeaves.size-1);
 			SceneEntity target = sakuraLeaves.get(leafTargetId);
 			x = target.position.x + target.width*0.5f - width*0.5f;
@@ -70,12 +70,8 @@ public class NinjaOnigiri extends Onigiri {
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
 			setEntityAlpha(alpha);
 			
-			//
-			setEntityAlpha(0.5f);
-			
 			attack = targetApproved && (alphaAccumulator > 1.0f);
 				
-			
 			if(alphaAccumulator > 1.4999f)
 				fadeState = -1.0f;	
 			

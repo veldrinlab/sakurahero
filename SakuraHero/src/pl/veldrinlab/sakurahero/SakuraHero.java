@@ -33,6 +33,7 @@ public class SakuraHero extends Game {
 	public AsyncResourceManager resources;
 	public FallingLeavesEffect fallingSakura;
 	public GameOptions options;
+	public GameResult results;
 	
 	private Timer timer;
 	
@@ -74,31 +75,23 @@ public class SakuraHero extends Game {
 	 * Method is used to create game data. It it executed by Activity. Initialize game data and setup first screen - spin that shit!
 	 */
 	@Override
-	public void create() {
-		
-		//usun¹æ
-		Gdx.graphics.setDisplayMode(Configuration.getWidth(), Configuration.getHeight(), Configuration.isFullscreenEnabled());
-		Gdx.graphics.setTitle(Configuration.getWindowTitle());
-		
-				
+	public void create() {		
 		timer = new Timer();
 		resources = new AsyncResourceManager();
 		options = new GameOptions();
+		results = new GameResult();
 	
-		
 		initializeEngine();
-	//	loadHighScore();
-	//	initializeGame();
-		
-		
+		loadHighScore();
+	
 		initalizeIntro();
 		initializeLoading();
 		initializeGame();
 //		
 		
 //		setScreen(menuScreen);
-		setScreen(playScreen);
-		//setScreen(teamSplashScreen);
+		setScreen(gameOverScreen);
+		//setScreen(survivalScreen);
 	}
 
 	private void initializeEngine() {
@@ -182,15 +175,10 @@ public class SakuraHero extends Game {
 		creditsScreen.menuScreen = menuScreen;
 		optionsScreen.menuScreen = menuScreen;
 		
-		
 		modeSelectionScreen.menuScreen = menuScreen;
 		modeSelectionScreen.worldSelectionScreen = worldSelectionScreen;
 		modeSelectionScreen.survivalScreen = survivalScreen;
 		modeSelectionScreen.trainingScreen = trainingScreen;
-		
-		//
-		trainingScreen.pauseScreen = pauseScreen;
-		survivalScreen.pauseScreen = pauseScreen;
 		
 		worldSelectionScreen.modeSelectionScreen = modeSelectionScreen;
 		worldSelectionScreen.playScreen = playScreen;
@@ -199,66 +187,63 @@ public class SakuraHero extends Game {
 		playScreen.pauseScreen = pauseScreen;
 		playScreen.gameOverScreen = gameOverScreen;
 		
+		survivalScreen.pauseScreen = pauseScreen;
+		survivalScreen.gameOverScreen = gameOverScreen;
+		
+		trainingScreen.pauseScreen = pauseScreen;
+		
 		pauseScreen.menuScreen = menuScreen;
-		
-		gameOverScreen.playScreen = playScreen;
-		gameOverScreen.menuScreen = menuScreen;
-		
-		
+		gameOverScreen.menuScreen = menuScreen;		
 	}
 	
-//	public void loadHighScore() {
-//		Json json = new Json();
-//		FileHandle file = Gdx.files.local(Configuration.getInstance().highscoreSavePath);
-//	
-//		if(file.exists()) {
-//			String jsonData = file.readString();
-//			jsonData = Base64Coder.decodeString(jsonData);
-//
-//			try {
-//				Configuration.getInstance().highscoreDescriptor = json.fromJson(HighScoreDescriptor.class, jsonData);			
-//			} catch(Exception e ) {
-//			
-//				Gdx.app.log("Expendable ","High Score file " + Configuration.getInstance().highscoreSavePath +" loading exception");
-//				e.printStackTrace();
-//			}
-//		}
-//		else {
-//			createHighscoreFile();
-//			loadHighScore();
-//		}
-//	}
+	public void loadHighScore() {
+		Json json = new Json();
+		FileHandle file = Gdx.files.local("results.json");
 	
-//	public void saveHighScore() {
-//		Json json = new Json();		
-//		FileHandle file = Gdx.files.local(Configuration.getInstance().highscoreSavePath);
-//
-//		if(file.exists()) {
-//			String jsonData = json.toJson(Configuration.getInstance().highscoreDescriptor);
-//			jsonData = Base64Coder.encodeString(jsonData);
-//			file.writeString(jsonData, false);
-//		}
-//		else {
-//			createHighscoreFile();
-//			Gdx.app.log("Expendable ", "File " + Configuration.getInstance().highscoreSavePath + " opening error detected!");
-//		}
-//	}
+		if(file.exists()) {
+			String jsonData = file.readString();
+			jsonData = Base64Coder.decodeString(jsonData);
+
+			try {
+				results = json.fromJson(GameResult.class, jsonData);			
+			} catch(Exception e ) {
+			
+				Gdx.app.log("SakuraHero ","results file results.json loading exception");
+				e.printStackTrace();
+			}
+		}
+		else {
+			createHighscoreFile();
+			loadHighScore();
+		}
+	}
 	
-//	private void createHighscoreFile() {
-//		HighScoreDescriptor desc = new HighScoreDescriptor();
-//			
-//		Json json = new Json();		
-//		FileHandle file = Gdx.files.local(Configuration.getInstance().highscoreSavePath);
-//		String jsonData = json.toJson(desc);
-//		
-//		jsonData = Base64Coder.encodeString(jsonData);
-//		file.writeString(jsonData, false);
-//	}
+	public void saveHighScore() {
+		Json json = new Json();		
+		FileHandle file = Gdx.files.local("results.json");
+
+		if(file.exists()) {
+			String jsonData = json.toJson(results);
+			jsonData = Base64Coder.encodeString(jsonData);
+			file.writeString(jsonData, false);
+		}
+		else {
+			createHighscoreFile();
+			Gdx.app.log("SakuraHero ","results file results.json opening error detected! exception");
+		}
+	}
+	
+	private void createHighscoreFile() {	
+		Json json = new Json();		
+		FileHandle file = Gdx.files.local("results.json");
+		String jsonData = json.toJson(results);
+		
+		jsonData = Base64Coder.encodeString(jsonData);
+		file.writeString(jsonData, false);
+	}
 
 	public Timer getTimer() {
 		return timer;
 	}
-	
-	//TODO API for resources and sakura?
 }
 

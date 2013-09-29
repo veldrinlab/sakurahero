@@ -7,7 +7,7 @@ public class GameOptions {
 	public String worldName;
 	public boolean soundOn;
 	public boolean musicOn;
-
+	
 	public GameOptions() {
 		language = Language.ENGLISH;
 		mode = SakuraGameMode.NORMAL;

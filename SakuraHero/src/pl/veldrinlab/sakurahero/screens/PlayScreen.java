@@ -81,7 +81,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	}
 
 	public void resetState() {
-		tree.loadSakuraTree("level.json");
+		tree.loadSakuraTree("levelSurvival.json");
 		
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		
@@ -127,9 +127,12 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		
 		tree.update(deltaTime);
 		
-		if(tree.isTreeDead())
+		if(tree.isTreeDead()) {
+			game.results.score = gameHud.getPointAmount();
+			gameOverScreen.gameScreen = this;
 			game.setScreen(gameOverScreen);
-		
+		}
+
 		gameHud.updateNormalHud(enemyHitAmount, deltaTime);
 
 		katana.update(input);

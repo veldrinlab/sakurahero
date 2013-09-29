@@ -243,4 +243,12 @@ public class GameHud {
 
 		points.setText("Points: " + String.valueOf(pointAmount));
 	}
+	
+	public int getPointAmount() {
+		return pointAmount;
+	}
+	
+	public float getSurvivedTime() {
+		return survivedTime;
+	}
 }

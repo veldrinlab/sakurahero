@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.GameHud;
 import pl.veldrinlab.sakurahero.NinjaOnigiri;
 import pl.veldrinlab.sakurahero.OniOnigiri;
@@ -8,9 +7,7 @@ import pl.veldrinlab.sakurahero.Onigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
 import pl.veldrinlab.sakurahero.SakuraTree;
-import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
-import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -21,17 +18,11 @@ import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class SurvivalScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
@@ -56,10 +47,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	private GameHud gameHud;
 
 	
-	//TODO sakuraTree
 	public SakuraTree tree;
-	float leafAccum = 1.0f;
-	private FallingLeavesEffect fallingSakura;
 
 	public SurvivalScreen(final SakuraHero game) {
 		this.game = game;
@@ -126,12 +114,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public void processLogic(final float deltaTime) {
 
-		leafAccum -= deltaTime*0.25f;
-		leafAccum = MathUtils.clamp(leafAccum, 0.0f, 1.0f);
-
-		fallingSakura.updateEffect(deltaTime);
-		fallingSakura.setLeavesAlpha(leafAccum);
-
 		int enemyHitAmount = 0;
 
 		for(Onigiri o : onigiriArmy)
@@ -141,6 +123,14 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 				if(input.size > 3)
 					enemyHitAmount += o.collisionDetection(input);
 			}
+		
+		tree.update(deltaTime);
+		
+		if(tree.isTreeDead()) {
+			game.results.time = gameHud.getSurvivedTime();
+			gameOverScreen.gameScreen = this;
+			game.setScreen(gameOverScreen);
+		}
 		
 		gameHud.updateSurvivalHud(enemyHitAmount,deltaTime);
 
@@ -164,8 +154,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		Renderer.sceneStage.draw();
 		katana.draw(Renderer.sceneStage.getCamera());
 		Renderer.hudStage.draw();
-
-		fallingSakura.renderEffect();
 	}
 
 	@Override
@@ -175,18 +163,14 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void show() {	
 		
-		fallingSakura = new FallingLeavesEffect(3,true);
-		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
-		fallingSakura.initializeEffect();
 
-	
-
+		//TEST hack
+				resetState();
 	
 		Renderer.backgroundStage.addActor(background);
 
@@ -205,7 +189,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void dispose() {
-
 	}
 
 	@Override
@@ -226,11 +209,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
-		//test
-		fallingSakura.setFallingBoundary(stageCoords.x-32.0f, stageCoords.y, stageCoords.x+32.0f, stageCoords.y);
-		fallingSakura.initializeEffect();
-		leafAccum = 1.0f;
-
 		if(actor == null)
 			return false;
 
@@ -238,9 +216,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 			pauseScreen.getFrameBuffer().begin();	
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
-
-			//	if(Configuration.getInstance().musicOn)
-			//	gameMusic.pause();
 
 			pauseScreen.backScreen = this;
 			game.setScreen(pauseScreen);
@@ -251,93 +226,57 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer) {
-		// Level Editor screen
-
-		//Gdx.app.log("Level","editor");
-
-//		Vector2 stageCoords = Vector2.Zero;
-//		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-//		float rotation = MathUtils.random(0.0f, 360.0f);
-//
-//		//		// to nie tutaj jebnac
-//		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"));
-//		flower.getSprite().setPosition(stageCoords.x-flower.getSprite().getWidth()*0.5f, stageCoords.y-flower.getSprite().getHeight()*0.5f);
-//		flower.getSprite().setRotation(rotation);
-//
-//		tree.sakuraTreeStage.addActor(flower);
-//
-//		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, rotation));
-
 		return true;
 	}
 
 	@Override
 	public boolean touchUp(float x, float y, int pointer) {
-
-		Gdx.app.log("test","up");
 		return true;
 	}
 
 	@Override
 	public boolean longPress(float x, float y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean fling(float startX, float startY, float endX, float endY, float velocityX, float velocityY, int pointer) {
-		//velocity X -> dodatnie to w prawo
-		// > 1500
-
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
 		Vector2 stageCoords = new Vector2();
-	
 		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-
 		input.insert(stageCoords);
 		lastPoint.set(stageCoords.x, stageCoords.y);
 
 		return false;
 	}
 
-
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
 		input.clear();
 		slashTimer = 0.0f;
 		return false;
@@ -390,13 +329,11 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

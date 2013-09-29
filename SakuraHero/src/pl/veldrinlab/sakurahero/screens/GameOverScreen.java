@@ -1,7 +1,9 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.SakuraGameMode;
 import pl.veldrinlab.sakurahero.SakuraHero;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -12,11 +14,12 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class GameOverScreen extends GameScreen implements GestureListener {
 
-	public PlayScreen playScreen;
+	public GameScreen gameScreen;
 	public MenuScreen menuScreen;
 
 	private SakuraHero game;
@@ -30,19 +33,22 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	private SceneEntity backToMenu;
 	private SceneEntity exit;
 
-	private Label score; // to bedzie ciekawie zrobic przy pomocy tekstur - chyba, ¿e do tego u¿yjê jednak fontów
-	// w sumie fonty s¹ dobre wszêdzie - ale nie do wersji japoñskiej, wiêc opieram to na spritach - generyczna wersja
+	private Label record;
+	private Label score;
 
 	public GameOverScreen(final SakuraHero game) {
 		this.game = game;
 		fallingSakura = game.fallingSakura;
 
 		background = new SceneEntity(Renderer.introAtlas.createSprite("menuBackground"));
-		gameOver= new SceneEntity(Renderer.guiAtlas.createSprite("gameOver"));
+		gameOver = new SceneEntity(Renderer.guiAtlas.createSprite("gameOver"));
 		tryAgain = new SceneEntity(Renderer.guiAtlas.createSprite("tryAgain"),"Try Again");
 		backToMenu = new SceneEntity(Renderer.guiAtlas.createSprite("menuSmall"),"Menu");
 		exit = new SceneEntity(Renderer.guiAtlas.createSprite("exit"),"Exit");
 
+		record = new Label("Its is new record !!!!!!!!!",Renderer.standardFont);
+		score = new Label("",Renderer.standardFont);
+		
 		inputDetector = new GestureDetector(this);
 		initializeInterface();
 	}
@@ -53,17 +59,32 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void show() {		
-		//		if(Configuration.getInstance().musicOn) {
-		//			game.resources.getMusic("gameOverMusic").play();
-		//			game.resources.getMusic("gameOverMusic").setLooping(true);
-		//		}
-		//		
+		record.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		
+		if(game.options.mode == SakuraGameMode.NORMAL) {
+			score.setText("Score is " + String.valueOf(game.results.score));
 
-
-
+			if(game.results.score > game.results.highScore) {
+				game.results.highScore = game.results.score;
+				game.saveHighScore();
+				record.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
+		else {
+			score.setText("Time " + String.valueOf(game.results.time + " sec"));
+		
+			if(game.results.time > game.results.timeRecord) {
+				game.results.timeRecord = game.results.time;
+				game.saveHighScore();
+				record.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
+		
+		score.setX((Configuration.getWidth()-score.getTextBounds().width)*0.5f);	
+		
 		Renderer.backgroundStage.addActor(background);
-
-		//Renderer.defaultStage.addActor(score);
+		Renderer.hudStage.addActor(score);
+		Renderer.hudStage.addActor(record);
 		Renderer.hudStage.addActor(tryAgain);
 		Renderer.hudStage.addActor(backToMenu);
 		Renderer.hudStage.addActor(gameOver);
@@ -130,13 +151,21 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	private void initializeInterface() {		
 		gameOver.alignCenter(0.9f);
-		tryAgain.alignCenter(0.45f);
-		backToMenu.alignCenter(0.30f);
-		exit.alignCenter(0.15f);
+		tryAgain.alignCenter(0.35f);
+		backToMenu.alignRelative(0.1f, 0.20f);
+		exit.alignRelative(0.9f, 0.20f);
 		
 		tryAgain.updateBounds();
 		backToMenu.updateBounds();
 		exit.updateBounds();
+		
+		score.setTouchable(Touchable.disabled);
+		record.setTouchable(Touchable.disabled);
+		
+		record.setX((Configuration.getWidth()-record.getTextBounds().width)*0.5f);	
+		record.setY(Configuration.getHeight()*0.65f - record.getTextBounds().height);
+		
+		score.setY(Configuration.getHeight()*0.45f - score.getTextBounds().height);
 	}
 
 	@Override
@@ -170,7 +199,16 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 			//			if(Configuration.getInstance().musicOn)
 			//				game.resources.getMusic("gameOverMusic").stop();
 
-			game.setScreen(playScreen);
+			if(game.options.mode == SakuraGameMode.NORMAL) {
+				PlayScreen screen = (PlayScreen)gameScreen;
+				screen.resetState();
+				game.setScreen(screen);
+			}
+			else {
+				SurvivalScreen screen = (SurvivalScreen)gameScreen;
+				screen.resetState();
+				game.setScreen(screen);
+			}
 		}
 		else if(actor.getName().equals("Menu")) {
 			//			if(Configuration.getInstance().soundOn)

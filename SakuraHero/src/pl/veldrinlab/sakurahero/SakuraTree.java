@@ -78,7 +78,7 @@ public class SakuraTree {
 
 	public void loadSakuraTree(final String filePath) {
 		Json json = new Json();		
-		FileHandle file = Gdx.files.local("level.json");
+		FileHandle file = Gdx.files.local(filePath);
 
 		String jsonData = file.readString();
 
@@ -90,6 +90,7 @@ public class SakuraTree {
 			e.printStackTrace();
 		}
 
+		treeIsDead = false;
 		sakuraTreeStage.clear();
 		sakuraTreeStage.addActor(tree);
 		
