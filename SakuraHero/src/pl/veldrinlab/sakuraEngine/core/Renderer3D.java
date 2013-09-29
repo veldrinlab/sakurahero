@@ -1,7 +1,6 @@
 package pl.veldrinlab.sakuraEngine.core;
 
 //TODO to powinno byæ w silniku zdecydowanie! - i konfiguracja odgórna podstawowych danych
-import pl.veldrinlab.sakurahero.Configuration;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;

@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakuraEngine.core;
 
-import pl.veldrinlab.sakurahero.Configuration;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -24,15 +23,13 @@ public class SceneEntity extends Actor {
 	public float rotation;
 	public float rotationVelocity;
 	public Circle collisionCircle;
-	
-	//nowe
+
 	public int width;
 	public int height;
 	public int originX;
 	public int originY;
 	
-	//TODO to siê robi za du¿e trochê!
-	
+
 	/**
 	 * Class constructor, creates spirte.
 	 * @param texture is sprite texture.
@@ -52,6 +49,7 @@ public class SceneEntity extends Actor {
 		this.sprite = sprite;
 		this.width = (int) sprite.getWidth();
 		this.height = (int) sprite.getHeight();
+		
 		velocity = new Vector2();
 		position = new Vector2();
 		collisionCircle = new Circle();
@@ -91,7 +89,9 @@ public class SceneEntity extends Actor {
 	 */
 	public SceneEntity(final Texture texture, final String name) {
 		sprite = new Sprite(texture);
+		velocity = new Vector2();
 		position = new Vector2();
+		collisionCircle = new Circle();
 		
 		setName(name);
 		setTouchable(Touchable.enabled);
@@ -110,7 +110,9 @@ public class SceneEntity extends Actor {
 		this.width = (int) sprite.getWidth();
 		this.height = (int) sprite.getHeight();
 		
+		velocity = new Vector2();
 		position = new Vector2();
+		collisionCircle = new Circle();
 		
 		originX = sprite.getRegionX();
 		originY = sprite.getRegionY();
@@ -132,7 +134,9 @@ public class SceneEntity extends Actor {
 		this.width = width;
 		this.height = height;
 		
+		velocity = new Vector2();
 		position = new Vector2();
+		collisionCircle = new Circle();
 		
 		originX = sprite.getRegionX();
 		originY = sprite.getRegionY();
@@ -161,6 +165,7 @@ public class SceneEntity extends Actor {
 		setPosition(x, y);
 		sprite.setPosition(x, y);
 		sprite.setRotation(rotation);
+		collisionCircle.set(x+width*0.5f, y+height*0.5f, width*0.5f);
 	}
 	
 	public void setEntityAlpha(final float alpha) {

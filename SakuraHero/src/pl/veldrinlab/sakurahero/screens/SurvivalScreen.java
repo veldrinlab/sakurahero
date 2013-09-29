@@ -1,27 +1,25 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
-import pl.veldrinlab.sakurahero.FixedList;
 import pl.veldrinlab.sakurahero.NinjaOnigiri;
 import pl.veldrinlab.sakurahero.OniOnigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
-import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureDetector;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
+import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -55,7 +53,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	// katana swing
 	private KatanaSwing katana;
-	private FixedList<Vector2> input;
+	private Stack<Vector2> input;
 	float katanaTime;
 	Vector2 lastPoint = new Vector2();
 
@@ -114,18 +112,18 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		//enemy
 
 		enemy = new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy.init();
+		enemy.initialize();
 
 		enemy2 = new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy2.init();
+		enemy2.initialize();
 
 		enemy3 = new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy3.init();
+		enemy3.initialize();
 
 		//TODO katana
 		katana = new KatanaSwing();
 		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
-		input = new FixedList<Vector2>(100,Vector2.class);
+		input = new Stack<Vector2>(100,Vector2.class);
 
 		stateMessage = new Label("", Renderer.standardFont);
 
@@ -169,39 +167,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	public void processInput() {	
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
-
-		if(Gdx.input.isKeyPressed(Keys.SPACE))
-			game.setScreen(gameOverScreen);
-
-		if(Gdx.input.isKeyPressed(Keys.ENTER))
-			game.setScreen(pauseScreen);
-
-		// level editor
-
-		if(Gdx.input.isKeyPressed(Keys.S)) {
-			Json json = new Json();		
-			FileHandle file = Gdx.files.local("levelSurvival.json");		
-			String jsonData = json.toJson(tree.leaves);
-			file.writeString(jsonData, false);
-		}
-
-		if(Gdx.input.isKeyPressed(Keys.L)) {
-
-			Json json = new Json();		
-			FileHandle file = Gdx.files.local("levelSurvival.json");
-
-			String jsonData = file.readString();
-
-			try {
-				tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
-			} catch(Exception e ) {
-
-				Gdx.app.log("SakuraHero ","Level file loading exception");
-				e.printStackTrace();
-			}
-
-			tree.init();
-		}
 	}
 
 	@Override
@@ -260,31 +225,13 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 			if(input.size > 3) {
 
-				for(int i = 0; i < input.size; ++i) {
+				int result = enemy.collisionDetection(input);
+				result += enemy2.collisionDetection(input);
+				result += enemy3.collisionDetection(input);
 
-					if(!enemy.collisionOccurred && enemy.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-						enemy.hit();
-						enemyHitAmount++;
-						comboAmount++;
-						katanaExp += 0.1f; //TODO z levelu na level coraz trudniej - jakiœ geometryczny wspó³czynnik
-						//Gdx.app.log("collision"," occurred");
-					}
-					else if(!enemy2.collisionOccurred && enemy2.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-						if(enemy2.hit()) { //TODO lepiej
-							enemyHitAmount++;
-							comboAmount++;
-							katanaExp += 0.1f;
-							Gdx.app.log("collision"," occurred");
-						}
-					}
-					else if(!enemy3.collisionOccurred && enemy3.collisionCircle.contains(input.get(i).x, input.get(i).y)) {
-						enemy3.hit();
-						enemyHitAmount++;
-						comboAmount++;
-						katanaExp += 0.1f;
-						//Gdx.app.log("collision"," occurred");
-					}
-				}
+				enemyHitAmount += result;
+				comboAmount += result;
+				katanaExp += 0.1f*result;
 			}
 
 
@@ -432,14 +379,27 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		//			gameMusic.setLooping(true);
 		//		}
 
-		//	Gdx.input.setInputProcessor(inputDetector);
 
+		Json json = new Json();		
+		FileHandle file = Gdx.files.local("levelSurvival.json");
+
+		String jsonData = file.readString();
+
+		try {
+			tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
+		} catch(Exception e ) {
+
+			Gdx.app.log("SakuraHero ","Level file loading exception");
+			e.printStackTrace();
+		}
+
+		tree.init();
+		
 		fallingSakura = new FallingLeavesEffect(3);
 		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
 		fallingSakura.initializeEffect();
 
-
-
+	
 		//		if(Configuration.getInstance().musicOn) {
 		//			gameMusic.play();
 		//			gameMusic.setLooping(true);
@@ -447,21 +407,17 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 		//	Gdx.input.setInputProcessor(inputDetector);
 
+		//
+		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
+
+		
 		Renderer.backgroundStage.addActor(background);
 
-		//TODO to jakoœ po³¹czyæ ze sob¹
-		Renderer.sceneStage.addActor(enemy.shadow3);
-		Renderer.sceneStage.addActor(enemy.shadow2);
-		Renderer.sceneStage.addActor(enemy.shadow);
 
-		Renderer.sceneStage.addActor(enemy);
-		Renderer.sceneStage.addActor(enemy.explosion);
-		Renderer.sceneStage.addActor(enemy2);
-		Renderer.sceneStage.addActor(enemy2.explosion);
-		Renderer.sceneStage.addActor(enemy3);
-		Renderer.sceneStage.addActor(enemy3.explosion);
-
-
+		enemy.setupRendering(Renderer.sceneStage);
+		enemy2.setupRendering(Renderer.sceneStage);
+		enemy3.setupRendering(Renderer.sceneStage);
+		
 		//TODO hud stage
 		Renderer.hudStage.addActor(pauseButton);
 		Renderer.hudStage.addActor(stateMessage);
@@ -575,7 +531,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 			//	if(Configuration.getInstance().musicOn)
 			//	gameMusic.pause();
 
-			Gdx.app.log("test", "test");
+			pauseScreen.backScreen = this;
 			game.setScreen(pauseScreen);
 		}
 

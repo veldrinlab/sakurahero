@@ -1,4 +1,4 @@
-package pl.veldrinlab.sakurahero;
+package pl.veldrinlab.sakuraEngine.utils;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
  * @author mattdesl
  * @param <T> generic type
  */
-public class FixedList<T> extends Array<T> {
+public class Stack<T> extends Array<T> {
 
 	/**
 	 * Safely creates a list that is backed by an array which
@@ -20,7 +20,7 @@ public class FixedList<T> extends Array<T> {
 	 * @param capacity the fixed-size capacity of this list
 	 * @param type the class type of the elements in this list
 	 */
-	public FixedList(int capacity, Class<T> type) {
+	public Stack(int capacity, Class<T> type) {
 		super(false, capacity, type);
 	}
 
@@ -32,14 +32,11 @@ public class FixedList<T> extends Array<T> {
 	public void insert(T t) {
 		T[] items = this.items;
 
-		// increase size if we have a new point
 		size = Math.min(size + 1, items.length);
-		// shift elements right
-		for (int i = size - 1; i > 0; i--) {
-			items[i] = items[i - 1];
-		}
 
-		// insert new item at first index
+		for (int i = size - 1; i > 0; --i)
+			items[i] = items[i - 1];
+		
 		items[0] = t;
 	}
 }

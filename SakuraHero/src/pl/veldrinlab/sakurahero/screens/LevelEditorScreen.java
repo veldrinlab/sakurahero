@@ -1,10 +1,10 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;

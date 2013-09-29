@@ -1,5 +1,6 @@
 package pl.veldrinlab.sakurahero;
 
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 

@@ -1,7 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.SakuraHero;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class PauseScreen extends GameScreen implements GestureListener  {
 
-	public PlayScreen playScreen;
+	public GameScreen backScreen;
 	public MenuScreen menuScreen;
 
 	private SakuraHero game;
@@ -175,9 +175,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 			//			if(Configuration.getInstance().soundOn)
 			//				game.resources.getSoundEffect("selection").play();
 
-
-			Gdx.app.log("play", "screen request");
-			game.setScreen(playScreen);
+			game.setScreen(backScreen);
 		}
 		else if(actor.getName().equals("Menu")) {
 			//			if(Configuration.getInstance().soundOn)

@@ -1,8 +1,9 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.FallingLeavesEffect;
+import pl.veldrinlab.sakurahero.SakuraGameMode;
 import pl.veldrinlab.sakurahero.SakuraHero;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -19,7 +20,8 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	public ModeSelectionScreen modeSelectionScreen;
 	public PlayScreen playScreen;
-
+	public SurvivalScreen survivalScreen;
+	
 	private SakuraHero game;	
 	private GestureDetector inputDetector;
 
@@ -171,8 +173,11 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 			game.setScreen(modeSelectionScreen);
 		else  {
 			game.options.worldName = actor.getName();
-
-			game.setScreen(playScreen);
+			
+			if(game.options.mode == SakuraGameMode.NORMAL)
+				game.setScreen(playScreen);
+			else
+				game.setScreen(survivalScreen);
 		}
 
 		return true;

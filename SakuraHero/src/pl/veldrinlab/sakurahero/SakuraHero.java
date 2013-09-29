@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero;
 
-import pl.veldrinlab.sakurahero.Configuration;
 import pl.veldrinlab.sakurahero.screens.CreditsScreen;
 import pl.veldrinlab.sakurahero.screens.GameOverScreen;
 import pl.veldrinlab.sakurahero.screens.LanguageSelectionScreen;
@@ -16,6 +15,7 @@ import pl.veldrinlab.sakurahero.screens.SurvivalScreen;
 import pl.veldrinlab.sakurahero.screens.TrainingScreen;
 import pl.veldrinlab.sakurahero.screens.WorldSelectionScreen;
 import pl.veldrinlab.sakuraEngine.core.AsyncResourceManager;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
@@ -194,11 +194,11 @@ public class SakuraHero extends Game {
 		
 		worldSelectionScreen.modeSelectionScreen = modeSelectionScreen;
 		worldSelectionScreen.playScreen = playScreen;
+		worldSelectionScreen.survivalScreen = survivalScreen;
 		
 		playScreen.pauseScreen = pauseScreen;
 		playScreen.gameOverScreen = gameOverScreen;
 		
-		pauseScreen.playScreen = playScreen;
 		pauseScreen.menuScreen = menuScreen;
 		
 		gameOverScreen.playScreen = playScreen;

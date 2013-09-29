@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakuraEngine.core;
 
-import pl.veldrinlab.sakurahero.Configuration;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

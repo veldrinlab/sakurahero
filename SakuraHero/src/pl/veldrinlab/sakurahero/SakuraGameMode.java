@@ -1,7 +1,7 @@
 package pl.veldrinlab.sakurahero;
 
-public enum SakuraHeroMode {
+public enum SakuraGameMode {
 	NORMAL,
 	SURVIVAL,
-	TRENING
+	TRAINING
 }

@@ -3,125 +3,109 @@ package pl.veldrinlab.sakurahero;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import pl.veldrinlab.sakuraEngine.core.Animation;
-import pl.veldrinlab.sakuraEngine.core.SceneEntity;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
+import pl.veldrinlab.sakuraEngine.utils.Stack;
 
-public class NinjaOnigiri extends SceneEntity {
-
-	public boolean collisionOccurred;
-	public float deathAccum;
-	
-	public SceneEntity explosion;
-	
-	private Animation explosionAnimation;	
-	private Animation entityAnimation;
-	
-	
-	private float t;
-	public Vector2 collisionPos = new Vector2();
-	public float angle;
-	private float[] angleOptions = new float[4];
+public class NinjaOnigiri extends Onigiri {
 
 	private float alphaAccumulator;
-	private boolean fadeIn;
-
+	private float fadeState;
 	
 	public NinjaOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
-		super(enemySprite,128,128);
-		
-		explosion = new SceneEntity(explosionSprite,128,128);
-		
-		explosionAnimation = new Animation(15,0.020f,explosion);
-		entityAnimation = new Animation(1,0.020f,this);
-	
-		angleOptions[0] = -60.0f;
-		angleOptions[1] = 60.0f;
-		angleOptions[2] = 120.0f;
-		angleOptions[3] = -120.0f;
-		
+		super(enemySprite,explosionSprite,128,128);
+			
+		entityAnimation = new Animation(1,0.020f,this);	
 	}
 	
-	public void init() {
+	@Override
+	public void initialize() {
 		
 		float x = MathUtils.random(Configuration.getWidth()*0.2f,Configuration.getWidth()*0.8f);
 		float y = MathUtils.random(Configuration.getHeight()*0.2f,Configuration.getHeight()*0.8f);
 	
-		alphaAccumulator = 0.0f;
+		velocity.set(5.0f,5.0f);
 		rotation = 0.0f;
 		rotationVelocity = 5.0f;
 		
 		setEntityAlpha(0.0f);
 		updateEntityState(x,y);
-		collisionCircle.set(x+sprite.getWidth()*0.5f, y+sprite.getHeight()*0.5f, 64.0f);
-
-		// 
-		deathAccum = 0.0f;
-		t = 0.0f;
-		collisionOccurred = false;
-		fadeIn = true;
 	
-		entityAnimation.initializeAnimation();
+		alphaAccumulator = 0.0f;
+		timeAccumulator = 0.0f;
+		collisionOccurred = false;
+		fadeState = 1.0f;
+
 		explosionAnimation.initializeAnimation();
+		entityAnimation.initializeAnimation();
 	}
 	
+	@Override
+	public void setupRendering(final Stage stage) {
+		stage.addActor(this);
+		stage.addActor(explosion);		
+	}
+	
+	@Override
 	public	void update(final float deltaTime) {
 
-		// stan pocz¹tkowy
-		if(!collisionOccurred && fadeIn) {
-			
-			alphaAccumulator += deltaTime;
+		if(!collisionOccurred) {
+			alphaAccumulator += fadeState*deltaTime;
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
 			setEntityAlpha(alpha);
 			
 			if(alphaAccumulator > 1.4999f)
-				fadeIn = false;			
-		}
-		else if(!collisionOccurred && !fadeIn) {
-			
-			alphaAccumulator -= deltaTime;
-			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
-			setEntityAlpha(alpha);
+				fadeState = -1.0f;	
 			
 			if(alpha < 0.00001f)
-				init();	
+				initialize();
 		}
-		else if(collisionOccurred && deathAccum < 0.5f) {
-			deathAccum += deltaTime;
-			alphaAccumulator -= deltaTime;
-			t += deltaTime;
-			
-			final float g = 100.0f;		
-			final float v0 = 300.0f;
-		
-			float x = collisionPos.x + v0*t*MathUtils.cosDeg(angle);
-			float y = collisionPos.y + v0*t*MathUtils.sinDeg(angle) - (g*t*t*0.5f);
+		else {
+			float x = collisionPosition.x + V0*timeAccumulator*MathUtils.cosDeg(blowAngle);
+			float y = collisionPosition.y + V0*timeAccumulator*MathUtils.sinDeg(blowAngle) - (G*timeAccumulator*timeAccumulator*0.5f);
 
+			timeAccumulator += deltaTime;
 			rotation -= deltaTime* 90.0f*rotationVelocity;
-			updateEntityState(x, y);
-			explosion.updateEntityState(x, y);
-		}
-		else if(collisionOccurred && deathAccum > 0.5f && !explosionAnimation.animationCycleFinished()) {
-			
-			alphaAccumulator -= deltaTime;
-			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
-			setEntityAlpha(alpha);
-			
-			explosionAnimation.updateAnimation(deltaTime);
 
+			if(timeAccumulator < 0.5f) {
+				updateEntityState(x, y);
+				explosion.updateEntityState(x, y);
+			}
+			else {
+				setEntityAlpha(MathUtils.clamp(1.0f-timeAccumulator, 0.0f, 1.0f));
+
+				explosionAnimation.updateAnimation(deltaTime);
+				if(explosionAnimation.animationCycleFinished())
+					initialize();			
+			}
 		}
-		else if(collisionOccurred && explosionAnimation.animationCycleFinished())
-			init();
 	}
 	
-	public boolean hit() {
-		if(alphaAccumulator > 1.0f) {
-			collisionOccurred = true;
-			collisionPos.set(getX(), getY());
-			angle = angleOptions[MathUtils.random(0, 3)];
-			entityAnimation.setDefinedFrame(1);
-			return true;
-		}
-		return false;
+	@Override
+	public int collisionDetection(final Stack<Vector2> katanaInput) {
+		
+		if(alphaAccumulator < 1.0f)
+			return 0;
+		
+		int result = 0;
+		
+		for(int i = 0; i < katanaInput.size; ++i)
+			if(!collisionOccurred && collisionCircle.contains(katanaInput.get(i).x, katanaInput.get(i).y)) {
+				collisionResponse();
+				result = 1;
+				break;
+			}
+		
+		return result;
+	}
+	
+	@Override
+	public void collisionResponse() {
+		collisionOccurred = true;
+		collisionPosition.set(getX(), getY());
+		blowAngle = blowAngles.get(MathUtils.random(0, blowAngles.size-1));	
+		entityAnimation.setDefinedFrame(1);
 	}
 }
