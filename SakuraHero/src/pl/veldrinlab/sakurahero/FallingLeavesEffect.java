@@ -21,8 +21,11 @@ public class FallingLeavesEffect {
 	private Rectangle boundary;
 	private float fallingVelocity;
 	
-	public FallingLeavesEffect(final float amount) {
+	private boolean continuousEffect;
 	
+	public FallingLeavesEffect(final float amount, final boolean continuousEffect) {
+		this.continuousEffect = continuousEffect;
+		
 		effectBatch = new SpriteBatch();
 		effectStage = new Stage(Configuration.getWidth(), Configuration.getHeight(),false,effectBatch);
 		
@@ -69,7 +72,7 @@ public class FallingLeavesEffect {
 			leaves.get(i).rotation = (float) (-Math.abs(Math.sin(leaves.get(i).rotationVelocity+sakuraAccumulator))*30.0f);
 			leaves.get(i).updateEntityState(currentX, currentY);
 
-			if(currentY < -leaves.get(i).height)
+			if(continuousEffect && currentY < -leaves.get(i).height)
 				leaves.get(i).updateEntityState(MathUtils.random(boundary.x,boundary.width), boundary.height);
 		}
 	}

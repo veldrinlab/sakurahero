@@ -72,7 +72,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		gameHud.resetState();
 		
 		for(Onigiri o : onigiriArmy)
-			o.initialize();
+			o.initialize(null);
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);

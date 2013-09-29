@@ -97,7 +97,7 @@ public class SakuraHero extends Game {
 //		
 		
 //		setScreen(menuScreen);
-		setScreen(modeSelectionScreen);
+		setScreen(playScreen);
 		//setScreen(teamSplashScreen);
 	}
 
@@ -113,7 +113,7 @@ public class SakuraHero extends Game {
 		Renderer.standardFont = new LabelStyle(resources.getFont("standardFont"),Color.WHITE);
 		Renderer.specialFont = new LabelStyle(resources.getFont("specialFont"),Color.YELLOW);
 		
-		fallingSakura = new FallingLeavesEffect(20);
+		fallingSakura = new FallingLeavesEffect(20,true);
 		fallingSakura.initializeEffect();
 		fallingSakura.setLeavesAlpha(1.0f);
 		

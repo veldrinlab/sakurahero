@@ -84,32 +84,22 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 
 		//
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
 	}
 
 	public void resetState() {
-		Json json = new Json();		
-		FileHandle file = Gdx.files.local("levelSurvival.json");
-
-		String jsonData = file.readString();
-
-		try {
-			tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
-		} catch(Exception e ) {
-
-			Gdx.app.log("SakuraHero ","Level file loading exception");
-			e.printStackTrace();
-		}
-
+		
+		tree.loadSakuraTree("levelSurvival.json");
+		
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 
 		
-		tree.init();
+
 		
 		gameHud.resetState();
 		
 		for(Onigiri o : onigiriArmy)
-			o.initialize();
+			o.initialize(tree.getSakuraLeaves());
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
@@ -191,7 +181,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public void show() {	
 		
-		fallingSakura = new FallingLeavesEffect(3);
+		fallingSakura = new FallingLeavesEffect(3,true);
 		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
 		fallingSakura.initializeEffect();
 
@@ -333,10 +323,9 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-		Gdx.app.log("test","down");
 		Vector2 stageCoords = new Vector2();
-		//cos innego
-		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+	
+		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 		input.insert(stageCoords);
 		lastPoint.set(stageCoords.x, stageCoords.y);

@@ -5,6 +5,7 @@ public class SakuraLeafDescriptor {
 	public float y;
 	public float rotation;
 	
+	
 	public SakuraLeafDescriptor() {
 
 	}

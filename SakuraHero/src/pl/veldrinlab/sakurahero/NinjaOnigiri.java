@@ -4,29 +4,43 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 
 import pl.veldrinlab.sakuraEngine.core.Animation;
 import pl.veldrinlab.sakuraEngine.core.Configuration;
+import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 public class NinjaOnigiri extends Onigiri {
 
+	//TODO time i alpha accum merge
 	private float alphaAccumulator;
 	private float fadeState;
+	private boolean targetApproved;
 	
 	public NinjaOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
 		super(enemySprite,explosionSprite,128,128);
 			
-		entityAnimation = new Animation(1,0.020f,this);	
+		entityAnimation = new Animation(1,0.0f,this);	
 	}
 	
 	@Override
-	public void initialize() {
+	public void initialize(final Array<SakuraLeaf> sakuraLeaves) {
+		this.sakuraLeaves = sakuraLeaves;
 		
 		float x = MathUtils.random(Configuration.getWidth()*0.2f,Configuration.getWidth()*0.8f);
 		float y = MathUtils.random(Configuration.getHeight()*0.2f,Configuration.getHeight()*0.8f);
-	
-		velocity.set(5.0f,5.0f);
+		
+		targetApproved = attack = false;
+		
+		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.0f) {	
+			int leafTargetId = MathUtils.random(0, sakuraLeaves.size-1);
+			SceneEntity target = sakuraLeaves.get(leafTargetId);
+			x = target.position.x + target.width*0.5f - width*0.5f;
+			y = target.position.y + target.height*0.5f - height*0.5f;
+			targetApproved = true;
+		}
+		
 		rotation = 0.0f;
 		rotationVelocity = 5.0f;
 		
@@ -56,11 +70,17 @@ public class NinjaOnigiri extends Onigiri {
 			final float alpha = MathUtils.clamp(alphaAccumulator, 0.0f, 1.0f);
 			setEntityAlpha(alpha);
 			
+			//
+			setEntityAlpha(0.5f);
+			
+			attack = targetApproved && (alphaAccumulator > 1.0f);
+				
+			
 			if(alphaAccumulator > 1.4999f)
 				fadeState = -1.0f;	
 			
 			if(alpha < 0.00001f)
-				initialize();
+				initialize(sakuraLeaves);
 		}
 		else {
 			float x = collisionPosition.x + V0*timeAccumulator*MathUtils.cosDeg(blowAngle);
@@ -78,7 +98,7 @@ public class NinjaOnigiri extends Onigiri {
 
 				explosionAnimation.updateAnimation(deltaTime);
 				if(explosionAnimation.animationCycleFinished())
-					initialize();			
+					initialize(sakuraLeaves);			
 			}
 		}
 	}
@@ -104,6 +124,7 @@ public class NinjaOnigiri extends Onigiri {
 	@Override
 	public void collisionResponse() {
 		collisionOccurred = true;
+		attack = false;
 		collisionPosition.set(getX(), getY());
 		blowAngle = blowAngles.get(MathUtils.random(0, blowAngles.size-1));	
 		entityAnimation.setDefinedFrame(1);

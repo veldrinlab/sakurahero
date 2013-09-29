@@ -8,9 +8,7 @@ import pl.veldrinlab.sakurahero.Onigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
 import pl.veldrinlab.sakurahero.SakuraTree;
-import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
-import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -21,13 +19,8 @@ import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -57,13 +50,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	private GameHud gameHud;
 
-	
 	//TODO sakuraTree
 	public SakuraTree tree;
-	float leafAccum = 1.0f;
 	
-	private FallingLeavesEffect fallingSakura;
-
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
@@ -87,30 +76,19 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 
 		//
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
+		
 	}
 
 	public void resetState() {
-		Json json = new Json();		
-		FileHandle file = Gdx.files.local("level.json");
-
-		String jsonData = file.readString();
-
-		try {
-			tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
-		} catch(Exception e ) {
-
-			Gdx.app.log("SakuraHero ","Level file loading exception");
-			e.printStackTrace();
-		}
-
-		tree.init();
+		tree.loadSakuraTree("level.json");
+		
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		
 		gameHud.resetState();
 		
 		for(Onigiri o : onigiriArmy)
-			o.initialize();
+			o.initialize(tree.getSakuraLeaves());
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
@@ -132,19 +110,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public void processInput() {	
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
-
-		if(Gdx.input.isKeyPressed(Keys.SPACE))
-			game.setScreen(gameOverScreen);
 	}
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
-		leafAccum -= deltaTime*0.25f;
-		leafAccum = MathUtils.clamp(leafAccum, 0.0f, 1.0f);
-
-		fallingSakura.updateEffect(deltaTime);
-		fallingSakura.setLeavesAlpha(leafAccum);
 
 		int enemyHitAmount = 0;
 
@@ -155,6 +124,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 				if(input.size > 3)
 					enemyHitAmount += o.collisionDetection(input);
 			}
+		
+		tree.update(deltaTime);
+		
+		if(tree.isTreeDead())
+			game.setScreen(gameOverScreen);
 		
 		gameHud.updateNormalHud(enemyHitAmount, deltaTime);
 
@@ -179,8 +153,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.sceneStage.draw();
 		katana.draw(Renderer.sceneStage.getCamera());
 		Renderer.hudStage.draw();
-		
-		fallingSakura.renderEffect();
 	}
 
 	@Override
@@ -196,9 +168,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public void show() {	
 		
-		fallingSakura = new FallingLeavesEffect(3);
-		fallingSakura.setFallingBoundary(250-32.0f, 150.0f, 250+32.0f, 150+32.0f);
-		fallingSakura.initializeEffect();
+		//TEST hack
+		resetState();
+		
+		
 
 		Renderer.backgroundStage.addActor(background);
 
@@ -213,6 +186,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		inputMultiplexer.addProcessor(this);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
+		
+		
 	}
 
 	@Override
@@ -238,10 +213,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
 
-		//test
-		fallingSakura.setFallingBoundary(stageCoords.x-32.0f, stageCoords.y, stageCoords.x+32.0f, stageCoords.y);
-		fallingSakura.initializeEffect();
-		leafAccum = 1.0f;
+
 
 		if(actor == null)
 			return false;
@@ -318,10 +290,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-		Gdx.app.log("test","down");
 		Vector2 stageCoords = new Vector2();
-		//cos innego
-		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+		
+		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
 		input.insert(stageCoords);
 		lastPoint.set(stageCoords.x, stageCoords.y);

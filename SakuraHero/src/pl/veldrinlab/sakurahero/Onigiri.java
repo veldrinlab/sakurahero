@@ -24,8 +24,11 @@ public abstract class Onigiri extends SceneEntity {
 	protected float timeAccumulator;
 	protected float respawnDistance;
 
-	public boolean collisionOccurred;
-	protected boolean isActive;
+	protected boolean collisionOccurred;
+	protected boolean active;
+	protected boolean attack;
+	
+	protected Array<SakuraLeaf> sakuraLeaves;
 	
 	public Onigiri(final Sprite sprite, final Sprite explosionSprite, final int width, final int height) {
 		super(sprite, width, height);
@@ -42,7 +45,7 @@ public abstract class Onigiri extends SceneEntity {
 		respawnDistance = 1000.0f;
 	}
 
-	public abstract void initialize();	
+	public abstract void initialize(final Array<SakuraLeaf> sakuraLeaves);	
 	public abstract void setupRendering(final Stage stage);	
 	public abstract void update(final float deltaTime);
 	public abstract void collisionResponse();
@@ -61,10 +64,17 @@ public abstract class Onigiri extends SceneEntity {
 	}
 	
 	public void setActive(final boolean active) {
-		isActive = active;
+		this.active = active;
 	}
 	
 	public boolean isActive() {
-		return isActive;
+		return active;
+	}
+	
+	public void finishAttack() {
+		attack = false;
+	}
+	public boolean isAttacking() {
+		return attack;
 	}
 }

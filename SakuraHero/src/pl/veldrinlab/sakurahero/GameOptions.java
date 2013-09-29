@@ -11,7 +11,7 @@ public class GameOptions {
 	public GameOptions() {
 		language = Language.ENGLISH;
 		mode = SakuraGameMode.NORMAL;
-		worldName = "natsu";
+		worldName = "natsuBackground";
 		musicOn = soundOn = true;
 	}
 }

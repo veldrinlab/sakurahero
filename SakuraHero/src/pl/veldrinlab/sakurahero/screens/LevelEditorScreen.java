@@ -1,9 +1,8 @@
 package pl.veldrinlab.sakurahero.screens;
 
+import pl.veldrinlab.sakurahero.Onigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
-import pl.veldrinlab.sakurahero.SakuraLeafDescriptor;
 import pl.veldrinlab.sakurahero.SakuraTree;
-import pl.veldrinlab.sakurahero.SakuraTreeDescriptor;
 import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
@@ -14,9 +13,8 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -41,7 +39,7 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
 
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),Renderer.sceneAtlas.createSprite("sakuraFlower"));
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),new Array<Onigiri>());
 	}
 
 	@Override
@@ -60,31 +58,11 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
 
-
-		if(Gdx.input.isKeyPressed(Keys.S)) {
-			Json json = new Json();		
-			FileHandle file = Gdx.files.local("level.json");		
-			String jsonData = json.toJson(tree.leaves);
-			file.writeString(jsonData, false);
-		}
-
-		if(Gdx.input.isKeyPressed(Keys.L)) {
-
-			Json json = new Json();		
-			FileHandle file = Gdx.files.local("level.json");
-
-			String jsonData = file.readString();
-
-			try {
-				tree.leaves = json.fromJson(SakuraTreeDescriptor.class, jsonData);			
-			} catch(Exception e ) {
-
-				Gdx.app.log("SakuraHero ","Level file loading exception");
-				e.printStackTrace();
-			}
-
-			tree.init();
-		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+			tree.saveSakuraTree("level.json");
+		
+		if(Gdx.input.isKeyPressed(Keys.L))
+			tree.saveSakuraTree("level.json");
 	}
 
 	@Override
@@ -116,8 +94,8 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 		Renderer.hudStage.addActor(pauseButton);
 
 		pauseButton.updateEntityState(Configuration.getWidth()*0.98f-pauseButton.width, 0.0f);
-//		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
-	
+		//		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
+
 		Gdx.input.setInputProcessor(inputDetector);
 	}
 
@@ -160,16 +138,15 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	@Override
 	public boolean touchDown(float x, float y, int pointer) {
 		Vector2 stageCoords = Vector2.Zero;
-		tree.sakuraTreeStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-	
+		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+
 		SceneEntity flower = new SceneEntity(Renderer.sceneAtlas.createSprite("sakuraFlower"),32,32);
-		
+
 		flower.rotation = MathUtils.random(0.0f, 360.0f);
 		flower.updateEntityState(stageCoords.x-flower.width*0.5f, stageCoords.y-flower.height*0.5f);
-		
 
-		tree.sakuraTreeStage.addActor(flower);
-		tree.leaves.leaves.add(new SakuraLeafDescriptor(stageCoords.x, stageCoords.y, flower.rotation));
+		tree.addSakuraLeaf(flower);
+
 
 		return true;
 	}

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 
 import pl.veldrinlab.sakuraEngine.core.Animation;
 import pl.veldrinlab.sakuraEngine.core.Configuration;
@@ -30,15 +31,24 @@ public class SamuraiOnigiri extends Onigiri {
 	}
 
 	@Override
-	public void initialize() {
+	public void initialize(final Array<SakuraLeaf> sakuraLeaves) {
+		this.sakuraLeaves = sakuraLeaves;
+		
 		float x = MathUtils.random(-Configuration.getWidth()*0.25f,-width) + Configuration.getWidth()*1.25f*MathUtils.random(0, 1);		
 		float y = MathUtils.random(-Configuration.getHeight()*0.5f, -height) + Configuration.getHeight()*1.5f*MathUtils.random(0, 1);
 
-		//TODO set target - sakura leaf (some %)
-		moveDirection.set(400.0f, 240.0f);
+		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.2f) {	
+			int leafTargetId = MathUtils.random(0, sakuraLeaves.size-1);
+			SceneEntity target = sakuraLeaves.get(leafTargetId);
+			moveDirection.set(target.position.x,target.position.y);
+			attack = true;
+		}
+		else
+			moveDirection.set(400.0f, 240.0f);
+
 		moveDirection.sub(x, y);
 		moveDirection = moveDirection.nor();
-
+		
 		velocity.set(2.5f,2.5f);
 		rotationVelocity = 5.0f;
 		rotation = 0.0f;
@@ -100,7 +110,7 @@ public class SamuraiOnigiri extends Onigiri {
 			Vector2 temp = Vector2.Zero;
 			temp.set(position.x, position.y);
 			if(temp.dst(Configuration.getWidth()*0.5f, Configuration.getHeight()*0.5f) > respawnDistance)
-				initialize();
+				initialize(sakuraLeaves);
 		}
 
 		else {
@@ -119,7 +129,7 @@ public class SamuraiOnigiri extends Onigiri {
 
 				explosionAnimation.updateAnimation(deltaTime);
 				if(explosionAnimation.animationCycleFinished())
-					initialize();			
+					initialize(sakuraLeaves);			
 			}
 		}
 	}
@@ -127,6 +137,7 @@ public class SamuraiOnigiri extends Onigiri {
 	@Override
 	public void collisionResponse() {
 		collisionOccurred = true;
+		attack = false;
 		collisionPosition.set(getX(), getY());
 		blowAngle = blowAngles.get(MathUtils.random(0, blowAngles.size-1));	
 		entityAnimation.setDefinedFrame(8);
