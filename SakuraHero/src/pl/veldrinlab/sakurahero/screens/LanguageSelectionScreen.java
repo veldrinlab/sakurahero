@@ -53,9 +53,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	}
 
 	@Override
-	public void processInput() {		
-
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
@@ -132,12 +130,10 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	}
 
 	@Override
-	public void pause() {
-	}
+	public void pause() {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {
@@ -157,9 +153,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	}
 
 	@Override
-	public void dispose() {
-
-	}
+	public void dispose() {}
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {

@@ -54,8 +54,7 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public void show() {		
@@ -100,12 +99,10 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
-	public void processInput() {
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
@@ -132,12 +129,10 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void pause() {
-	}
+	public void pause() {}
 
 	@Override
 	public boolean pinch(Vector2 arg0, Vector2 arg1, Vector2 arg2, Vector2 arg3) {

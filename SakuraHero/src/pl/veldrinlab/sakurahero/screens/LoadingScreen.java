@@ -66,13 +66,10 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void processInput() {
-
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
 		fallingSakura.updateEffect(deltaTime);
 
 		if(fadeState) {
@@ -155,8 +152,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
 	public void hide() {
@@ -165,12 +161,10 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void pause() {
-	}
+	public void pause() {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {	
@@ -194,8 +188,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public boolean pinch(Vector2 arg0, Vector2 arg1, Vector2 arg2, Vector2 arg3) {
@@ -207,8 +200,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 		return false;
 	}
 
-	private void initializeInterface() {
-		
+	private void initializeInterface() {	
 		background.setEntityAlpha(fadeInAlpha);
 		logo.setEntityAlpha(fadeInAlpha);
 		loadingStatus.setEntityAlpha(fadeInAlpha);

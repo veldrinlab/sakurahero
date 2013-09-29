@@ -57,9 +57,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	}
 
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -68,9 +66,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	}
 
 	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-	}
+	public void pause() {}
 
 	@Override
 	public void render(float deltaTime) {
@@ -84,13 +80,10 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub	
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {
@@ -109,8 +102,7 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 	}
 
 	@Override
-	public void processInput() {
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
@@ -168,19 +160,16 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public boolean fling(float arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float arg0, float arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan(float arg0, float arg1, float arg2, float arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -205,7 +194,6 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 
 	@Override
 	public boolean touchDown(float arg0, float arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

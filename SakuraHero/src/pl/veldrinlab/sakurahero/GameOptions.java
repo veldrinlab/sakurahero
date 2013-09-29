@@ -5,6 +5,8 @@ public class GameOptions {
 	public Language language;
 	public SakuraGameMode mode;
 	public String worldName;
+	
+	//TODO change to volume
 	public boolean soundOn;
 	public boolean musicOn;
 	

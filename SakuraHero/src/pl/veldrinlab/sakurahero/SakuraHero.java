@@ -87,10 +87,10 @@ public class SakuraHero extends Game {
 		initalizeIntro();
 		initializeLoading();
 		initializeGame();
-//		
+
 		
 //		setScreen(menuScreen);
-		setScreen(gameOverScreen);
+		setScreen(optionsScreen);
 		//setScreen(survivalScreen);
 	}
 

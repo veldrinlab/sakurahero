@@ -24,12 +24,12 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	public WorldSelectionScreen worldSelectionScreen;
 	public TrainingScreen trainingScreen;
 	public SurvivalScreen survivalScreen;
-	
+
 	private SakuraHero game;	
 	private GestureDetector inputDetector;
 
 	private FallingLeavesEffect fallingSakura;
-	
+
 	private SceneEntity background;
 	private SceneEntity modeSelection;
 	private SceneEntity back;
@@ -37,7 +37,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	private SceneEntity normalEmblem;
 	private SceneEntity survivalEmblem;
 	private SceneEntity trainingEmblem;
-	
+
 	private Label normal;
 	private Label survival;
 	private Label training;
@@ -52,19 +52,18 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		normalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
 		survivalEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriOni"),128,128);
 		trainingEmblem = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriNinja"),128,128);
-		
+
 		normal = new Label("Normal",Renderer.standardFont);	
 		survival = new Label("Survival",Renderer.standardFont);
 		training = new Label("Training",Renderer.standardFont);
-	
+
 		inputDetector = new GestureDetector(this);    
 
 		initializeInterface();
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -73,8 +72,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	}
 
 	@Override
-	public void pause() {
-	}
+	public void pause() {}
 
 	@Override
 	public void render(float deltaTime) {
@@ -88,13 +86,10 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {
@@ -105,17 +100,16 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		Renderer.hudStage.addActor(normal);
 		Renderer.hudStage.addActor(survival);
 		Renderer.hudStage.addActor(training);
-		
+
 		Renderer.hudStage.addActor(normalEmblem);
 		Renderer.hudStage.addActor(survivalEmblem);
 		Renderer.hudStage.addActor(trainingEmblem);
-		
+
 		Gdx.input.setInputProcessor(inputDetector); 	
 	}
 
 	@Override
-	public void processInput() {
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
@@ -144,18 +138,18 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		normal.setName("Normal");
 		survival.setName("Survival");
 		training.setName("Training");
-		
+
 		normal.setX((Configuration.getWidth()-normal.getTextBounds().width)*0.5f);
 		normal.setY(Configuration.getHeight()*0.55f - normal.getTextBounds().height);
-		
+
 		survival.setX(Configuration.getWidth()*0.1f);
 		survival.setY(Configuration.getHeight()*0.25f - survival.getTextBounds().height);
-		
+
 		training.setX(Configuration.getWidth()*0.9f - training.getTextBounds().width);
 		training.setY(Configuration.getHeight()*0.25f - training.getTextBounds().height);
-		
+
 		modeSelection.alignCenter(0.90f);
-		
+
 		back.updateBounds();
 		normalEmblem.updateEntityState(normal.getX()+normal.getTextBounds().width*0.5f-normalEmblem.width*0.5f, normal.getY()+normal.getTextBounds().height);
 		survivalEmblem.updateEntityState(survival.getX()+survival.getTextBounds().width*0.5f-survivalEmblem.width*0.5f, survival.getY()+survival.getTextBounds().height);
@@ -185,7 +179,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 
 		if(actor == null)
 			return false;
-	
+
 		if(actor.getName().equals("Normal")) {
 			game.options.mode = SakuraGameMode.NORMAL;
 			game.setScreen(worldSelectionScreen);
@@ -201,7 +195,7 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		}
 		else if(actor.getName().equals("Back"))
 			game.setScreen(menuScreen);
-		
+
 		return true;
 	}
 

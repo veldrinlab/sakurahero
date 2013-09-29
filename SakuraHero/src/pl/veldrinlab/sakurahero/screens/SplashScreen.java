@@ -34,9 +34,7 @@ public class SplashScreen extends GameScreen {
     }
     
 	@Override
-	public void processInput() {		
-
-	}
+	public void processInput() {}
 
 	@Override
 	public void processLogic(final float deltaTime) {
@@ -78,8 +76,7 @@ public class SplashScreen extends GameScreen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
+	public void resize(int width, int height) {}
 	
 	@Override
 	public void hide() {
@@ -87,12 +84,10 @@ public class SplashScreen extends GameScreen {
 	}
 
 	@Override
-	public void pause() {
-	}
+	public void pause() {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {
@@ -103,6 +98,5 @@ public class SplashScreen extends GameScreen {
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 }

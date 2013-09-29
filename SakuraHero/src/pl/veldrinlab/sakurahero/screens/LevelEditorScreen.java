@@ -3,7 +3,6 @@ package pl.veldrinlab.sakurahero.screens;
 import pl.veldrinlab.sakurahero.Onigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.SakuraTree;
-import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -13,7 +12,6 @@ import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -26,19 +24,14 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	private SakuraHero game;
 	private MultitouchGestureDetector inputDetector;
 
-	private SceneEntity pauseButton;
 	private SceneEntity background;
-
 	public SakuraTree tree;
 
 	public LevelEditorScreen(final SakuraHero game) {
 		this.game = game;
 
-		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause",64,64);
 		inputDetector = new MultitouchGestureDetector(this);
-
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("natsuBackground"));
-
 		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),new Array<Onigiri>());
 	}
 
@@ -66,9 +59,7 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	}
 
 	@Override
-	public void processLogic(final float deltaTime) {
-
-	}
+	public void processLogic(final float deltaTime) {}
 
 	@Override
 	public void processRendering() { 
@@ -80,9 +71,7 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
 	public void resume() {
@@ -91,18 +80,11 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	@Override
 	public void show() {	
 		Renderer.backgroundStage.addActor(background);
-		Renderer.hudStage.addActor(pauseButton);
-
-		pauseButton.updateEntityState(Configuration.getWidth()*0.98f-pauseButton.width, 0.0f);
-		//		pauseButton.getSprite().setX(Configuration.getWidth()*0.98f-pauseButton.getSprite().getWidth());
-
 		Gdx.input.setInputProcessor(inputDetector);
 	}
 
 	@Override
-	public void dispose() {
-
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -112,26 +94,10 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
-		Vector2 stageCoords = Vector2.Zero;
-		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
-
-		if(actor == null)
-			return false;
-
-		if(actor.getName().equals("Pause")) {
-			pauseScreen.getFrameBuffer().begin();	
-			processRendering();
-			pauseScreen.getFrameBuffer().end();
-			game.setScreen(pauseScreen);
-		}
-
 		return true;
 	}
 
@@ -146,7 +112,6 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 		flower.updateEntityState(stageCoords.x-flower.width*0.5f, stageCoords.y-flower.height*0.5f);
 
 		tree.addSakuraLeaf(flower);
-
 
 		return true;
 	}
