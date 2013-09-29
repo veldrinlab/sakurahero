@@ -14,7 +14,7 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 public class GameHud {
 
 	private SceneEntity pauseButton;
-	
+
 	private Label hit;
 	private int hitAmount;
 	private float hitAccumulator;
@@ -27,57 +27,57 @@ public class GameHud {
 	private final int COMBO_DURATION = 5;
 	private int comboFrameAccumulator;
 
-	private Label points;
-	private int pointAmount;
-
 	private SceneEntity katanaLevelBar;
 	private SceneEntity katanaLevelBackground;
 	private Label katanaLevelInfo;
 	private int katanaLevel;
 	private float katanaExp;
-	
-	private Label stateMessage;
-	//TODO jakis timer
+
+	private Label points;
+	private int pointAmount;
+
+	private Label time;
+	private float survivedTime;
 	
 	public GameHud() {
-		
+
 		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
-		
+
 		hit = new Label(String.valueOf(hitAmount) + " Hit!", Renderer.specialFont);
 		combo = new Label(String.valueOf(comboAmount) + "  Combo!",Renderer.specialFont);
 		points = new Label("Points: " + String.valueOf(pointAmount), Renderer.smallFont);
-
+		time = new Label("Time ", Renderer.smallFont);
+		
 		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
 		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
 		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),Renderer.smallFont);
-		
-		stateMessage = new Label("Ready...!", Renderer.standardFont);
-		
+
 		points.setTouchable(Touchable.disabled);
 		hit.setTouchable(Touchable.disabled);
 		combo.setTouchable(Touchable.disabled);
-		stateMessage.setTouchable(Touchable.disabled);
+		time.setTouchable(Touchable.disabled);
 	}
-	
-	public void initialize() {
+
+	public void resetState() {
 		pointAmount = 0;
+		survivedTime = 0.0f;
 		katanaLevel = 0;
-		
+
 		hitAmount = 0;
 		hitAccumulator = 0.0f;
 		hitAlpha = 0.0f;
-
-		hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 
 		comboAmount = 0;
 		comboAlpha = 0.0f;
 		comboFrameAccumulator = 0;
 
+		hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 		combo.setColor(1.0f,1.0f,1.0f,comboAlpha);
-		
-		stateMessage.setX((Configuration.getWidth()-stateMessage.getTextBounds().width)*0.5f);	
-		stateMessage.setY(Configuration.getHeight()*0.65f - stateMessage.getTextBounds().height);
-		
+	}
+
+	public void initialize() {
+		resetState();
+
 		katanaLevelBackground.updateEntityState(Configuration.getWidth()-katanaLevelBackground.width, Configuration.getHeight() - katanaLevelBackground.height);
 		katanaLevelBar.updateEntityState(Configuration.getWidth()-katanaLevelBar.width, Configuration.getHeight() - katanaLevelBar.height);
 
@@ -86,54 +86,65 @@ public class GameHud {
 
 		points.setX((Configuration.getWidth()-points.getTextBounds().width)*0.025f);	
 		points.setY(Configuration.getHeight()*0.95f - points.getTextBounds().height);
+
+		time.setX((Configuration.getWidth()-time.getTextBounds().width)*0.025f);	
+		time.setY(Configuration.getHeight()*0.95f - time.getTextBounds().height);
 		
 		pauseButton.updateEntityState(Configuration.getWidth()*0.98f-pauseButton.width, 0.0f);
-	
+
 		katanaLevelBar.sprite.setSize(katanaExp*228+64,62);
 		katanaLevelBar.sprite.setRegion(katanaLevelBar.sprite.getRegionX(),katanaLevelBar.sprite.getRegionY(), (int)katanaExp*228+64, 62);
 
 		katanaLevelBackground.setEntityAlpha(0.5f);
 		katanaLevelBar.setEntityAlpha(1.0f);
 	}
-	
-	public void initializeNormalHUD() {
-		
-		
-		Renderer.hudStage.addActor(pauseButton);
-		Renderer.hudStage.addActor(stateMessage);
-		
-		
-		Renderer.hudStage.addActor(katanaLevelBackground);
-		Renderer.hudStage.addActor(katanaLevelInfo);
-		Renderer.hudStage.addActor(katanaLevelBar);
-		
-	
-		Renderer.hudStage.addActor(points);
 
+	public void initializeNormalHUD() {
+		initializeBase();
+		Renderer.hudStage.addActor(points);
 	}
 
 	public void initializeTrainingHUD() {
+		initializeBase();
+	}
+
+	public void initializeSurvivalHUD() {
+		initializeBase();
+		Renderer.hudStage.addActor(time);
+
+	}
+
+	public void updateNormalHud(final int enemyHitAmount, final float deltaTime) {
+		updateHud(enemyHitAmount,deltaTime);
+	}
+	
+	public void updateSurvivalHud(final int enemyHitAmount, final float deltaTime) {
 		
+		updateHud(enemyHitAmount,deltaTime);
+		
+		survivedTime += deltaTime;
+		
+		int hours = (int)survivedTime / 3600;
+		int minutes = ((int)survivedTime / 60) % 60;
+		int seconds = (int)survivedTime % 60;
+		
+		time.setText("Time " + hours/10+(hours-(hours/10)*10)+":"+minutes/10+(minutes-(minutes/10)*10)+":"+seconds/10+(seconds-(seconds/10*10)));
+	}
+	
+	public void updateTrainingHud(final int enemyHitAmount, final float deltaTime) {
+		updateHud(enemyHitAmount,deltaTime);
+	}
+	
+	private void initializeBase() {
 		Renderer.hudStage.addActor(pauseButton);
-		Renderer.hudStage.addActor(stateMessage);
-		
 		Renderer.hudStage.addActor(katanaLevelBackground);
 		Renderer.hudStage.addActor(katanaLevelInfo);
 		Renderer.hudStage.addActor(katanaLevelBar);
-		
-		
+		Renderer.hudStage.addActor(hit);
+		Renderer.hudStage.addActor(combo);
 	}
 	
-	public void initializeSurvivalHUD() {
-		
-	}
-	
-	public void render() {
-		Renderer.hudStage.draw();
-	}
-	
-	public void updateHud(final int enemyHitAmount, final float deltaTime) {
-		
+	private void updateHud(final int enemyHitAmount, final float deltaTime) {
 		comboAmount +=  enemyHitAmount;
 		pointAmount += 10* enemyHitAmount;
 		katanaExp += 0.1f* enemyHitAmount;
@@ -164,8 +175,6 @@ public class GameHud {
 
 				hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 			}
-
-
 		}
 		else if(hitAmount == 0 && enemyHitAmount > 0)  {
 			// jezeli zaczynamy zabijac 
@@ -222,15 +231,16 @@ public class GameHud {
 			combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
 			combo.setPosition(0.0f, hit.getTextBounds().height);
 		}
-		
+
 		if(katanaExp > 1.0f) {
 			katanaExp = 0.0f;
 			katanaLevel++;
 			katanaLevelInfo.setText("Level " + katanaLevel);
 		}
+
 		katanaLevelBar.sprite.setSize(katanaExp*228+64,62);
 		katanaLevelBar.sprite.setRegion(katanaLevelBar.sprite.getRegionX(),katanaLevelBar.sprite.getRegionY(), (int)(katanaExp*228)+64, 62);
-		
+
 		points.setText("Points: " + String.valueOf(pointAmount));
 	}
 }

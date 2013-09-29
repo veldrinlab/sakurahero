@@ -35,6 +35,7 @@ public abstract class Onigiri extends SceneEntity {
 		collisionPosition = new Vector2();
 		
 		blowAngles = new Array<Float>();
+		
 		for(int i = 0; i < 12; i++)
 			blowAngles.add(30.0f*i);
 		
@@ -44,9 +45,9 @@ public abstract class Onigiri extends SceneEntity {
 	public abstract void initialize();	
 	public abstract void setupRendering(final Stage stage);	
 	public abstract void update(final float deltaTime);
-
-	public int collisionDetection(final Stack<Vector2> katanaInput) {
-		
+	public abstract void collisionResponse();
+	
+	public int collisionDetection(final Stack<Vector2> katanaInput) {	
 		int result = 0;
 		
 		for(int i = 0; i < katanaInput.size; ++i)
@@ -59,6 +60,11 @@ public abstract class Onigiri extends SceneEntity {
 		return result;
 	}
 	
-	public abstract void collisionResponse();
+	public void setActive(final boolean active) {
+		isActive = active;
+	}
 	
+	public boolean isActive() {
+		return isActive;
+	}
 }

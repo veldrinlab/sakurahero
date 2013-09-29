@@ -1,6 +1,7 @@
 package pl.veldrinlab.sakurahero.screens;
 
 import pl.veldrinlab.sakurahero.GameHud;
+import pl.veldrinlab.sakurahero.Onigiri;
 import pl.veldrinlab.sakurahero.NinjaOnigiri;
 import pl.veldrinlab.sakurahero.OniOnigiri;
 import pl.veldrinlab.sakurahero.SakuraHero;
@@ -16,8 +17,8 @@ import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -31,41 +32,33 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private MultitouchGestureDetector inputDetector;
 	private InputMultiplexer inputMultiplexer;
 
-	// katana swing
+	private SceneEntity background;
+
+	private Array<Onigiri> onigiriArmy;
+	
+	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
 	private KatanaSwing katana;
 	private Stack<Vector2> input;
 	float katanaTime;
 	Vector2 lastPoint = new Vector2();
 	private float slashTimer;
 
-	private SceneEntity background;
-
-	//enemy arrays
-	private SamuraiOnigiri enemy;
-	private NinjaOnigiri enemy2;
-	private OniOnigiri enemy3;
-
 	private GameHud gameHud;
 
-	//TODO reset danych gry
 	public TrainingScreen(final SakuraHero game) {
 		this.game = game;
 
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("dojoBackground"));
-
-		enemy = new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy.initialize();
-
-		enemy2 = new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy2.initialize();
-
-		enemy3 = new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion"));
-		enemy3.initialize();
-
-
-		//TODO katana
-		katana = new KatanaSwing();
-		katana.texture = new Texture(Gdx.files.internal("swingTexture.png"));
+		onigiriArmy = new Array<Onigiri>();
+		
+		for(int i = 0; i < 5; ++i) {
+			onigiriArmy.add(new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion")));
+			onigiriArmy.add(new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion")));
+			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
+		}
+		
+		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
+		
 		input = new Stack<Vector2>(100,Vector2.class);
 
 		gameHud = new GameHud();
@@ -73,6 +66,20 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		
 		inputDetector = new MultitouchGestureDetector(this);
 		inputMultiplexer = new InputMultiplexer();
+	}
+	
+	public void resetState() {
+		gameHud.resetState();
+		
+		for(Onigiri o : onigiriArmy)
+			o.initialize();
+		
+		onigiriArmy.get(0).setActive(true);
+		onigiriArmy.get(1).setActive(true);
+		onigiriArmy.get(2).setActive(true);
+		onigiriArmy.get(3).setActive(true);
+		onigiriArmy.get(4).setActive(true);
+		onigiriArmy.get(5).setActive(true);
 	}
 
 	@Override
@@ -98,28 +105,19 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	@Override
 	public void processLogic(final float deltaTime) {
 		
-		//TODO w zale¿nosci od jakiegos timera - opóŸnienie aktualizacji bytów zanim nie bedzie Ready...Fight! (sound Hajime!)
-		enemy.update(deltaTime);
-		enemy2.update(deltaTime);
-		enemy3.update(deltaTime);
-
-		// collisiom detection
-
-		// liczba zabitych per klatka
-
 		int enemyHitAmount = 0;
 
+		for(Onigiri o : onigiriArmy)
+			if(o.isActive()) {
+				o.update(deltaTime);
 
-		if(input.size > 3) {
-			int result = enemy.collisionDetection(input);
-			result += enemy2.collisionDetection(input);
-			result += enemy3.collisionDetection(input);
-
-			enemyHitAmount = result;
-		}
+				if(input.size > 3)
+					enemyHitAmount += o.collisionDetection(input);
+			}
 		
-		gameHud.updateHud(enemyHitAmount,deltaTime);
-
+		gameHud.updateTrainingHud(enemyHitAmount, deltaTime);
+		
+		
 
 		katana.update(input);
 
@@ -139,17 +137,14 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		Renderer.backgroundStage.draw();
 		Renderer.sceneStage.draw();
 		katana.draw(Renderer.sceneStage.getCamera());
-		gameHud.render();
+		Renderer.hudStage.draw();
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {	
@@ -157,10 +152,10 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 				
 		Renderer.backgroundStage.addActor(background);
 
-		enemy.setupRendering(Renderer.sceneStage);
-		enemy2.setupRendering(Renderer.sceneStage);		
-		enemy3.setupRendering(Renderer.sceneStage);
-
+		for(Onigiri o : onigiriArmy)
+			if(o.isActive())
+				o.setupRendering(Renderer.sceneStage);
+		
 		gameHud.initializeTrainingHUD();
 			
 		inputMultiplexer.clear();
@@ -171,9 +166,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	}
 
 	@Override
-	public void dispose() {
-
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -183,9 +176,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
@@ -201,10 +192,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
 
-			//	if(Configuration.getInstance().musicOn)
-			//	gameMusic.pause();
-
-			//	Gdx.app.log("test", "test");
 			pauseScreen.backScreen = this;
 			game.setScreen(pauseScreen);
 		}
@@ -224,45 +211,33 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean longPress(float x, float y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean fling(float startX, float startY, float endX, float endY, float velocityX, float velocityY, int pointer) {
-		//velocity X -> dodatnie to w prawo
-		// > 1500
-
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -274,7 +249,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 		return false;
 	}
-
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -290,9 +264,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		//	Gdx.app.log("touch", " dragged");
-		// jakis maksymalny rozmiar swinga
-
 		slashTimer += Timer.TIME_STEP;
 
 		if(slashTimer > 0.2f)
@@ -330,13 +301,11 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

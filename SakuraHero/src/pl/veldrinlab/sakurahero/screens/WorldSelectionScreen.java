@@ -56,7 +56,6 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -67,7 +66,6 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -87,7 +85,6 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub	
 	}
 
 	@Override
@@ -174,10 +171,14 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		else  {
 			game.options.worldName = actor.getName();
 			
-			if(game.options.mode == SakuraGameMode.NORMAL)
+			if(game.options.mode == SakuraGameMode.NORMAL) {
+				playScreen.resetState();
 				game.setScreen(playScreen);
-			else
+			}
+			else {
+				survivalScreen.resetState();
 				game.setScreen(survivalScreen);
+			}
 		}
 
 		return true;
