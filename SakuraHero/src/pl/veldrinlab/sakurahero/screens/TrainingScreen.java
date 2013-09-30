@@ -153,9 +153,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public void resume() {}
 
 	@Override
-	public void show() {	
-		//TODO ustawiac volume music/sound w oparciu o opcje!
-				
+	public void show() {			
 		Renderer.backgroundStage.addActor(background);
 
 		for(Onigiri o : onigiriArmy)

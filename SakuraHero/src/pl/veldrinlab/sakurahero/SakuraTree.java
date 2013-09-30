@@ -12,14 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
-//TODO tutaj dodaæ animacjê efektu spadania odpowiedni¹
 public class SakuraTree {
 
 	private SceneEntity tree;
 	private SpriteBatch sakuraTreeBatch;
 	private Stage sakuraTreeStage;
 
-	//animacja dla kazdego
 	private Array<SakuraLeaf> sakuraLeaves;
 	private SakuraTreeDescriptor leavesDescriptors;
 	
@@ -50,8 +48,6 @@ public class SakuraTree {
 			if(sakuraLeaves.get(i).isDead())
 				sakuraLeaves.removeIndex(i);
 		
-		Gdx.app.log("size ", String.valueOf(sakuraLeaves.size));
-		
 		if(sakuraLeaves.size == 0)
 			treeIsDead = true;
 	}
@@ -71,14 +67,14 @@ public class SakuraTree {
 
 	public void saveSakuraTree(final String filePath) {
 		Json json = new Json();		
-		FileHandle file = Gdx.files.local(filePath);		
+		FileHandle file = Gdx.files.internal(filePath);		
 		String jsonData = json.toJson(leavesDescriptors);
 		file.writeString(jsonData, false);
 	}
 
 	public void loadSakuraTree(final String filePath) {
 		Json json = new Json();		
-		FileHandle file = Gdx.files.local(filePath);
+		FileHandle file = Gdx.files.internal(filePath);
 
 		String jsonData = file.readString();
 

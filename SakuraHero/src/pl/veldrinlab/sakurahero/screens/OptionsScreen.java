@@ -101,6 +101,10 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 		Renderer.hudStage.addActor(sound);
 		Renderer.hudStage.addActor(soundState);
 
+		resetHighScore.setName("Reset");
+		resetHighScore.setText("Tap to reset High Scores...");
+		resetHighScore.setX((Configuration.getWidth()-resetHighScore.getTextBounds().width)*0.5f);	
+		
 		currentHighScore.setText("High Score "+ game.results.highScore);
 		currentHighScore.setX((Configuration.getWidth()-currentHighScore.getTextBounds().width)*0.5f);	
 
@@ -198,12 +202,12 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 		if(actor.getName().equals("Music")) {
 
-			if(game.options.musicVolume == 1.0f) {
+			if(game.options.musicVolume == 0.6f) {
 				game.options.musicVolume = 0.0f;
 				musicState.setText("Off");
 			}
 			else {
-				game.options.musicVolume = 1.0f;
+				game.options.musicVolume = 0.6f;
 				musicState.setText("On");
 			}
 

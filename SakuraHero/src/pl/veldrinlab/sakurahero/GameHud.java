@@ -46,14 +46,15 @@ public class GameHud {
 		points = new Label("Points: " + String.valueOf(pointAmount), Renderer.smallFont);
 		time = new Label("Time ", Renderer.smallFont);
 		
-		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
-		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"));
+		katanaLevelBackground = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"),"");
+		katanaLevelBar = new SceneEntity(Renderer.sceneAtlas.createSprite("katanaLevelBar"),"");
 		katanaLevelInfo = new Label("Level " + String.valueOf(katanaLevel),Renderer.smallFont);
 
 		points.setTouchable(Touchable.disabled);
 		hit.setTouchable(Touchable.disabled);
 		combo.setTouchable(Touchable.disabled);
 		time.setTouchable(Touchable.disabled);
+		katanaLevelInfo.setTouchable(Touchable.disabled);
 	}
 
 	public void resetState() {

@@ -3,7 +3,6 @@ package pl.veldrinlab.sakurahero;
 import pl.veldrinlab.sakurahero.screens.CreditsScreen;
 import pl.veldrinlab.sakurahero.screens.GameOverScreen;
 import pl.veldrinlab.sakurahero.screens.LanguageSelectionScreen;
-import pl.veldrinlab.sakurahero.screens.LevelEditorScreen;
 import pl.veldrinlab.sakurahero.screens.LoadingScreen;
 import pl.veldrinlab.sakurahero.screens.MenuScreen;
 import pl.veldrinlab.sakurahero.screens.ModeSelectionScreen;
@@ -42,9 +41,6 @@ public class SakuraHero extends Game {
 	
 	private Timer timer;
 	
-	//TODO mo¿e raz wczytaæ tutaj atlasy, albo do Renderera, ¿eby nie prosiæ o wskaŸnik za ka¿dym razem? - publiczne atlasy
-	//TODO tak samo gdzieœ Label style wszystkie - mo¿e faktycznie Renderer - trochê na architektruê to wp³ywn
-	
 	private SplashScreen teamSplashScreen;
 	private SplashScreen engineSplashScreen;
 	private LanguageSelectionScreen languageSelectionScreen;
@@ -54,20 +50,16 @@ public class SakuraHero extends Game {
 	private OptionsScreen optionsScreen;
 	private CreditsScreen creditsScreen;
 	
-	//TODO nowe, wybor trybu, jakos ograniczyc pamiec
-	private PlayScreen playScreen;
-	
-	private TrainingScreen trainingScreen;
-	private SurvivalScreen survivalScreen;
-	
 	private ModeSelectionScreen modeSelectionScreen;
 	private WorldSelectionScreen worldSelectionScreen;
+	private PlayScreen playScreen;	
+	private TrainingScreen trainingScreen;
+	private SurvivalScreen survivalScreen;
 	
 	private PauseScreen pauseScreen;
 	private GameOverScreen gameOverScreen;
 	
-	//Level Editor
-	private LevelEditorScreen levelEditorScreen;
+	//private LevelEditorScreen levelEditorScreen;
 	
 	/**
 	 * Class construtor, nothing to do (it is great!).
@@ -90,10 +82,10 @@ public class SakuraHero extends Game {
 		loadHighScore();
 	
 		initalizeIntro();
-		initializeLoading();
-		initializeGame();
+	//	initializeLoading();
+	//	initializeGame();
 
-	setScreen(playScreen);
+	//setScreen(playScreen);
 //	setScreen(loadingScreen);
 //		setScreen(menuScreen);
 	//	setScreen(optionsScreen);
@@ -105,9 +97,6 @@ public class SakuraHero extends Game {
 		resources.finishLoading();
 				
 		Renderer.introAtlas = resources.getTextureAtlas("introAtlas");
-		Renderer.guiAtlas = resources.getTextureAtlas(options.language.getTextureAtlas());
-		Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
-		
 		Renderer.smallFont = new LabelStyle(resources.getFont("smallFont"),Color.WHITE);
 		Renderer.standardFont = new LabelStyle(resources.getFont("standardFont"),Color.WHITE);
 		Renderer.specialFont = new LabelStyle(resources.getFont("specialFont"),Color.YELLOW);
@@ -115,10 +104,6 @@ public class SakuraHero extends Game {
 		fallingSakura = new FallingLeavesEffect(20,true);
 		fallingSakura.initializeEffect();
 		fallingSakura.setLeavesAlpha(1.0f);
-		
-		// test hack!
-		resources.loadResources(Configuration.getResourcePath());
-		resources.finishLoading();
 	}
 	
 	private void initalizeIntro() {
@@ -149,24 +134,19 @@ public class SakuraHero extends Game {
 	public void initializeGame() {
 		Renderer.sceneAtlas = resources.getTextureAtlas("sceneAtlas");
 
-
 		menuScreen = new MenuScreen(this);
 		optionsScreen = new OptionsScreen(this);	
 		creditsScreen = new CreditsScreen(this);
 		pauseScreen = new PauseScreen(this);
 		gameOverScreen = new GameOverScreen(this);
 
-		//
 		modeSelectionScreen = new ModeSelectionScreen(this);
 		worldSelectionScreen = new WorldSelectionScreen(this);
-		
 		
 		playScreen = new PlayScreen(this);
 		trainingScreen = new TrainingScreen(this);
 		survivalScreen = new SurvivalScreen(this);
-		
-		//
-		levelEditorScreen = new LevelEditorScreen(this);
+		//levelEditorScreen = new LevelEditorScreen(this);
 		
 		buildGameStateGraph();
 		

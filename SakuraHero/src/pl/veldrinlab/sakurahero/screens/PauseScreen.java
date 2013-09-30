@@ -41,7 +41,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		this.game = game;
 
 		pauseBatch = new SpriteBatch();
-		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+		renderTarget = new FrameBuffer(Pixmap.Format.RGBA8888,Configuration.getWidth(), Configuration.getHeight(),true);
 		pauseStage = new Stage(Configuration.getWidth(), Configuration.getHeight(), false, pauseBatch);
 		pauseBackground = new SceneEntity(renderTarget.getColorBufferTexture());
 		pauseBackground.sprite.flip(false,true);

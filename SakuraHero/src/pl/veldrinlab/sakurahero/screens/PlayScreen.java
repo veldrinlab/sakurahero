@@ -195,10 +195,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void show() {	
-		
-		//
-		resetState();
-		
 		Renderer.backgroundStage.addActor(background);
 
 		for(SceneEntity cloud : clouds)
