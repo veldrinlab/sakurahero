@@ -26,18 +26,6 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/swingTexture.png",
-			"name" : "katanaSwing",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "img/cloud.png",
-			"name" : "cloud",
-			"type" : "TEXTURE"
-		},
-		{
-			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
 			"path" : "font/standard.fnt",
 			"name" : "standardFont",
 			"type" : "FONT"

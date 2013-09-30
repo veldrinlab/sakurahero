@@ -160,31 +160,20 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 		pauseStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = pauseStage.hit(stageCoords.x, stageCoords.y, true);
 
-		Gdx.app.log("pause","input");
-
 		if(actor == null)
 			return false;
 
 		if(actor.getName().equals("Resume")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-
+			game.playMusic.play();
 			game.setScreen(backScreen);
 		}
 		else if(actor.getName().equals("Menu")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			//			
-			//			if(Configuration.getInstance().musicOn)
-			//				game.resources.getMusic("gameOverMusic").stop();
+			game.menuMusic.play();
 			game.setScreen(menuScreen);
 		}
-		else if(actor.getName().equals("Exit")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			//		
+		else if(actor.getName().equals("Exit")) 		
 			Gdx.app.exit();
-		}
+
 		return true;
 	}
 

@@ -137,7 +137,6 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 	}
 
 	private void initializeInterface() {
-
 		options.alignCenter(0.90f);
 
 		resetHighScore.setName("Reset");
@@ -199,27 +198,31 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 
 		if(actor.getName().equals("Music")) {
 
-			game.options.musicOn = !game.options.musicOn;
-
-			if(game.options.musicOn) {
-				musicState.setText("On");
-				//game.resources.getMusic("menuMusic").play();
+			if(game.options.musicVolume == 1.0f) {
+				game.options.musicVolume = 0.0f;
+				musicState.setText("Off");
 			}
 			else {
-				musicState.setText("Off");
-				//game.resources.getMusic("menuMusic").stop();
+				game.options.musicVolume = 1.0f;
+				musicState.setText("On");
 			}
 
+			game.menuMusic.setVolume(game.options.musicVolume);
+			game.playMusic.setVolume(game.options.musicVolume);
+			game.gameOverMusic.setVolume(game.options.musicVolume);
+			
 			musicState.setX(music.getX()+music.getTextBounds().width*1.5f);
 		}
 		else if(actor.getName().equals("Sound")) {
-			game.options.soundOn = !game.options.soundOn;
-
-			if(game.options.soundOn)
-				soundState.setText("On");
-			else
+			if(game.options.soundVolume == 1.0f) {
+				game.options.soundVolume = 0.0f;
 				soundState.setText("Off");
-
+			}
+			else {
+				game.options.soundVolume = 1.0f;
+				soundState.setText("On");
+			}
+				
 			soundState.setX(music.getX()+music.getTextBounds().width*1.5f);
 		}
 		else if(actor.getName().equals("Reset")) {
@@ -243,10 +246,8 @@ public class OptionsScreen extends GameScreen implements GestureListener  {
 			currentSurvivalTime.setX((Configuration.getWidth()-currentSurvivalTime.getTextBounds().width)*0.5f);
 		}
 
-		if(actor.getName().equals("Back")) {
-
+		if(actor.getName().equals("Back"))
 			game.setScreen(menuScreen);
-		}
 		return true;
 	}
 

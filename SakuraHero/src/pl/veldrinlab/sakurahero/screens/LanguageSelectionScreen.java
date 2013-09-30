@@ -120,8 +120,7 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
+	public void resize(int width, int height) {}
 
 	@Override
 	public void hide() {
@@ -137,7 +136,6 @@ public class LanguageSelectionScreen extends GameScreen implements GestureListen
 
 	@Override
 	public void show() {
-
 		fadeInState = true;
 		background.setEntityAlpha(0.0f);
 		selection.setEntityAlpha(0.0f);

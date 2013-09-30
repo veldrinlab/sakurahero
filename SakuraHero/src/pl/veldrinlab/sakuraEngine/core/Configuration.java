@@ -15,7 +15,7 @@ public class Configuration {
 		height = 480;
 		useGL20 = true;
 		fullScreenEnabled = false;
-		windowTitle = "Sakura Hero - WIP";
+		windowTitle = "Sakura Hero";
 		resourcePath = "resources.json";
 		initResourcePath = "initResources.json";
 	}

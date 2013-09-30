@@ -1,5 +1,6 @@
 package pl.veldrinlab.sakurahero;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -29,6 +30,16 @@ public abstract class Onigiri extends SceneEntity {
 	protected boolean attack;
 	
 	protected Array<SakuraLeaf> sakuraLeaves;
+	
+	public GameOptions options;
+	
+	protected boolean explosionStarted;
+	protected boolean attackSoundFinished;
+	public Sound explosionSound;
+	public Sound attackSound1;
+	public Sound attackSound2;
+	public Sound deathSound1;
+	public Sound deathSound2;
 	
 	public Onigiri(final Sprite sprite, final Sprite explosionSprite, final int width, final int height) {
 		super(sprite, width, height);

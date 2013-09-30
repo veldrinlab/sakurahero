@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class TrainingScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
@@ -33,7 +34,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	private InputMultiplexer inputMultiplexer;
 
 	private SceneEntity background;
-
 	private Array<Onigiri> onigiriArmy;
 	
 	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
@@ -58,10 +58,9 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		}
 		
 		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
-		
 		input = new Stack<Vector2>(100,Vector2.class);
 
-		gameHud = new GameHud();
+		gameHud = new GameHud(game);
 		gameHud.initialize();
 		
 		inputDetector = new MultitouchGestureDetector(this);
@@ -71,8 +70,15 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public void resetState() {
 		gameHud.resetState();
 		
-		for(Onigiri o : onigiriArmy)
+		for(Onigiri o : onigiriArmy) {
 			o.initialize(null);
+			o.explosionSound = game.resources.getSoundEffect("explosion");
+			o.attackSound1 = game.resources.getSoundEffect("attack1");
+			o.attackSound2 = game.resources.getSoundEffect("attack2");
+			o.deathSound1 = game.resources.getSoundEffect("death1");
+			o.deathSound2 = game.resources.getSoundEffect("death2");	
+			o.options = game.options;
+		}
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
@@ -191,8 +197,9 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			pauseScreen.getFrameBuffer().begin();	
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
-
 			pauseScreen.backScreen = this;
+			
+			game.playMusic.pause();
 			game.setScreen(pauseScreen);
 		}
 
@@ -241,12 +248,6 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Vector2 stageCoords = new Vector2();
-		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-
-		input.insert(stageCoords);
-		lastPoint.set(stageCoords.x, stageCoords.y);
-
 		return false;
 	}
 
@@ -254,6 +255,11 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		input.clear();
 		slashTimer = 0.0f;
+		
+		String id = "sword"+ MathUtils.random(1,13);
+		long i = game.resources.getSoundEffect(id).play();
+		game.resources.getSoundEffect(id).setVolume(i, game.options.soundVolume);
+		
 		return false;
 	}
 

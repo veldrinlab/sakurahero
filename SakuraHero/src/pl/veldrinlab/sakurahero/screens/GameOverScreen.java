@@ -58,6 +58,9 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void show() {		
+		game.playMusic.stop();
+		game.gameOverMusic.play();
+		
 		record.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
 		if(game.options.mode == SakuraGameMode.NORMAL) {
@@ -188,12 +191,9 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 			return false;
 
 		if(actor.getName().equals("Try Again")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			//			
-			//			if(Configuration.getInstance().musicOn)
-			//				game.resources.getMusic("gameOverMusic").stop();
-
+			game.gameOverMusic.stop();
+			game.playMusic.play();
+			
 			if(game.options.mode == SakuraGameMode.NORMAL) {
 				PlayScreen screen = (PlayScreen)gameScreen;
 				screen.resetState();
@@ -206,21 +206,12 @@ public class GameOverScreen extends GameScreen implements GestureListener {
 			}
 		}
 		else if(actor.getName().equals("Menu")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			//			
-			//			if(Configuration.getInstance().musicOn)
-			//				game.resources.getMusic("gameOverMusic").stop();
+			game.gameOverMusic.stop();
+			game.menuMusic.play();
 			game.setScreen(menuScreen);
 		}
-		else if(actor.getName().equals("Exit")) {
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
-			//			
-			//			if(Configuration.getInstance().musicOn)
-			//				game.resources.getMusic("gameOverMusic").stop();
+		else if(actor.getName().equals("Exit"))
 			Gdx.app.exit();
-		}
 		return true;
 	}
 

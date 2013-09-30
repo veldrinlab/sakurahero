@@ -22,6 +22,7 @@ import pl.veldrinlab.sakuraEngine.fx.FadeEffectParameters;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -34,6 +35,10 @@ public class SakuraHero extends Game {
 	public FallingLeavesEffect fallingSakura;
 	public GameOptions options;
 	public GameResult results;
+	
+	public Music menuMusic;
+	public Music playMusic;
+	public Music gameOverMusic;
 	
 	private Timer timer;
 	
@@ -88,9 +93,10 @@ public class SakuraHero extends Game {
 		initializeLoading();
 		initializeGame();
 
-		
+	setScreen(playScreen);
+//	setScreen(loadingScreen);
 //		setScreen(menuScreen);
-		setScreen(optionsScreen);
+	//	setScreen(optionsScreen);
 		//setScreen(survivalScreen);
 	}
 
@@ -242,6 +248,20 @@ public class SakuraHero extends Game {
 		file.writeString(jsonData, false);
 	}
 
+	public void initializeAudio() {
+		menuMusic = resources.getMusic("menuMusic");
+		playMusic = resources.getMusic("playMusic");
+		gameOverMusic = resources.getMusic("gameOverMusic");
+		
+		menuMusic.setLooping(true);
+		playMusic.setLooping(true);
+		gameOverMusic.setLooping(true);
+		
+		menuMusic.setVolume(options.musicVolume);
+		playMusic.setVolume(options.musicVolume);
+		gameOverMusic.setVolume(options.musicVolume);
+	}
+	
 	public Timer getTimer() {
 		return timer;
 	}

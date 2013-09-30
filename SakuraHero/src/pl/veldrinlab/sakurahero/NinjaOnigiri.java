@@ -13,7 +13,6 @@ import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 public class NinjaOnigiri extends Onigiri {
 
-	//TODO time i alpha accum merge
 	private float alphaAccumulator;
 	private float fadeState;
 	private boolean targetApproved;
@@ -33,7 +32,7 @@ public class NinjaOnigiri extends Onigiri {
 		
 		targetApproved = attack = false;
 		
-		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.2f) {	
+		if(sakuraLeaves != null && MathUtils.random(0.0f,1.0f) > 0.75f) {	
 			int leafTargetId = MathUtils.random(0, sakuraLeaves.size-1);
 			SceneEntity target = sakuraLeaves.get(leafTargetId);
 			x = target.position.x + target.width*0.5f - width*0.5f;
@@ -54,6 +53,8 @@ public class NinjaOnigiri extends Onigiri {
 
 		explosionAnimation.initializeAnimation();
 		entityAnimation.initializeAnimation();
+		
+		explosionStarted = false;
 	}
 	
 	@Override
@@ -89,9 +90,14 @@ public class NinjaOnigiri extends Onigiri {
 				updateEntityState(x, y);
 				explosion.updateEntityState(x, y);
 			}
-			else {
+			else if(!explosionStarted && timeAccumulator > 0.5f) {
+				explosionStarted = true;
+				long id = explosionSound.play();
+				explosionSound.setVolume(id, options.soundVolume);
+			}
+			else if(explosionStarted) {
 				setEntityAlpha(MathUtils.clamp(1.0f-timeAccumulator, 0.0f, 1.0f));
-
+				
 				explosionAnimation.updateAnimation(deltaTime);
 				if(explosionAnimation.animationCycleFinished())
 					initialize(sakuraLeaves);			
@@ -124,5 +130,16 @@ public class NinjaOnigiri extends Onigiri {
 		collisionPosition.set(getX(), getY());
 		blowAngle = blowAngles.get(MathUtils.random(0, blowAngles.size-1));	
 		entityAnimation.setDefinedFrame(1);
+			
+		if(MathUtils.random() > 0.9f) {
+			if(MathUtils.randomBoolean()) {
+				long id = deathSound1.play();
+				deathSound1.setVolume(id, options.soundVolume);
+			}
+			else {
+				long id = deathSound2.play();
+				deathSound2.setVolume(id, options.soundVolume);
+			}
+		}
 	}
 }

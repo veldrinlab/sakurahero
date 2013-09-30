@@ -74,8 +74,7 @@ public class LevelEditorScreen extends GameScreen implements MultitouchGestureLi
 	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {	

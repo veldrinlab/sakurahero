@@ -52,6 +52,9 @@ public class OniOnigiri extends Onigiri {
 
 		explosionAnimation.initializeAnimation();
 		entityAnimation.initializeAnimation();
+		
+		explosionStarted = false;
+		attackSoundFinished = false;
 	}
 
 	@Override
@@ -70,6 +73,19 @@ public class OniOnigiri extends Onigiri {
 			temp.set(position.x, position.y);
 			if(temp.dst(Configuration.getWidth()*0.5f, Configuration.getHeight()*0.5f) > respawnDistance)
 				initialize(sakuraLeaves);
+			
+			if(temp.dst(Configuration.getWidth()*0.5f, Configuration.getHeight()*0.5f) < 200 && attack && !attackSoundFinished) {
+				if(MathUtils.randomBoolean()) {
+					long id = attackSound1.play();
+					attackSound1.setVolume(id, options.soundVolume);
+				}
+				else {
+					long id = attackSound2.play();
+					attackSound2.setVolume(id, options.soundVolume);
+				}
+				
+				attackSoundFinished = true;
+			}
 		}
 
 		else {
@@ -83,9 +99,14 @@ public class OniOnigiri extends Onigiri {
 				updateEntityState(x, y);
 				explosion.updateEntityState(x, y);
 			}
-			else {
+			else if(!explosionStarted && timeAccumulator > 0.5f) {
+				explosionStarted = true;
+				long id = explosionSound.play();
+				explosionSound.setVolume(id, options.soundVolume);
+			}
+			else if(explosionStarted) {
 				setEntityAlpha(MathUtils.clamp(1.0f-timeAccumulator, 0.0f, 1.0f));
-
+				
 				explosionAnimation.updateAnimation(deltaTime);
 				if(explosionAnimation.animationCycleFinished())
 					initialize(sakuraLeaves);			
@@ -107,5 +128,15 @@ public class OniOnigiri extends Onigiri {
 		blowAngle = blowAngles.get(MathUtils.random(0, blowAngles.size-1));	
 		entityAnimation.setDefinedFrame(12);
 
+		if(MathUtils.random() > 0.9f) {
+			if(MathUtils.randomBoolean()) {
+				long id = deathSound1.play();
+				deathSound1.setVolume(id, options.soundVolume);
+			}
+			else {
+				long id = deathSound2.play();
+				deathSound2.setVolume(id, options.soundVolume);
+			}
+		}
 	}
 }

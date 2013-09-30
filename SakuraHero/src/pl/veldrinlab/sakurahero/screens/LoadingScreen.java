@@ -93,6 +93,8 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 				loadingStatus.setEntityAlpha(0.0f);
 				loadingState = false;
 				katanaState = true;
+				
+				game.initializeAudio();
 			}
 		}
 		else if(katanaState) {
@@ -109,26 +111,26 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 			if(timeDistance < 0.0f) {
 				katanaState = false;
 				shineState = true;	
+				
+				game.resources.getSoundEffect("katana").setVolume(0, game.options.soundVolume);
+				game.resources.getSoundEffect("katana").play();
 			}
-
 		}
 		else if(shineState) {
-			//TODO sword slash sound
 			shineEffect.setEntityAlpha(shineTime);
-			
 			shineTime -= deltaTime;
-			
 			fallingSakura.setLeavesAlpha(1.0f-shineTime);
 			
 			if(shineTime < 0.0f) {
 				fallingSakura.setLeavesAlpha(1.0f);
 				shineState = false;
-				readyToGo = true;				
+				readyToGo = true;	
+				game.menuMusic.play();
 			}
 		}
 		else if(readyToGo) {
 			blinking += deltaTime*5.0f;
-			loadingStatus.setEntityAlpha((float) ((Math.sin(blinking)+1.0f)/2.0f));
+			loadingStatus.setEntityAlpha((float) ((Math.sin(blinking)+1.0f)/2.0f));			
 		}			
 	}
 
@@ -167,14 +169,7 @@ public class LoadingScreen extends GameScreen implements GestureListener {
 	public void resume() {}
 
 	@Override
-	public void show() {	
-		
-		//		if(Configuration.getInstance().musicOn) {
-		//			menuMusic.play();
-		//			menuMusic.setVolume(0.1f);
-		//		}
-		//
-		
+	public void show() {
 		fallingSakura.setLeavesAlpha(0.0f);
 		
 		Renderer.backgroundStage.addActor(background);

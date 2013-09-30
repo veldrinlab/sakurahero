@@ -1,0 +1,9 @@
+{
+	leaves : [{
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 415,
+			y : 278,
+			rotation : 14.768351
+		}
+	]
+}

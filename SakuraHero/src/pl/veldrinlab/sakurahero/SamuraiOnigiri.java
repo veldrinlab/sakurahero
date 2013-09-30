@@ -12,19 +12,19 @@ import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
 public class SamuraiOnigiri extends Onigiri {
-	
+
 	private Vector2 moveDirection;	
-	
+
 	private SceneEntity shadow;
 	private SceneEntity shadow2;
 	private SceneEntity shadow3;
-	
+
 	public SamuraiOnigiri(final Sprite enemySprite, final Sprite explosionSprite) {
 		super(enemySprite,explosionSprite,128,128);
 
 		moveDirection = new Vector2();
 		entityAnimation = new Animation(8,0.020f,this);
-			
+
 		shadow = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);	
 		shadow2 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
 		shadow3 = new SceneEntity(Renderer.sceneAtlas.createSprite("onigiriSamurai"),128,128);
@@ -33,7 +33,7 @@ public class SamuraiOnigiri extends Onigiri {
 	@Override
 	public void initialize(final Array<SakuraLeaf> sakuraLeaves) {
 		this.sakuraLeaves = sakuraLeaves;
-		
+
 		float x = MathUtils.random(-Configuration.getWidth()*0.25f,-width) + Configuration.getWidth()*1.25f*MathUtils.random(0, 1);		
 		float y = MathUtils.random(-Configuration.getHeight()*0.5f, -height) + Configuration.getHeight()*1.5f*MathUtils.random(0, 1);
 
@@ -48,7 +48,7 @@ public class SamuraiOnigiri extends Onigiri {
 
 		moveDirection.sub(x, y);
 		moveDirection = moveDirection.nor();
-		
+
 		velocity.set(2.5f,2.5f);
 		rotationVelocity = 5.0f;
 		rotation = 0.0f;
@@ -60,14 +60,17 @@ public class SamuraiOnigiri extends Onigiri {
 
 		explosionAnimation.initializeAnimation();
 		entityAnimation.initializeAnimation();
-		
+
 		shadow.updateEntityState(x,y);
 		shadow2.updateEntityState(x,y);
 		shadow3.updateEntityState(x,y);
-		
+
 		shadow.setEntityAlpha(0.75f);
 		shadow2.setEntityAlpha(0.5f);	
 		shadow3.setEntityAlpha(0.25f);	
+
+		explosionStarted = false;
+		attackSoundFinished = false;
 	}
 
 	@Override
@@ -84,33 +87,46 @@ public class SamuraiOnigiri extends Onigiri {
 		if(!collisionOccurred) {
 			velocity.x += deltaTime*2;
 			velocity.y += deltaTime*2;
-			
+
 			entityAnimation.updateAnimation(deltaTime);
 
 			float shadowX = position.x  - moveDirection.x * velocity.x*2.5f;
 			float shadowY = position.y - moveDirection.y * velocity.y*2.5f;
-			
+
 			float shadowX2 = position.x  - moveDirection.x * velocity.x*5.0f;
 			float shadowY2 = position.y - moveDirection.y * velocity.y*5.0f;
-			
+
 			float shadowX3 =position.x  - moveDirection.x * velocity.x*7.5f;
 			float shadowY3 = position.y - moveDirection.y * velocity.y*7.5f;
-			
+
 			position.x += moveDirection.x * velocity.x;
 			position.y += moveDirection.y * velocity.y;
-			
+
 			updateEntityState(position.x, position.y);
-			
+
 			shadow.updateEntityState(shadowX, shadowY);
 			shadow2.updateEntityState(shadowX2, shadowY2);
 			shadow3.updateEntityState(shadowX3, shadowY3);
-			
+
 			updateEntityState(position.x, position.y);
 
 			Vector2 temp = Vector2.Zero;
 			temp.set(position.x, position.y);
 			if(temp.dst(Configuration.getWidth()*0.5f, Configuration.getHeight()*0.5f) > respawnDistance)
 				initialize(sakuraLeaves);
+
+			if(temp.dst(Configuration.getWidth()*0.5f, Configuration.getHeight()*0.5f) < 200 && attack && !attackSoundFinished) {
+				if(MathUtils.randomBoolean()) {
+					long id = attackSound1.play();
+					attackSound1.setVolume(id, options.soundVolume);
+				}
+				else {
+					long id = attackSound2.play();
+					attackSound2.setVolume(id, options.soundVolume);
+				}
+
+				attackSoundFinished = true;
+			}
 		}
 
 		else {
@@ -124,7 +140,12 @@ public class SamuraiOnigiri extends Onigiri {
 				updateEntityState(x, y);
 				explosion.updateEntityState(x, y);
 			}
-			else {
+			else if(!explosionStarted && timeAccumulator > 0.5f) {
+				explosionStarted = true;
+				long id = explosionSound.play();
+				explosionSound.setVolume(id, options.soundVolume);
+			}
+			else if(explosionStarted) {
 				setEntityAlpha(MathUtils.clamp(1.0f-timeAccumulator, 0.0f, 1.0f));
 
 				explosionAnimation.updateAnimation(deltaTime);
@@ -143,6 +164,17 @@ public class SamuraiOnigiri extends Onigiri {
 		entityAnimation.setDefinedFrame(8);
 		shadow.setEntityAlpha(0.0f);
 		shadow2.setEntityAlpha(0.0f);
-		shadow3.setEntityAlpha(0.0f);	
+		shadow3.setEntityAlpha(0.0f);
+
+		if(MathUtils.random() > 0.9f) {
+			if(MathUtils.randomBoolean()) {
+				long id = deathSound1.play();
+				deathSound1.setVolume(id, options.soundVolume);
+			}
+			else {
+				long id = deathSound2.play();
+				deathSound2.setVolume(id, options.soundVolume);
+			}
+		}
 	}
 }

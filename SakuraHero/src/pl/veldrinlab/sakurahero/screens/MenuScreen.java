@@ -8,7 +8,6 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
@@ -30,8 +29,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	private SceneEntity options;
 	private SceneEntity credits;
 	private SceneEntity exit;
-
-	private Music menuMusic;
 
 	public MenuScreen(final SakuraHero game) {
 		this.game = game;
@@ -93,13 +90,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	@Override
 	public void show() {	
-
-		//		if(Configuration.getInstance().musicOn) {
-		//			menuMusic.play();
-		//			menuMusic.setVolume(0.1f);
-		//		}
-		//		
-
 		Renderer.backgroundStage.addActor(background);
 
 		Renderer.hudStage.addActor(menu);
@@ -112,8 +102,7 @@ public class MenuScreen extends GameScreen implements GestureListener {
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public boolean pinch(Vector2 arg0, Vector2 arg1, Vector2 arg2, Vector2 arg3) {
@@ -127,7 +116,6 @@ public class MenuScreen extends GameScreen implements GestureListener {
 
 	private void initializeInterface() {
 		menu.alignCenter(0.90f);
-		
 		play.alignCenter(0.65f);
 		options.alignCenter(0.50f);
 		credits.alignCenter(0.35f);
@@ -163,37 +151,22 @@ public class MenuScreen extends GameScreen implements GestureListener {
 		if(actor == null)
 			return false;
 
-		Gdx.app.log("name", actor.getName());
-
 		if(actor.getName().equals("Credits")) {
-			//		if(Configuration.getInstance().soundOn)
-			//			game.resources.getSoundEffect("selection").play();
 			game.setScreen(creditsnScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Options")) {
-			//	if(Configuration.getInstance().soundOn)
-			//		game.resources.getSoundEffect("selection").play();
 			game.setScreen(optionsScreen);
 			return true;
 		}
 		else if(actor.getName().equals("Play")) {
-			//	if(Configuration.getInstance().soundOn)
-			//		game.resources.getSoundEffect("selection").play();
-
 			game.setScreen(modeSelectionScreen);
-			//	if(Configuration.getInstance().musicOn)
-			//		menuMusic.stop();
-			//		
 			dispose();
 			return true;			
 		}
-		else if(actor.getName().equals("Exit")) {
-			//	if(Configuration.getInstance().soundOn)
-			//		game.resources.getSoundEffect("selection").play();
+		else if(actor.getName().equals("Exit"))
 			Gdx.app.exit();
-		}
-
+		
 		return false;
 	}
 

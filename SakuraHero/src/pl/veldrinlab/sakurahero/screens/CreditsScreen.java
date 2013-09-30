@@ -182,13 +182,9 @@ public class CreditsScreen extends GameScreen implements GestureListener  {
 		if(actor == null)
 			return false;
 
-		if(actor.getName().equals("Back")) {
-
-			//			if(Configuration.getInstance().soundOn)
-			//				game.resources.getSoundEffect("selection").play();
+		if(actor.getName().equals("Back")) 
 			game.setScreen(menuScreen);
-		}
-
+		
 		return true;
 	}
 

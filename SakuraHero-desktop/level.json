@@ -1,0 +1,94 @@
+{
+	leaves : [{
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 255,
+			y : 90,
+			rotation : 323.8274
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 233.99998,
+			y : 139,
+			rotation : 274.3231
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 276,
+			y : 204,
+			rotation : 56.61214
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 311,
+			y : 255,
+			rotation : 338.4266
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 401.00003,
+			y : 268,
+			rotation : 36.58887
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 326,
+			y : 189,
+			rotation : 19.680763
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 313,
+			y : 121,
+			rotation : 332.86972
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 364,
+			y : 86,
+			rotation : 11.627504
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 530,
+			y : 93,
+			rotation : 97.2215
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 482,
+			y : 125.99999,
+			rotation : 117.40967
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 526,
+			y : 192,
+			rotation : 17.66387
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 484,
+			y : 222,
+			rotation : 352.4267
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 423,
+			y : 215,
+			rotation : 120.64391
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 357,
+			y : 220,
+			rotation : 219.02618
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 439,
+			y : 187,
+			rotation : 235.08388
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 241.00002,
+			y : 178,
+			rotation : 230.33977
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 514,
+			y : 243.00002,
+			rotation : 291.01645
+		}, {
+			class : pl.veldrinlab.sakurahero.SakuraLeafDescriptor,
+			x : 341,
+			y : 145,
+			rotation : 103.931435
+		}
+	]
+}

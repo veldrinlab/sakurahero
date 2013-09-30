@@ -8,11 +8,10 @@ import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 
-//TODO katana poziom spada z czasem
-//TODO combo kilka klatek
-//TODO exp boost z combo
 public class GameHud {
 
+	public SakuraHero game;
+	
 	private SceneEntity pauseButton;
 
 	private Label hit;
@@ -24,8 +23,6 @@ public class GameHud {
 	private Label combo;
 	private int comboAmount;
 	private float comboAlpha;
-	private final int COMBO_DURATION = 5;
-	private int comboFrameAccumulator;
 
 	private SceneEntity katanaLevelBar;
 	private SceneEntity katanaLevelBackground;
@@ -39,8 +36,9 @@ public class GameHud {
 	private Label time;
 	private float survivedTime;
 	
-	public GameHud() {
-
+	public GameHud(final SakuraHero game) {
+		this.game = game;
+		
 		pauseButton = new SceneEntity(Renderer.sceneAtlas.createSprite("pauseButton"),"Pause");
 
 		hit = new Label(String.valueOf(hitAmount) + " Hit!", Renderer.specialFont);
@@ -69,7 +67,6 @@ public class GameHud {
 
 		comboAmount = 0;
 		comboAlpha = 0.0f;
-		comboFrameAccumulator = 0;
 
 		hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 		combo.setColor(1.0f,1.0f,1.0f,comboAlpha);
@@ -111,7 +108,6 @@ public class GameHud {
 	public void initializeSurvivalHUD() {
 		initializeBase();
 		Renderer.hudStage.addActor(time);
-
 	}
 
 	public void updateNormalHud(final int enemyHitAmount, final float deltaTime) {
@@ -119,7 +115,6 @@ public class GameHud {
 	}
 	
 	public void updateSurvivalHud(final int enemyHitAmount, final float deltaTime) {
-		
 		updateHud(enemyHitAmount,deltaTime);
 		
 		survivedTime += deltaTime;
@@ -145,18 +140,19 @@ public class GameHud {
 	}
 	
 	private void updateHud(final int enemyHitAmount, final float deltaTime) {
+		katanaExp -= deltaTime/100;
+		katanaExp = MathUtils.clamp(katanaExp, 0.0f, 1.0f);
+		
 		comboAmount +=  enemyHitAmount;
 		pointAmount += 10* enemyHitAmount;
-		katanaExp += 0.1f* enemyHitAmount;
+		katanaExp += 0.1f/(katanaLevel+1)* enemyHitAmount;
 
 		if(hitAmount > 0) {
 			// bylo juz cos zabite
-
 			if(enemyHitAmount > 0) {
 				// zabiliœmy znowy
 				hitAmount += enemyHitAmount;
 				hitAlpha = 1.0f;
-
 				hit.setText(String.valueOf(hitAmount) + " Hit!");
 				hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 			}
@@ -164,7 +160,6 @@ public class GameHud {
 				//nic nie zabilismy
 				hitAccumulator += deltaTime;
 				hitAlpha -= deltaTime*0.5f;	
-
 				hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 
 				if(hitAccumulator > HIT_DURATION) {
@@ -180,7 +175,6 @@ public class GameHud {
 			// jezeli zaczynamy zabijac 
 			hitAccumulator += deltaTime;
 			hitAlpha = 1.0f;
-
 			hitAmount += enemyHitAmount;
 
 			hit.setText(String.valueOf(hitAmount) + " Hit!"); 
@@ -191,18 +185,13 @@ public class GameHud {
 			hit.setColor(1.0f, 1.0f, 1.0f, hitAlpha);
 		}
 
-
 		if(comboAmount > 0) {
 
 			if(enemyHitAmount > 1) {
 				comboAlpha = 1.0f;
 				comboAmount = enemyHitAmount;
-
-				// bonus za Combo
 				pointAmount += comboAmount*100;
-
-				//TODO katana exp boost
-
+				katanaExp += 0.5f/(katanaLevel+1);
 				combo.setText(String.valueOf(comboAmount) + " Combo!"); 
 				combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
 
@@ -224,9 +213,7 @@ public class GameHud {
 			comboAlpha = 1.0f;
 			comboAmount = enemyHitAmount;
 			pointAmount += comboAmount*100;
-
-			//TODO katana exp boost
-
+			katanaExp += 0.5f/(katanaLevel+1);
 			combo.setText(String.valueOf(comboAmount) + " Combo!"); 
 			combo.setColor(1.0f, 1.0f, 1.0f, comboAlpha);
 			combo.setPosition(0.0f, hit.getTextBounds().height);
@@ -236,6 +223,8 @@ public class GameHud {
 			katanaExp = 0.0f;
 			katanaLevel++;
 			katanaLevelInfo.setText("Level " + katanaLevel);
+			long id = game.resources.getSoundEffect("levelUp").play();
+			game.resources.getSoundEffect("levelUp").setVolume(id, game.options.soundVolume);
 		}
 
 		katanaLevelBar.sprite.setSize(katanaExp*228+64,62);

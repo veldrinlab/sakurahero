@@ -49,7 +49,6 @@ public class FallingLeavesEffect {
 	}
 	
 	public void setLeavesAlpha(final float alpha) {
-		
 		for(SceneEntity actor : leaves)
 			actor.setEntityAlpha(alpha);
 	}
@@ -58,8 +57,7 @@ public class FallingLeavesEffect {
 		boundary.set(x, y, width, height);
 	}
 	
-	public void updateEffect(final float deltaTime) {
-		
+	public void updateEffect(final float deltaTime) {	
 		sakuraAccumulator += deltaTime;
 		
 		for(int i = 0; i < leaves.size; ++i) {

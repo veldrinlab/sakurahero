@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class SurvivalScreen extends GameScreen implements MultitouchGestureListener, InputProcessor {
@@ -34,8 +35,9 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	private InputMultiplexer inputMultiplexer;
 
 	private SceneEntity background;
-
 	private Array<Onigiri> onigiriArmy;
+	public SakuraTree tree;
+	private Array<SceneEntity> clouds;
 	
 	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
 	private KatanaSwing katana;
@@ -45,9 +47,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	private float slashTimer;
 
 	private GameHud gameHud;
-
-	
-	public SakuraTree tree;
 
 	public SurvivalScreen(final SakuraHero game) {
 		this.game = game;
@@ -60,34 +59,46 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
 		}
 		
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
 		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
-		
 		input = new Stack<Vector2>(100,Vector2.class);
-
-		gameHud = new GameHud();
+		clouds = new Array<SceneEntity>();
+		
+		gameHud = new GameHud(game);
 		gameHud.initialize();
 		
 		inputDetector = new MultitouchGestureDetector(this);
 		inputMultiplexer = new InputMultiplexer();
-
-
-		//
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
 	}
 
 	public void resetState() {
+		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		
 		tree.loadSakuraTree("levelSurvival.json");
-		
-		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
-
-		
-
-		
+				
 		gameHud.resetState();
 		
-		for(Onigiri o : onigiriArmy)
+		for(Onigiri o : onigiriArmy) {
 			o.initialize(tree.getSakuraLeaves());
+			o.explosionSound = game.resources.getSoundEffect("explosion");
+			o.attackSound1 = game.resources.getSoundEffect("attack1");
+			o.attackSound2 = game.resources.getSoundEffect("attack2");
+			o.deathSound1 = game.resources.getSoundEffect("death1");
+			o.deathSound2 = game.resources.getSoundEffect("death2");
+			o.options = game.options;
+		}
+		
+		clouds.get(0).alignRelative(-0.1f, 0.95f);
+		clouds.get(1).alignRelative(0.15f, 0.85f);
+		clouds.get(2).alignRelative(0.35f, 0.95f);
+		clouds.get(3).alignRelative(0.50f, 0.85f);
+		clouds.get(4).alignRelative(0.60f, 0.75f);
+		clouds.get(5).alignRelative(0.75f, 0.95f);
+		clouds.get(6).alignRelative(0.90f, 0.85f);
+		clouds.get(7).alignRelative(1.1f, 0.90f);
+				
+		for(SceneEntity cloud : clouds)
+			cloud.velocity.x = MathUtils.random(15.0f, 25.0f);
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
@@ -113,7 +124,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
 		int enemyHitAmount = 0;
 
 		for(Onigiri o : onigiriArmy)
@@ -157,27 +167,22 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {	
-		
-
-		//TEST hack
-				resetState();
-	
 		Renderer.backgroundStage.addActor(background);
 
+		for(SceneEntity cloud : clouds)
+			Renderer.sceneStage.addActor(cloud);
+		
 		for(Onigiri o : onigiriArmy)
 			if(o.isActive())
 				o.setupRendering(Renderer.sceneStage);
-		
+			
 		gameHud.initializeSurvivalHUD();
 			
 		inputMultiplexer.clear();
@@ -188,8 +193,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -199,9 +203,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
@@ -216,8 +218,9 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 			pauseScreen.getFrameBuffer().begin();	
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
-
 			pauseScreen.backScreen = this;
+			
+			game.playMusic.pause();
 			game.setScreen(pauseScreen);
 		}
 
@@ -249,7 +252,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		return false;
 	}
 
-
 	@Override
 	public boolean keyDown(int keycode) {
 		return false;
@@ -267,11 +269,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Vector2 stageCoords = new Vector2();
-		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-		input.insert(stageCoords);
-		lastPoint.set(stageCoords.x, stageCoords.y);
-
 		return false;
 	}
 
@@ -279,6 +276,10 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		input.clear();
 		slashTimer = 0.0f;
+		
+		String id = "sword"+ MathUtils.random(1,13);
+		long i = game.resources.getSoundEffect(id).play();
+		game.resources.getSoundEffect(id).setVolume(i, game.options.soundVolume);
 		return false;
 	}
 
@@ -289,9 +290,6 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		//	Gdx.app.log("touch", " dragged");
-		// jakis maksymalny rozmiar swinga
-
 		slashTimer += Timer.TIME_STEP;
 
 		if(slashTimer > 0.2f)
@@ -304,17 +302,11 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		for(int i = 0; i < input.size-1; ++i)
 			swingLength += input.get(i).dst(input.get(i+1));
 
-		//	Gdx.app.log("distance", String.valueOf(swingLength));
-
-		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
-
 		if(input.size < 100) {
 
 			Vector2 stageCoords = new Vector2();
-			//cos innego
 			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
-			// this is dst2 in Vector class
 			float lenSq = distSq(stageCoords,lastPoint);
 
 			float minDistanceSq = 25.0f;

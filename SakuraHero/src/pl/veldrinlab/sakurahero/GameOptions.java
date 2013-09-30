@@ -5,15 +5,13 @@ public class GameOptions {
 	public Language language;
 	public SakuraGameMode mode;
 	public String worldName;
-	
-	//TODO change to volume
-	public boolean soundOn;
-	public boolean musicOn;
+	public float soundVolume;
+	public float musicVolume;
 	
 	public GameOptions() {
 		language = Language.ENGLISH;
 		mode = SakuraGameMode.NORMAL;
 		worldName = "natsuBackground";
-		musicOn = soundOn = true;
+		musicVolume = soundVolume = 1.0f;
 	}
 }

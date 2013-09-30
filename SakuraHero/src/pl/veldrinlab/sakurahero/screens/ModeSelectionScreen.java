@@ -191,6 +191,8 @@ public class ModeSelectionScreen extends GameScreen implements GestureListener  
 		else if(actor.getName().equals("Training")) {
 			game.options.mode = SakuraGameMode.TRAINING;
 			trainingScreen.resetState();
+			game.menuMusic.stop();
+			game.playMusic.play();
 			game.setScreen(trainingScreen);
 		}
 		else if(actor.getName().equals("Back"))

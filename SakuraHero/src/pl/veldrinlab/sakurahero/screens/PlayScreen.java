@@ -1,6 +1,5 @@
 package pl.veldrinlab.sakurahero.screens;
 
-import pl.veldrinlab.sakurahero.FallingLeavesEffect;
 import pl.veldrinlab.sakurahero.GameHud;
 import pl.veldrinlab.sakurahero.NinjaOnigiri;
 import pl.veldrinlab.sakurahero.OniOnigiri;
@@ -9,6 +8,7 @@ import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -36,10 +37,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private MultitouchGestureDetector inputDetector;
 	private InputMultiplexer inputMultiplexer;
 
-
 	private SceneEntity background;
-
 	private Array<Onigiri> onigiriArmy;
+	private SakuraTree tree;
+	private Array<SceneEntity> clouds;
 	
 	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
 	private KatanaSwing katana;
@@ -50,9 +51,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	private GameHud gameHud;
 
-	//TODO sakuraTree
-	public SakuraTree tree;
-	
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
@@ -64,31 +62,48 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
 		}
 		
+		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);		
 		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
-		
 		input = new Stack<Vector2>(100,Vector2.class);
-
-		gameHud = new GameHud();
+		clouds = new Array<SceneEntity>();
+		
+		for(int i = 0; i < 8; ++i)
+			clouds.add(new SceneEntity(new Sprite(game.resources.getTexture("cloud")),96,65));
+		
+		gameHud = new GameHud(game);
 		gameHud.initialize();
 		
 		inputDetector = new MultitouchGestureDetector(this);
-		inputMultiplexer = new InputMultiplexer();
-
-
-		//
-		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
-		
+		inputMultiplexer = new InputMultiplexer();	
 	}
 
 	public void resetState() {
-		tree.loadSakuraTree("levelSurvival.json");
-		
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		
+		tree.loadSakuraTree("level.json");		
 		gameHud.resetState();
 		
-		for(Onigiri o : onigiriArmy)
+		for(Onigiri o : onigiriArmy) {
 			o.initialize(tree.getSakuraLeaves());
+			o.explosionSound = game.resources.getSoundEffect("explosion");
+			o.attackSound1 = game.resources.getSoundEffect("attack1");
+			o.attackSound2 = game.resources.getSoundEffect("attack2");
+			o.deathSound1 = game.resources.getSoundEffect("death1");
+			o.deathSound2 = game.resources.getSoundEffect("death2");
+			o.options = game.options;
+		}
+		
+		clouds.get(0).alignRelative(-0.1f, 0.95f);
+		clouds.get(1).alignRelative(0.15f, 0.85f);
+		clouds.get(2).alignRelative(0.35f, 0.95f);
+		clouds.get(3).alignRelative(0.50f, 0.85f);
+		clouds.get(4).alignRelative(0.60f, 0.75f);
+		clouds.get(5).alignRelative(0.75f, 0.95f);
+		clouds.get(6).alignRelative(0.90f, 0.85f);
+		clouds.get(7).alignRelative(1.1f, 0.90f);
+				
+		for(SceneEntity cloud : clouds)
+			cloud.velocity.x = MathUtils.random(15.0f, 25.0f);
 		
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
@@ -114,7 +129,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public void processLogic(final float deltaTime) {
-
 		int enemyHitAmount = 0;
 
 		for(Onigiri o : onigiriArmy)
@@ -145,6 +159,21 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			input.pop();
 			katanaTime = 0.0f;
 		}	
+		
+		for(SceneEntity cloud : clouds) {
+			
+			cloud.position.x -= deltaTime*cloud.velocity.x;
+			
+			if(cloud.position.x < -cloud.width) {
+				cloud.position.x += Configuration.getWidth()*1.25f;
+				cloud.position.y = MathUtils.random(Configuration.getHeight()*0.75f, Configuration.getHeight());
+				cloud.position.y -= cloud.height;
+				cloud.velocity.x = MathUtils.random(15.0f, 25.0f);
+			}
+			
+			cloud.updateEntityState(cloud.position.x, cloud.position.y);
+		}
+		
 	}
 
 	@Override
@@ -159,25 +188,22 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	}
 
 	@Override
-	public void resize(final int width, final int height) {
-
-	}
+	public void resize(final int width, final int height) {}
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-	}
+	public void resume() {}
 
 	@Override
 	public void show() {	
 		
-		//TEST hack
+		//
 		resetState();
 		
-		
-
 		Renderer.backgroundStage.addActor(background);
 
+		for(SceneEntity cloud : clouds)
+			Renderer.sceneStage.addActor(cloud);
+		
 		for(Onigiri o : onigiriArmy)
 			if(o.isActive())
 				o.setupRendering(Renderer.sceneStage);
@@ -189,14 +215,10 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		inputMultiplexer.addProcessor(this);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
-		
-		
 	}
 
 	@Override
-	public void dispose() {
-
-	}
+	public void dispose() {}
 
 	@Override
 	public void hide() {
@@ -206,17 +228,13 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
 	public boolean tap(float x, float y, int count, int pointer) {
 		Vector2 stageCoords = Vector2.Zero;
 		Renderer.hudStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 		Actor actor = Renderer.hudStage.hit(stageCoords.x, stageCoords.y, true);
-
-
 
 		if(actor == null)
 			return false;
@@ -225,11 +243,9 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			pauseScreen.getFrameBuffer().begin();	
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
-
-			//	if(Configuration.getInstance().musicOn)
-			//	gameMusic.pause();
-
 			pauseScreen.backScreen = this;
+			
+			game.playMusic.pause();
 			game.setScreen(pauseScreen);
 		}
 
@@ -243,73 +259,52 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchUp(float x, float y, int pointer) {
-
-		Gdx.app.log("test","up");
 		return true;
 	}
 
 	@Override
 	public boolean longPress(float x, float y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean fling(float startX, float startY, float endX, float endY, float velocityX, float velocityY, int pointer) {
-		//velocity X -> dodatnie to w prawo
-		// > 1500
-
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-		Vector2 stageCoords = new Vector2();
-		
-		Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-
-		input.insert(stageCoords);
-		lastPoint.set(stageCoords.x, stageCoords.y);
-
 		return false;
 	}
 
-
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-
 		input.clear();
 		slashTimer = 0.0f;
+		
+		String id = "sword"+ MathUtils.random(1,13);
+		long i = game.resources.getSoundEffect(id).play();
+		game.resources.getSoundEffect(id).setVolume(i, game.options.soundVolume);
 		return false;
 	}
 
@@ -320,9 +315,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		//	Gdx.app.log("touch", " dragged");
-		// jakis maksymalny rozmiar swinga
-
 		slashTimer += Timer.TIME_STEP;
 
 		if(slashTimer > 0.2f)
@@ -335,17 +327,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		for(int i = 0; i < input.size-1; ++i)
 			swingLength += input.get(i).dst(input.get(i+1));
 
-		//	Gdx.app.log("distance", String.valueOf(swingLength));
-
-		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
-
 		if(input.size < 100) {
 
 			Vector2 stageCoords = new Vector2();
-			//cos innego
 			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 
-			// this is dst2 in Vector class
 			float lenSq = distSq(stageCoords,lastPoint);
 
 			float minDistanceSq = 25.0f;
@@ -360,13 +346,11 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -166,6 +166,9 @@ public class WorldSelectionScreen extends GameScreen implements GestureListener 
 		else  {
 			game.options.worldName = actor.getName();
 			
+			game.menuMusic.stop();
+			game.playMusic.play();
+			
 			if(game.options.mode == SakuraGameMode.NORMAL) {
 				playScreen.resetState();
 				game.setScreen(playScreen);
