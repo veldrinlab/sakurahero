@@ -8,6 +8,7 @@ import pl.veldrinlab.sakurahero.SakuraHero;
 import pl.veldrinlab.sakurahero.KatanaSwing;
 import pl.veldrinlab.sakurahero.SakuraTree;
 import pl.veldrinlab.sakurahero.SamuraiOnigiri;
+import pl.veldrinlab.sakuraEngine.core.Configuration;
 import pl.veldrinlab.sakuraEngine.core.GameScreen;
 import pl.veldrinlab.sakuraEngine.core.Renderer;
 import pl.veldrinlab.sakuraEngine.core.SceneEntity;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -41,12 +43,14 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 	private KatanaSwing katana;
 	private GameHud gameHud;
 
+	private float gameTime;
+	
 	public SurvivalScreen(final SakuraHero game) {
 		this.game = game;
 
 		onigiriArmy = new Array<Onigiri>();
 		
-		for(int i = 0; i < 5; ++i) {
+		for(int i = 0; i < 3; ++i) {
 			onigiriArmy.add(new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
@@ -55,6 +59,9 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);
 		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
 		clouds = new Array<SceneEntity>();
+		
+		for(int i = 0; i < 8; ++i)
+			clouds.add(new SceneEntity(new Sprite(game.resources.getTexture("cloud")),96,65));
 		
 		gameHud = new GameHud(game);
 		gameHud.initialize();
@@ -65,7 +72,8 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 
 	public void resetState() {
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
-		
+		gameTime = 0.0f;
+
 		tree.loadSakuraTree("levelSurvival.json");
 		katana.clear();
 		gameHud.resetState();
@@ -134,9 +142,47 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 			game.setScreen(gameOverScreen);
 		}
 		
-		gameHud.updateSurvivalHud(enemyHitAmount,deltaTime);
-
+		for(SceneEntity cloud : clouds) {
+			
+			cloud.position.x -= deltaTime*cloud.velocity.x;
+			
+			if(cloud.position.x < -cloud.width) {
+				cloud.position.x += Configuration.getWidth()*1.25f;
+				cloud.position.y = MathUtils.random(Configuration.getHeight()*0.75f, Configuration.getHeight());
+				cloud.position.y -= cloud.height;
+				cloud.velocity.x = MathUtils.random(15.0f, 25.0f);
+			}
+			
+			cloud.updateEntityState(cloud.position.x, cloud.position.y);
+		}
+		
 		katana.update(deltaTime,gameHud.getKatanaLevel());
+		
+		gameHud.updateSurvivalHud(enemyHitAmount,deltaTime);
+		
+		//wave control
+		gameTime += deltaTime;
+		
+		if(gameTime > 30.0f && !onigiriArmy.get(4).isActive()) {
+			onigiriArmy.get(4).setActive(true);
+			onigiriArmy.get(4).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 60.0f && !onigiriArmy.get(5).isActive()) {
+			onigiriArmy.get(5).setActive(true);
+			onigiriArmy.get(5).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 90.0f && !onigiriArmy.get(6).isActive()) {
+			onigiriArmy.get(6).setActive(true);
+			onigiriArmy.get(6).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 60.0f && !onigiriArmy.get(7).isActive()) {
+			onigiriArmy.get(7).setActive(true);
+			onigiriArmy.get(7).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 90.0f && !onigiriArmy.get(8).isActive()) {
+			onigiriArmy.get(8).setActive(true);
+			onigiriArmy.get(8).setupRendering(Renderer.sceneStage);
+		}
 	}
 
 	@Override
@@ -173,6 +219,7 @@ public class SurvivalScreen extends GameScreen implements MultitouchGestureListe
 		inputMultiplexer.addProcessor(this);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
+		game.playMusic.play();
 	}
 
 	@Override

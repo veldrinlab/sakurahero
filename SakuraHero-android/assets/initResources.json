@@ -41,6 +41,156 @@
 			"path" : "font/special.fnt",
 			"name" : "specialFont",
 			"type" : "FONT"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/katana.ogg",
+			"name" : "katana",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/swingTexture.png",
+			"name" : "katanaSwing",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "img/cloud.png",
+			"name" : "cloud",
+			"type" : "TEXTURE"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/menuMusic.ogg",
+			"name" : "menuMusic",
+			"type" : "MUSIC"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/playMusic.ogg",
+			"name" : "playMusic",
+			"type" : "MUSIC"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/gameOverMusic.ogg",
+			"name" : "gameOverMusic",
+			"type" : "MUSIC"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/explosion.ogg",
+			"name" : "explosion",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword1.wav",
+			"name" : "sword1",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword2.wav",
+			"name" : "sword2",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword3.wav",
+			"name" : "sword3",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword4.wav",
+			"name" : "sword4",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword5.wav",
+			"name" : "sword5",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword6.wav",
+			"name" : "sword6",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword7.wav",
+			"name" : "sword7",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword8.wav",
+			"name" : "sword8",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword9.wav",
+			"name" : "sword9",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword10.wav",
+			"name" : "sword10",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword11.wav",
+			"name" : "sword11",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword12.wav",
+			"name" : "sword12",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/sword13.wav",
+			"name" : "sword13",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/attack1.ogg",
+			"name" : "attack1",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/attack2.ogg",
+			"name" : "attack2",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/death1.ogg",
+			"name" : "death1",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/death2.ogg",
+			"name" : "death2",
+			"type" : "SOUND"
+		},
+		{
+			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
+			"path" : "sounds/levelUp.ogg",
+			"name" : "levelUp",
+			"type" : "SOUND"
 		}
 	]
 }

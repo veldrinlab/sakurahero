@@ -43,13 +43,15 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	
 	private KatanaSwing katana;
 	private GameHud gameHud;
+	
+	private float gameTime;
 
 	public PlayScreen(final SakuraHero game) {
 		this.game = game;
 
 		onigiriArmy = new Array<Onigiri>();
 		
-		for(int i = 0; i < 5; ++i) {
+		for(int i = 0; i < 3; ++i) {
 			onigiriArmy.add(new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
@@ -71,6 +73,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	public void resetState() {
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
+		gameTime = 0.0f;
 		
 		tree.loadSakuraTree("level.json");
 		katana.clear();
@@ -157,6 +160,30 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		katana.update(deltaTime,gameHud.getKatanaLevel());
 		
 		gameHud.updateNormalHud(enemyHitAmount, deltaTime);
+		
+		//wave control
+		gameTime += deltaTime;
+		
+		if(gameTime > 30.0f && !onigiriArmy.get(4).isActive()) {
+			onigiriArmy.get(4).setActive(true);
+			onigiriArmy.get(4).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 60.0f && !onigiriArmy.get(5).isActive()) {
+			onigiriArmy.get(5).setActive(true);
+			onigiriArmy.get(5).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 90.0f && !onigiriArmy.get(6).isActive()) {
+			onigiriArmy.get(6).setActive(true);
+			onigiriArmy.get(6).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 60.0f && !onigiriArmy.get(7).isActive()) {
+			onigiriArmy.get(7).setActive(true);
+			onigiriArmy.get(7).setupRendering(Renderer.sceneStage);
+		}
+		else if(gameTime > 90.0f && !onigiriArmy.get(8).isActive()) {
+			onigiriArmy.get(8).setActive(true);
+			onigiriArmy.get(8).setupRendering(Renderer.sceneStage);
+		}
 	}
 
 	@Override
@@ -193,6 +220,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		inputMultiplexer.addProcessor(this);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
+		game.playMusic.play();
 	}
 
 	@Override
