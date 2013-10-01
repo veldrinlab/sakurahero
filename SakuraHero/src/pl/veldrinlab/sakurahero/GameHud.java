@@ -241,4 +241,8 @@ public class GameHud {
 	public float getSurvivedTime() {
 		return survivedTime;
 	}
+	
+	public int getKatanaLevel() {
+		return katanaLevel;
+	}
 }

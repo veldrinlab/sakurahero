@@ -15,7 +15,6 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureDetector;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
-import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -42,13 +41,7 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	private SakuraTree tree;
 	private Array<SceneEntity> clouds;
 	
-	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
 	private KatanaSwing katana;
-	private Stack<Vector2> input;
-	float katanaTime;
-	Vector2 lastPoint = new Vector2();
-	private float slashTimer;
-
 	private GameHud gameHud;
 
 	public PlayScreen(final SakuraHero game) {
@@ -64,7 +57,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 		
 		tree = new SakuraTree(Renderer.sceneAtlas.createSprite("tree"),onigiriArmy);		
 		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
-		input = new Stack<Vector2>(100,Vector2.class);
 		clouds = new Array<SceneEntity>();
 		
 		for(int i = 0; i < 8; ++i)
@@ -80,7 +72,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 	public void resetState() {
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite(game.options.worldName));
 		
-		tree.loadSakuraTree("level.json");		
+		tree.loadSakuraTree("level.json");
+		katana.clear();
 		gameHud.resetState();
 		
 		for(Onigiri o : onigiriArmy) {
@@ -135,8 +128,8 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			if(o.isActive()) {
 				o.update(deltaTime);
 
-				if(input.size > 3)
-					enemyHitAmount += o.collisionDetection(input);
+				if(katana.isReadyToCut())
+					enemyHitAmount += o.collisionDetection(katana.getInput());
 			}
 		
 		tree.update(deltaTime);
@@ -147,19 +140,6 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			game.setScreen(gameOverScreen);
 		}
 
-		gameHud.updateNormalHud(enemyHitAmount, deltaTime);
-
-		katana.update(input);
-
-		katanaTime += deltaTime;
-
-		//mo¿e sterowanie czasem nie jest wcale takie g³upie
-		if(input.size > 2 && katanaTime > Timer.TIME_STEP*2) {
-			input.pop();
-			input.pop();
-			katanaTime = 0.0f;
-		}	
-		
 		for(SceneEntity cloud : clouds) {
 			
 			cloud.position.x -= deltaTime*cloud.velocity.x;
@@ -173,15 +153,17 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 			
 			cloud.updateEntityState(cloud.position.x, cloud.position.y);
 		}
+
+		katana.update(deltaTime,gameHud.getKatanaLevel());
 		
+		gameHud.updateNormalHud(enemyHitAmount, deltaTime);
 	}
 
 	@Override
 	public void processRendering() { 		
 		Renderer.clearScreen();
 		Renderer.backgroundStage.draw();
-		tree.render(); //TODO moze ten sam Stage? - poszczególne efekty spadania dodawac i sterowac alfa
-		
+		tree.render();
 		Renderer.sceneStage.draw();
 		katana.draw(Renderer.sceneStage.getCamera());
 		Renderer.hudStage.draw();
@@ -295,48 +277,19 @@ public class PlayScreen extends GameScreen implements MultitouchGestureListener,
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		input.clear();
-		slashTimer = 0.0f;
-		
+		katana.clear();
+	
 		String id = "sword"+ MathUtils.random(1,13);
 		long i = game.resources.getSoundEffect(id).play();
 		game.resources.getSoundEffect(id).setVolume(i, game.options.soundVolume);
 		return false;
 	}
 
-	public static float distSq(Vector2 p1, Vector2 p2) {
-		float dx = p1.x - p2.x, dy = p1.y - p2.y;
-		return dx * dx + dy * dy;
-	}
-
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		slashTimer += Timer.TIME_STEP;
-
-		if(slashTimer > 0.2f)
-			return true;
-
-		final float maxLength = 10.0f;
-
-		float swingLength = 0.0f;
-
-		for(int i = 0; i < input.size-1; ++i)
-			swingLength += input.get(i).dst(input.get(i+1));
-
-		if(input.size < 100) {
-
-			Vector2 stageCoords = new Vector2();
-			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-
-			float lenSq = distSq(stageCoords,lastPoint);
-
-			float minDistanceSq = 25.0f;
-
-			if (lenSq >= minDistanceSq) {
-				input.insert(stageCoords);
-				lastPoint.set(stageCoords.x, stageCoords.y);
-			}
-		}
+		Vector2 point = new Vector2();
+		Renderer.sceneStage.screenToStageCoordinates(point.set(Gdx.input.getX(), Gdx.input.getY()));
+		katana.addPoint(point);
 		return false;
 	}
 

@@ -1,5 +1,8 @@
 package pl.veldrinlab.sakurahero;
 
+import pl.veldrinlab.sakuraEngine.core.Timer;
+import pl.veldrinlab.sakuraEngine.utils.Stack;
+
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,9 +23,14 @@ public class KatanaSwing {
 	private int batchSize;
 	private float thickness;
 	private float endcap;
-	
-	
 
+	private float time;
+	private Stack<Vector2> input;
+	private Vector2 lastPoint;
+	
+	private int level;
+	
+	private float slashTimer;
 	
 	public KatanaSwing(final Texture katanaTexture) {
 		this.texture = katanaTexture;
@@ -33,6 +41,9 @@ public class KatanaSwing {
 		tristrip = new Array<Vector2>();
 		perp = new Vector2();
 		color = new Color(Color.WHITE);
+		
+		input = new Stack<Vector2>(300,Vector2.class);
+		lastPoint = new Vector2();
 		
 		thickness = 30f;
 		endcap = 1.5f;
@@ -104,7 +115,8 @@ public class KatanaSwing {
 		return tristrip.size-c;
 	}
 	
-	public void update(Array<Vector2> input) {
+	public void update(final float deltaTime, final int katanaLevel) {
+		level = katanaLevel;
 		tristrip.clear();
 		texcoord.clear();
 		
@@ -113,5 +125,49 @@ public class KatanaSwing {
 		
 		batchSize = generate(input, 1);
 		generate(input, -1);
+		
+		time += deltaTime;
+		slashTimer += deltaTime;
+				
+		if(input.size > 2 && time > Timer.TIME_STEP*(level+2)) {
+			input.pop();
+			input.pop();
+			time = 0.0f;
+		}	
+	}
+	
+	public void addPoint(final Vector2 point) {
+		
+		if(slashTimer > 0.2f + (level+1)*0.05f)
+			return;
+		
+		final float minDistance = 5.0f;
+		final float maxLength = 500.0f*(level+1);
+
+		float distance = 0.0f;
+		float swingLength = 0.0f;
+
+		for(int i = 0; i < input.size-1; ++i)
+			swingLength += input.get(i).dst(input.get(i+1));
+
+		distance = point.dst(lastPoint.x, lastPoint.y);
+
+		if(input.size < 300 && swingLength < maxLength &&  distance > minDistance) {
+			input.insert(point);
+			lastPoint.set(point.x, point.y);
+		}
+	}
+	
+	public void clear() {
+		input.clear();
+		slashTimer = 0.0f;
+	}
+	
+	public boolean isReadyToCut() {
+		return input.size > 3;
+	}
+	
+	public Stack<Vector2> getInput() {
+		return input;
 	}
 }

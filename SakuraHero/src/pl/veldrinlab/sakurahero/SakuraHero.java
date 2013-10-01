@@ -85,6 +85,8 @@ public class SakuraHero extends Game {
 	//	initializeLoading();
 	//	initializeGame();
 
+		
+//		setScreen(trainingScreen);
 	//setScreen(playScreen);
 //	setScreen(loadingScreen);
 //		setScreen(menuScreen);
@@ -95,7 +97,11 @@ public class SakuraHero extends Game {
 	private void initializeEngine() {
 		resources.loadResources(Configuration.getInitResourcePath());
 		resources.finishLoading();
-				
+		
+		//
+	//	resources.loadResources(Configuration.getResourcePath());
+	//	resources.finishLoading();
+		
 		Renderer.introAtlas = resources.getTextureAtlas("introAtlas");
 		Renderer.smallFont = new LabelStyle(resources.getFont("smallFont"),Color.WHITE);
 		Renderer.standardFont = new LabelStyle(resources.getFont("standardFont"),Color.WHITE);

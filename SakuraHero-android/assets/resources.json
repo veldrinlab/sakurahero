@@ -14,25 +14,25 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/menuMusic.mp3",
+			"path" : "sounds/menuMusic.ogg",
 			"name" : "menuMusic",
 			"type" : "MUSIC"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/playMusic.mp3",
+			"path" : "sounds/playMusic.ogg",
 			"name" : "playMusic",
 			"type" : "MUSIC"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/gameOverMusic.mp3",
+			"path" : "sounds/gameOverMusic.ogg",
 			"name" : "gameOverMusic",
 			"type" : "MUSIC"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/explosion.mp3",
+			"path" : "sounds/explosion.ogg",
 			"name" : "explosion",
 			"type" : "SOUND"
 		},
@@ -116,37 +116,37 @@
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/attack1.wav",
+			"path" : "sounds/attack1.ogg",
 			"name" : "attack1",
 			"type" : "SOUND"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/attack2.wav",
+			"path" : "sounds/attack2.ogg",
 			"name" : "attack2",
 			"type" : "SOUND"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/death1.wav",
+			"path" : "sounds/death1.ogg",
 			"name" : "death1",
 			"type" : "SOUND"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/death2.wav",
+			"path" : "sounds/death2.ogg",
 			"name" : "death2",
 			"type" : "SOUND"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/katana.wav",
+			"path" : "sounds/katana.ogg",
 			"name" : "katana",
 			"type" : "SOUND"
 		},
 		{
 			"class" : "pl.veldrinlab.sakuraEngine.utils.ResourceDescriptor",
-			"path" : "sounds/levelUp.mp3",
+			"path" : "sounds/levelUp.ogg",
 			"name" : "levelUp",
 			"type" : "SOUND"
 		}

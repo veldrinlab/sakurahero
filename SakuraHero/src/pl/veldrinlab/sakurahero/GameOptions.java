@@ -12,7 +12,7 @@ public class GameOptions {
 		language = Language.ENGLISH;
 		mode = SakuraGameMode.NORMAL;
 		worldName = "natsuBackground";
-		musicVolume = 0.6f;
+		musicVolume = 0.5f;
 		soundVolume = 1.0f;
 	}
 }

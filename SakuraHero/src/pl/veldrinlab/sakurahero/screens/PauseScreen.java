@@ -168,6 +168,7 @@ public class PauseScreen extends GameScreen implements GestureListener  {
 			game.setScreen(backScreen);
 		}
 		else if(actor.getName().equals("Menu")) {
+			game.playMusic.stop();
 			game.menuMusic.play();
 			game.setScreen(menuScreen);
 		}

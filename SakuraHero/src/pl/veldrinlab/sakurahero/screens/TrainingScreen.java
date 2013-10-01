@@ -13,7 +13,6 @@ import pl.veldrinlab.sakuraEngine.core.SceneEntity;
 import pl.veldrinlab.sakuraEngine.core.Timer;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureDetector;
 import pl.veldrinlab.sakuraEngine.utils.MultitouchGestureListener;
-import pl.veldrinlab.sakuraEngine.utils.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -35,14 +34,8 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	private SceneEntity background;
 	private Array<Onigiri> onigiriArmy;
-	
-	//TODO katana swing ³adne z wp³ywem na level, d³ugoœæ itp.
-	private KatanaSwing katana;
-	private Stack<Vector2> input;
-	float katanaTime;
-	Vector2 lastPoint = new Vector2();
-	private float slashTimer;
 
+	private KatanaSwing katana;
 	private GameHud gameHud;
 
 	public TrainingScreen(final SakuraHero game) {
@@ -50,26 +43,26 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 		background = new SceneEntity(Renderer.sceneAtlas.createSprite("dojoBackground"));
 		onigiriArmy = new Array<Onigiri>();
-		
+
 		for(int i = 0; i < 5; ++i) {
 			onigiriArmy.add(new SamuraiOnigiri(Renderer.sceneAtlas.createSprite("onigiriSamurai"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new NinjaOnigiri(Renderer.sceneAtlas.createSprite("onigiriNinja"),Renderer.sceneAtlas.createSprite("explosion")));
 			onigiriArmy.add(new OniOnigiri(Renderer.sceneAtlas.createSprite("onigiriOni"),Renderer.sceneAtlas.createSprite("explosion")));
 		}
-		
-		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
-		input = new Stack<Vector2>(100,Vector2.class);
 
+		katana = new KatanaSwing(game.resources.getTexture("katanaSwing"));
+		
 		gameHud = new GameHud(game);
 		gameHud.initialize();
-		
+
 		inputDetector = new MultitouchGestureDetector(this);
 		inputMultiplexer = new InputMultiplexer();
 	}
-	
+
 	public void resetState() {
 		gameHud.resetState();
-		
+		katana.clear();
+
 		for(Onigiri o : onigiriArmy) {
 			o.initialize(null);
 			o.explosionSound = game.resources.getSoundEffect("explosion");
@@ -79,7 +72,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			o.deathSound2 = game.resources.getSoundEffect("death2");	
 			o.options = game.options;
 		}
-		
+
 		onigiriArmy.get(0).setActive(true);
 		onigiriArmy.get(1).setActive(true);
 		onigiriArmy.get(2).setActive(true);
@@ -110,31 +103,19 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public void processLogic(final float deltaTime) {
-		
+
 		int enemyHitAmount = 0;
 
 		for(Onigiri o : onigiriArmy)
 			if(o.isActive()) {
 				o.update(deltaTime);
 
-				if(input.size > 3)
-					enemyHitAmount += o.collisionDetection(input);
+				if(katana.isReadyToCut())
+					enemyHitAmount += o.collisionDetection(katana.getInput());
 			}
-		
+
+		katana.update(deltaTime,gameHud.getKatanaLevel());
 		gameHud.updateTrainingHud(enemyHitAmount, deltaTime);
-		
-		
-
-		katana.update(input);
-
-		katanaTime += deltaTime;
-
-		//mo¿e sterowanie czasem nie jest wcale takie g³upie
-		if(input.size > 2 && katanaTime > Timer.TIME_STEP*2) {
-			input.pop();
-			input.pop();
-			katanaTime = 0.0f;
-		}	
 	}
 
 	@Override
@@ -159,9 +140,9 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 		for(Onigiri o : onigiriArmy)
 			if(o.isActive())
 				o.setupRendering(Renderer.sceneStage);
-		
+
 		gameHud.initializeTrainingHUD();
-			
+
 		inputMultiplexer.clear();
 		inputMultiplexer.addProcessor(inputDetector);
 		inputMultiplexer.addProcessor(this);
@@ -196,7 +177,7 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 			processRendering();
 			pauseScreen.getFrameBuffer().end();
 			pauseScreen.backScreen = this;
-			
+
 			game.playMusic.pause();
 			game.setScreen(pauseScreen);
 		}
@@ -251,55 +232,20 @@ public class TrainingScreen extends GameScreen implements MultitouchGestureListe
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		input.clear();
-		slashTimer = 0.0f;
-		
+		katana.clear();
+
 		String id = "sword"+ MathUtils.random(1,13);
 		long i = game.resources.getSoundEffect(id).play();
 		game.resources.getSoundEffect(id).setVolume(i, game.options.soundVolume);
-		
-		return false;
-	}
 
-	public static float distSq(Vector2 p1, Vector2 p2) {
-		float dx = p1.x - p2.x, dy = p1.y - p2.y;
-		return dx * dx + dy * dy;
+		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		slashTimer += Timer.TIME_STEP;
-
-		if(slashTimer > 0.2f)
-			return true;
-
-		final float maxLength = 10.0f;
-
-		float swingLength = 0.0f;
-
-		for(int i = 0; i < input.size-1; ++i)
-			swingLength += input.get(i).dst(input.get(i+1));
-
-		//	Gdx.app.log("distance", String.valueOf(swingLength));
-
-		// TODO wci¹¿ nie da siê ³adnego okrêgu narysowaæ i s¹ artefakty
-
-		if(input.size < 100) {
-
-			Vector2 stageCoords = new Vector2();
-			//cos innego
-			Renderer.sceneStage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-
-			// this is dst2 in Vector class
-			float lenSq = distSq(stageCoords,lastPoint);
-
-			float minDistanceSq = 25.0f;
-
-			if (lenSq >= minDistanceSq) {
-				input.insert(stageCoords);
-				lastPoint.set(stageCoords.x, stageCoords.y);
-			}
-		}
+		Vector2 point = new Vector2();
+		Renderer.sceneStage.screenToStageCoordinates(point.set(Gdx.input.getX(), Gdx.input.getY()));
+		katana.addPoint(point);
 		return false;
 	}
 
